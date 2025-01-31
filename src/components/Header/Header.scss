@@ -1,3 +1,4 @@
+@use "sass:color";
 // src/components/Header/Header.scss
 
 @use "../sass/_colors.scss" as c;
@@ -22,7 +23,7 @@
     color: c.$secondary-color;
     transition: color 0.3s;
     &:hover {
-      color: lighten(c.$secondary-color, 15%);
+      color: color.adjust(c.$secondary-color, $lightness: 15%);
     }
   }
 

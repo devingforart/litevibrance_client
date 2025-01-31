@@ -1,3 +1,4 @@
+@use "sass:color";
 // src/components/sass/global.scss
 
 @use "./_colors.scss" as c;
@@ -53,7 +54,7 @@ body {
   transition: background-color c.$transition-duration, box-shadow c.$transition-duration, transform 0.2s;
 
   &:hover {
-    background-color: darken(c.$primary-color, 10%);
+    background-color: color.adjust(c.$primary-color, $lightness: -10%);
     box-shadow: 0 0 15px c.$primary-color;
     transform: translateY(-2px);
   }
@@ -80,7 +81,7 @@ a {
   transition: color c.$transition-duration;
 
   &:hover {
-    color: lighten(c.$secondary-color, 15%);
+    color: color.adjust(c.$secondary-color, $lightness: 15%);
   }
 }
 
