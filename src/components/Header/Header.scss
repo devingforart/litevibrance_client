@@ -1,61 +1,156 @@
-@use "sass:color";
-@use "../sass/_colors.scss" as c;
+/* 
+  Ajusta variables de color, fuentes y z-index según tu preferencia.
+  Este es solo un ejemplo de “glassmorphism” y transiciones modernas.
+*/
+
+/* Desactiva el scroll del body cuando el menú está abierto (clase aplicada desde Header.tsx) */
+.no-scroll {
+  overflow: hidden;
+}
 
 .header {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 999;
+  left: 0;
+  width: 100%;
+  /* Fondo semitransparente + blur para efecto glass */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: c.$glass-bg;
-  backdrop-filter: blur(c.$backdrop-blur);
-  border-bottom: 1px solid c.$glass-border;
-  padding: 1rem 2rem;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-  animation: slideDown 0.5s ease forwards;
+  padding: 0 1.5rem;
+  z-index: 1000;
 
-  &__logo a {
-    font-weight: 700;
-    font-size: 1.8rem;
-    color: c.$secondary-color;
-    transition: color 0.3s;
-    &:hover {
-      color: color.adjust(c.$secondary-color, $lightness: 15%);
+  /* Sutil sombra debajo del header */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  /* Transición suave de altura si lo deseas */
+  transition: all 0.3s ease-in-out;
+
+  /* Ajuste de altura */
+  height: 60px;
+}
+
+/* ------- BRAND ------- */
+.header__brand {
+  display: flex;
+  align-items: center;
+
+  .brand__logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #111; /* Ajusta el color a tu preferencia */
+    text-decoration: none;
+  }
+}
+
+/* ------- TOGGLE (ICONO HAMBURGUESA/CERRAR) ------- */
+.header__toggle {
+  display: none; /* Por defecto se oculta en desktop */
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 1100; /* Para estar encima del nav en móvil */
+
+  @media screen and (max-width: 768px) {
+    display: block;
+  }
+}
+
+/* ------- NAVEGACIÓN ------- */
+.header__nav {
+  /* Por defecto (desktop), se muestra en línea */
+  @media screen and (min-width: 769px) {
+    ul {
+      display: flex;
+      gap: 2rem;
     }
   }
 
-  &__nav {
-    ul {
-      display: flex;
-      gap: 1.5rem;
-      list-style: none;
+  /* En móvil, el menú estará oculto inicialmente */
+  position: fixed;
+  top: 60px; /* debajo del header */
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 60px);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  overflow: auto;
 
-      li a {
-        color: c.$text-color;
-        font-weight: 500;
-        font-size: 1rem;
-        transition: color 0.3s;
+  &.open {
+    transform: translateX(0);
+  }
 
-        &:hover {
-          color: c.$accent-color;
-        }
+  /* Lista de navegación */
+  .nav__list {
+    list-style: none;
+    padding: 2rem;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav__item {
+    margin: 1rem 0;
+
+    .nav__link {
+      text-decoration: none;
+      font-size: 1.2rem;
+      color: #222; /* Ajusta el color */
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: #007bff; /* Color de hover (puedes cambiarlo) */
       }
     }
+  }
 
-    @media (max-width: 768px) {
-      ul {
-        gap: 1rem;
-      }
+  /* Desktop: sobreescribimos estilos para que sea menú horizontal */
+  @media screen and (min-width: 769px) {
+    position: static;
+    transform: none;
+    background: transparent;
+    backdrop-filter: none;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+
+    .nav__list {
+      flex-direction: row;
+      padding: 0;
+    }
+
+    .nav__item {
+      margin: 0;
     }
   }
 }
 
-@keyframes slideDown {
-  0% {
-    transform: translateY(-100%);
+/* ------- ONDA DECORATIVA (OPCIONAL) ------- */
+.header__wave {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  overflow: hidden;
+  z-index: -1; /* detrás del header */
+
+  svg {
+    width: 100%;
+    height: 100%;
+    fill: #fff; /* Ajusta color de la onda */
   }
-  100% {
-    transform: translateY(0);
+
+  @media screen and (max-width: 768px) {
+    display: none; /* Si deseas ocultarla en móvil */
   }
 }
