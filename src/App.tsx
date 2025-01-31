@@ -12,11 +12,14 @@ import Register from './components/Register/Register';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import NotFound from './components/NotFound/NotFound';
+import FloatingThemeSwitch from './components/ThemeSwitch/FloatingThemeSwitch';
 
 const App: React.FC = () => {
   return (
     <>
       <Header />
+      <FloatingThemeSwitch />
+
       <main style={{ paddingTop: '80px' }}>
 
       <Routes>

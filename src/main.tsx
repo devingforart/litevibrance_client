@@ -5,15 +5,18 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './components/sass/global.scss';
 
-// Context del Carrito
+// Contexts
 import { CartProvider } from './context/CartContext';
+import { ThemeProvider } from './context/ThemeContext';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
-      <CartProvider>
-        <App />
-      </CartProvider>
+      <ThemeProvider>
+        <CartProvider>
+          <App />
+        </CartProvider>
+      </ThemeProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

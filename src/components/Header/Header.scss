@@ -1,9 +1,6 @@
-/* 
-  Ajusta variables de color, fuentes y z-index según tu preferencia.
-  Este es solo un ejemplo de “glassmorphism” y transiciones modernas.
-*/
+/* src/components/Header/Header.scss */
 
-/* Desactiva el scroll del body cuando el menú está abierto (clase aplicada desde Header.tsx) */
+/* Evitar scroll cuando menú está abierto (móvil) */
 .no-scroll {
   overflow: hidden;
 }
@@ -11,108 +8,83 @@
 .header {
   position: fixed;
   top: 0;
-  left: 0;
   width: 100%;
-  /* Fondo semitransparente + blur para efecto glass */
-  background: rgba(255, 255, 255, 0.2);
+  height: 65px;
+  background: var(--header-bg);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 1.5rem;
   z-index: 1000;
-
-  /* Sutil sombra debajo del header */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-
-  /* Transición suave de altura si lo deseas */
+  box-shadow: var(--header-box-shadow);
   transition: all 0.3s ease-in-out;
-
-  /* Ajuste de altura */
-  height: 60px;
 }
 
-/* ------- BRAND ------- */
 .header__brand {
-  display: flex;
-  align-items: center;
-
   .brand__logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #111; /* Ajusta el color a tu preferencia */
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--header-text);
     text-decoration: none;
   }
 }
 
-/* ------- TOGGLE (ICONO HAMBURGUESA/CERRAR) ------- */
 .header__toggle {
-  display: none; /* Por defecto se oculta en desktop */
-  font-size: 1.5rem;
+  display: none;
+  font-size: 1.6rem;
+  color: var(--header-text);
   cursor: pointer;
-  z-index: 1100; /* Para estar encima del nav en móvil */
+  z-index: 1100;
 
-  @media screen and (max-width: 768px) {
+  @media (max-width: 768px) {
     display: block;
   }
 }
 
-/* ------- NAVEGACIÓN ------- */
 .header__nav {
-  /* Por defecto (desktop), se muestra en línea */
-  @media screen and (min-width: 769px) {
+  @media (min-width: 769px) {
     ul {
       display: flex;
       gap: 2rem;
     }
   }
-
-  /* En móvil, el menú estará oculto inicialmente */
   position: fixed;
-  top: 60px; /* debajo del header */
+  top: 65px;
   left: 0;
   width: 100%;
-  height: calc(100vh - 60px);
-  background: rgba(255, 255, 255, 0.85);
+  height: calc(100vh - 65px);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
-  overflow: auto;
+  overflow-y: auto;
 
   &.open {
     transform: translateX(0);
   }
 
-  /* Lista de navegación */
   .nav__list {
     list-style: none;
     padding: 2rem;
-    margin: 0;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
   }
 
   .nav__item {
     margin: 1rem 0;
-
     .nav__link {
-      text-decoration: none;
       font-size: 1.2rem;
-      color: #222; /* Ajusta el color */
-      transition: color 0.3s ease;
-
+      color: var(--header-text);
+      text-decoration: none;
+      transition: color 0.2s ease;
       &:hover {
-        color: #007bff; /* Color de hover (puedes cambiarlo) */
+        color: var(--color-primary);
       }
     }
   }
 
-  /* Desktop: sobreescribimos estilos para que sea menú horizontal */
-  @media screen and (min-width: 769px) {
+  @media (min-width: 769px) {
     position: static;
     transform: none;
     background: transparent;
@@ -126,31 +98,34 @@
     .nav__list {
       flex-direction: row;
       padding: 0;
-    }
-
-    .nav__item {
-      margin: 0;
+      .nav__item {
+        margin: 0;
+        .nav__link {
+          font-size: 1rem;
+        }
+      }
     }
   }
 }
 
-/* ------- ONDA DECORATIVA (OPCIONAL) ------- */
+/* Onda decorativa */
 .header__wave {
   position: absolute;
   bottom: -1px;
   left: 0;
   width: 100%;
   height: 80px;
+  z-index: -1;
   overflow: hidden;
-  z-index: -1; /* detrás del header */
 
   svg {
     width: 100%;
     height: 100%;
-    fill: #fff; /* Ajusta color de la onda */
+    fill: var(--wave-color);
+    transition: fill 0.3s;
   }
 
-  @media screen and (max-width: 768px) {
-    display: none; /* Si deseas ocultarla en móvil */
+  @media (max-width: 768px) {
+    display: none;
   }
 }

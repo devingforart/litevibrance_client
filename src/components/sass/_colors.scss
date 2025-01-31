@@ -1,30 +1,38 @@
-// _colors_minimal1.scss
-// Minimal con grises suaves y acento azul.
+// _colors.scss
+// Estilo "NeonTech-Futurista"
+// Paleta de colores fuertes en fondo oscuro, con acentos neón.
 
-$primary-color: #5f5f5f;       // Gris medio-oscuro
-$secondary-color: #9ea7aa;     // Gris claro-azulado
-$accent-color: #3b82f6;        // Azul medio (acento)
+$primary-color: #00eeff;   // Neón turquesa
+$secondary-color: #ff00f4; // Neón magenta
+$accent-color: #00ff6a;    // Neón verde
+$warning-color: #ff9933;   // Naranja neón de alerta
+$error-color: #ff0044;     // Rojo neón
 
-$background-color: #f9fafb;    // Fondo claro
-$text-color: #1f2937;          // Gris muy oscuro
+$background-color: #0a0c10; // Fondo oscuro
+$text-color: #fafafa;       // Texto claro
 
-$gray-100: #f3f4f6;
-$gray-200: #e5e7eb;
-$gray-300: #d1d5db;
+// Grises si necesitas
+$gray-100: #2c2f36;
+$gray-200: #41434a;
+$gray-300: #5a5d63;
 
-// Para glassmorphism ligero
-$glass-bg: rgba(255, 255, 255, 0.2);
-$glass-border: rgba(0, 0, 0, 0.05);
-$backdrop-blur: 5px;
-
-// Gradiente principal (sutil)
+// Gradiente principal animado con colores vibrantes
 $main-gradient: linear-gradient(
-  270deg,
-  #f9fafb,
-  #ffffff,
-  #e5e7eb,
-  #f9fafb
+  135deg,
+  #0a0c10,
+  #1b1d23,
+  #0a0c10,
+  #1b1d23
 );
 
-// Duración de animaciones / transiciones
+// Duraciones de transición / animaciones
 $transition-duration: 0.3s;
+
+// Efectos "neón" genéricos
+$neon-glow-primary: 0 0 10px rgba(0, 238, 255, 0.7), 0 0 20px rgba(0, 238, 255, 0.5);
+$neon-glow-secondary: 0 0 10px rgba(255, 0, 244, 0.7), 0 0 20px rgba(255, 0, 244, 0.5);
+
+// Para modales o fondos difuminados
+$glass-bg: rgba(255, 255, 255, 0.1);
+$glass-border: rgba(255, 255, 255, 0.2);
+$backdrop-blur: 10px;

@@ -1,15 +1,14 @@
+// src/components/Header/Header.tsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaBars, FaTimes } from 'react-icons/fa';
 import './Header.scss';
 
 const navLinks = [
   { name: 'Inicio', path: '/' },
   { name: 'Productos', path: '/products' },
   { name: 'Carrito', path: '/cart' },
-  { name: 'Iniciar Sesión', path: '/login' },
-  { name: 'Registrarse', path: '/register' },
-  { name: 'Admin', path: '/admin' },
+  { name: 'Ofertas', path: '/products?filter=ofertas' }, // Ejemplo
+  { name: 'Contacto', path: '/contact' }, // Ejemplo
 ];
 
 const Header: React.FC = () => {
@@ -24,26 +23,20 @@ const Header: React.FC = () => {
     }
   }, [isOpen]);
 
-  // Alterna entre abrir y cerrar el menú
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
+  const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
     <header className="header">
-      {/* Logo */}
       <div className="header__brand">
         <Link to="/" onClick={() => setIsOpen(false)}>
-          <span className="brand__logo">MiTienda</span>
+          <span className="brand__logo">liteVibrance</span>
         </Link>
       </div>
 
-      {/* Botón de hamburguesa / cerrar */}
       <div className="header__toggle" onClick={toggleMenu}>
-        {isOpen ? <FaTimes /> : <FaBars />}
+        {isOpen ? '✕' : '☰'}
       </div>
 
-      {/* Navegación */}
       <nav className={`header__nav ${isOpen ? 'open' : ''}`}>
         <ul className="nav__list">
           {navLinks.map((link) => (
@@ -60,7 +53,7 @@ const Header: React.FC = () => {
         </ul>
       </nav>
 
-      {/* Onda decorativa (opcional) */}
+      {/* Onda decorativa */}
       <div className="header__wave">
         <svg viewBox="0 0 500 80" preserveAspectRatio="none">
           <path d="M0,30 C150,90 350,0 500,30 L500,00 L0,0 Z" />

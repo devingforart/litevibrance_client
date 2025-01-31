@@ -1,0 +1,42 @@
+/* src/components/ThemeSwitch/FloatingThemeSwitch.scss */
+
+.floating-theme-switch {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1500;
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: #fff;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  transition: background-color var(--transition-speed),
+              transform 0.2s;
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-3px);
+  }
+  &:active {
+    transform: scale(0.95);
+  }
+
+  /* Pequeña animación cuando se monta */
+  animation: slideUp 0.5s ease forwards;
+  transform: translateY(100px);
+  opacity: 0;
+}
+
+@keyframes slideUp {
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

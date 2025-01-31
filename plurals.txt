@@ -16,15 +16,18 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './components/sass/global.scss';
 
-// Context del Carrito
+// Contexts
 import { CartProvider } from './context/CartContext';
+import { ThemeProvider } from './context/ThemeContext';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
-      <CartProvider>
-        <App />
-      </CartProvider>
+      <ThemeProvider>
+        <CartProvider>
+          <App />
+        </CartProvider>
+      </ThemeProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
@@ -54,6 +57,8 @@ const App: React.FC = () => {
   return (
     <>
       <Header />
+      <main style={{ paddingTop: '80px' }}>
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<ProductList />} />
@@ -65,6 +70,8 @@ const App: React.FC = () => {
         <Route path="/register" element={<Register />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      </main>
+
       <Footer />
     </>
   );
@@ -424,26 +431,90 @@ export default NotFound;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Header/Header.tsx
 
 Contenido:
-// src/components/Header/Header.tsx
-import React from 'react';
+// Header.tsx (Ejemplo sencillo con estado local)
+
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Header.scss';
 
+const navLinks = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Productos', path: '/products' },
+  // ... Resto de rutas
+];
+
 const Header: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Estado para tema
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  // Aplica el tema al <html> cada vez que cambie "theme"
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  // Alterna light/dark
+  const handleToggleTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
+
+  // Manejo del menú hamburguesa
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('no-scroll');
+    } else {
+      document.body.classList.remove('no-scroll');
+    }
+  }, [isOpen]);
+
+  const toggleMenu = () => setIsOpen(!isOpen);
+
   return (
     <header className="header">
-      <div className="header__logo">
-        <Link to="/">MiTienda</Link>
+      <div className="header__brand">
+        <Link to="/" onClick={() => setIsOpen(false)}>
+          <span className="brand__logo">liteVibrance</span>
+        </Link>
       </div>
-      <nav className="header__nav">
-        <ul>
-          <li><Link to="/products">Productos</Link></li>
-          <li><Link to="/cart">Carrito</Link></li>
-          <li><Link to="/login">Iniciar Sesión</Link></li>
-          <li><Link to="/register">Registrarse</Link></li>
-          <li><Link to="/admin">Admin</Link></li>
+
+      {/* Switch para Dark/Light */}
+      <div className="header__theme-switch">
+        <label className="switch">
+          <input
+            type="checkbox"
+            checked={theme === 'dark'}
+            onChange={handleToggleTheme}
+          />
+          <span className="slider round"></span>
+        </label>
+      </div>
+
+      <div className="header__toggle" onClick={toggleMenu}>
+        {isOpen ? 'X' : '≡'}
+      </div>
+
+      <nav className={`header__nav ${isOpen ? 'open' : ''}`}>
+        <ul className="nav__list">
+          {navLinks.map((link) => (
+            <li key={link.name} className="nav__item">
+              <Link
+                to={link.path}
+                className="nav__link"
+                onClick={() => setIsOpen(false)}
+              >
+                {link.name}
+              </Link>
+            </li>
+          ))}
         </ul>
       </nav>
+
+      <div className="header__wave">
+        <svg viewBox="0 0 500 80" preserveAspectRatio="none">
+          <path d="M0,30 C150,90 350,0 500,30 L500,00 L0,0 Z" />
+        </svg>
+      </div>
     </header>
   );
 };
@@ -456,65 +527,195 @@ export default Header;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Header/Header.scss
 
 Contenido:
-@use "sass:color";
-@use "../sass/_colors.scss" as c;
+/* src/components/Header/Header.scss */
+
+/* Desactiva el scroll del body cuando el menú está abierto */
+.no-scroll {
+  overflow: hidden;
+}
 
 .header {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 999;
+  left: 0;
+  width: 100%;
+  height: 60px;
+
+  /* Fondo y blur: utiliza las variables definidas */
+  background: var(--header-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: c.$glass-bg;
-  backdrop-filter: blur(c.$backdrop-blur);
-  border-bottom: 1px solid c.$glass-border;
-  padding: 1rem 2rem;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-  animation: slideDown 0.5s ease forwards;
+  padding: 0 1.5rem;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
 
-  &__logo a {
-    font-weight: 700;
-    font-size: 1.8rem;
-    color: c.$secondary-color;
-    transition: color 0.3s;
-    &:hover {
-      color: color.adjust(c.$secondary-color, $lightness: 15%);
-    }
+/* BRAND */
+.header__brand {
+  .brand__logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    /* color dinámico */
+    color: var(--header-text); 
+    text-decoration: none;
   }
+}
 
-  &__nav {
-    ul {
-      display: flex;
-      gap: 1.5rem;
-      list-style: none;
+/* THEME SWITCH */
+.header__theme-switch {
+  margin-right: 1rem;
+  z-index: 1100;
 
-      li a {
-        color: c.$text-color;
-        font-weight: 500;
-        font-size: 1rem;
-        transition: color 0.3s;
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 38px;
+    height: 20px;
 
-        &:hover {
-          color: c.$accent-color;
-        }
+    input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--switch-bg-off);
+      border-radius: 34px;
+      cursor: pointer;
+      transition: .4s;
+      
+      &::before {
+        content: "";
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        left: 3px;
+        bottom: 3px;
+        background-color: var(--switch-knob);
+        border-radius: 50%;
+        transition: .4s;
       }
     }
-
-    @media (max-width: 768px) {
-      ul {
-        gap: 1rem;
+    input:checked + .slider {
+      background-color: var(--switch-bg-on);
+    }
+    input:checked + .slider::before {
+      transform: translateX(18px);
+    }
+    &.round {
+      .slider {
+        border-radius: 34px;
       }
     }
   }
 }
 
-@keyframes slideDown {
-  0% {
-    transform: translateY(-100%);
+/* TOGGLE (ICONO HAMBURGUESA/CERRAR) */
+.header__toggle {
+  display: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--header-text);
+  z-index: 1100;
+
+  @media screen and (max-width: 768px) {
+    display: block;
   }
-  100% {
-    transform: translateY(0);
+}
+
+/* NAVEGACIÓN */
+.header__nav {
+  @media screen and (min-width: 769px) {
+    ul {
+      display: flex;
+      gap: 2rem;
+    }
+  }
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 60px);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  overflow: auto;
+
+  &.open {
+    transform: translateX(0);
+  }
+
+  .nav__list {
+    list-style: none;
+    padding: 2rem;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav__item {
+    margin: 1rem 0;
+    .nav__link {
+      text-decoration: none;
+      font-size: 1.3rem;
+      color: var(--header-text);
+      transition: color 0.3s;
+      &:hover {
+        color: var(--color-primary);
+      }
+    }
+  }
+
+  @media screen and (min-width: 769px) {
+    position: static;
+    transform: none;
+    background: transparent;
+    backdrop-filter: none;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+
+    .nav__list {
+      flex-direction: row;
+      padding: 0;
+      .nav__item {
+        margin: 0;
+        .nav__link {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}
+
+/* ONDA DECORATIVA */
+.header__wave {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  overflow: hidden;
+  z-index: -1;
+  svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--wave-color); /* <-- Aquí usas la variable del wave */
+    transition: fill 0.3s;
+  }
+  @media screen and (max-width: 768px) {
+    display: none;
   }
 }
 
@@ -1269,16 +1470,44 @@ Contenido:
 Contenido:
 // src/components/Home/Home.tsx
 import React from 'react';
-import './Home.scss';
 import { Link } from 'react-router-dom';
+import './Home.scss';
 
 const Home: React.FC = () => {
   return (
     <section className="home container">
-      <div className="home__hero">
-        <h1>Bienvenido a MiTienda</h1>
-        <p>Encuentra los mejores productos al mejor precio. ¡Explora nuestras ofertas!</p>
-        <Link to="/products" className="btn-primary">Ver productos destacados</Link>
+      {/* Sección de Intro/Hero */}
+      <div className="home__intro">
+        <h1>Bienvenido!</h1>
+        <p className="home__subtitle">
+          Traemos para ti los mejores productos, cuidadosamente seleccionados por nuestros expertos.
+        </p>
+        <p>
+          Disfruta de una experiencia de compra única con ofertas exclusivas y la máxima calidad
+          en todas nuestras categorías.
+        </p>
+        <Link to="/products" className="btn-primary">
+          Explora nuestro catálogo
+        </Link>
+      </div>
+
+      {/* Sección de destacados u oportunidades */}
+      <div className="home__highlights">
+        <div className="highlight__item">
+          <h2>Novedades</h2>
+          <p>Descubre los lanzamientos más recientes en tecnología, moda y más.</p>
+          <Link to="/products" className="btn-secondary">Ver novedades</Link>
+        </div>
+        <div className="highlight__item">
+          <h2>Ofertas Imperdibles</h2>
+          <p>Aprovecha descuentos especiales y promociones limitadas.</p>
+          <Link to="/products" className="btn-secondary">Ver ofertas</Link>
+        </div>
+        <div className="highlight__item">
+          <h2>Más Vendidos</h2>
+          <p>Echa un vistazo a los productos favoritos de nuestros clientes.</p>
+          <Link to="/products" className="btn-secondary">Ver más vendidos</Link>
+        </div>
       </div>
     </section>
   );
@@ -1295,18 +1524,21 @@ Contenido:
 // src/components/Home/Home.scss
 
 @use "../sass/_colors.scss" as c;
+@use "sass:color";
 
 .home {
-  &__hero {
-    flex-direction: column;
-    text-align: center;
-    padding: 4rem 2rem;
-    margin: 2rem 0;
-    border-radius: 12px;
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+
+  &__intro {
     background: c.$glass-bg;
     backdrop-filter: blur(c.$backdrop-blur);
     border: 1px solid c.$glass-border;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    border-radius: 12px;
+    text-align: center;
+    padding: 3rem 2rem;
     animation: fadeIn 0.7s ease forwards;
     transform: translateY(10px);
     opacity: 0;
@@ -1320,8 +1552,16 @@ Contenido:
       animation: fadeUp 0.6s ease forwards 0.3s;
     }
 
+    &__subtitle {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: c.$accent-color;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.4s;
+    }
+
     p {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       margin-bottom: 2rem;
       max-width: 600px;
       line-height: 1.5;
@@ -1334,17 +1574,73 @@ Contenido:
       font-size: 1.2rem;
       padding: 1rem 2rem;
       opacity: 0;
-      animation: fadeUp 0.6s ease forwards 0.7s;
+      animation: fadeUp 0.6s ease forwards 0.6s;
+    }
+  }
+
+  &__highlights {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 2rem;
+    animation: fadeIn 0.7s ease forwards;
+    transform: translateY(10px);
+    opacity: 0;
+
+    .highlight__item {
+      background: c.$glass-bg;
+      backdrop-filter: blur(c.$backdrop-blur);
+      border: 1px solid c.$glass-border;
+      border-radius: 8px;
+      width: 300px;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+
+      h2 {
+        margin-bottom: 0.5rem;
+        color: c.$secondary-color;
+      }
+
+      p {
+        margin-bottom: 1rem;
+        color: c.$text-color;
+        opacity: 0.8;
+      }
+
+      .btn-secondary {
+        background-color: c.$secondary-color;
+        color: #fff;
+        padding: 0.75rem 1.25rem;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        transition: background-color c.$transition-duration, 
+                    box-shadow c.$transition-duration, 
+                    transform 0.2s;
+
+        &:hover {
+          background-color: color.adjust(c.$secondary-color, $lightness: -10%);
+          box-shadow: 0 0 15px c.$secondary-color;
+          transform: translateY(-2px);
+        }
+
+        &:active {
+          transform: scale(0.98);
+        }
+      }
     }
   }
 }
 
+// Animaciones
 @keyframes fadeIn {
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
+
 @keyframes fadeUp {
   0% {
     opacity: 0;
@@ -1353,16 +1649,6 @@ Contenido:
   100% {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@media (max-width: 768px) {
-  .home__hero {
-    padding: 2rem 1rem;
-
-    h1 {
-      font-size: 2rem;
-    }
   }
 }
 
@@ -1490,59 +1776,138 @@ Contenido:
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/sass/global.scss
 
 Contenido:
-@use "sass:color";
-@use "./_colors.scss" as c;
+/* ----------------------------------------
+   global.scss
+   ---------------------------------------- */
 
+/* 
+  1. Tipografía: ejemplo (opcional).
+  Cambia la fuente si lo deseas.
+*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+/* 
+  2. Reset básico 
+*/
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* 
+  3. Variables de tema claro (por defecto).
+     Definimos también variantes “hover” manuales para no usar darken().
+*/
+:root {
+  /* Fondo y texto base */
+  --color-bg: #f2f2f2;
+  --color-text: #111;
+
+  /* Paleta principal */
+  --color-primary: #005be9;           /* Azul primario */
+  --color-primary-hover: #0048cc;     /* Azul primario hover */
+  --color-accent: #ff9800;           
+  --color-accent-hover: #ff7a00;     
+
+  /* Efecto glass */
+  --glass-bg: rgba(255, 255, 255, 0.2);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-blur: 8px;
+
+  /* Header */
+  --header-bg: rgba(255, 255, 255, 0.2);
+  --header-text: #111;
+  --header-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  /* Onda (wave) en modo claro */
+  --wave-color: #fff;
+
+  /* Switch (light theme) */
+  --switch-bg-off: #bbb;    /* color base switch OFF */
+  --switch-bg-on: #4a4a4a;  /* color base switch ON */
+  --switch-knob: #fff;
+
+  /* Transiciones */
+  --transition-speed: 0.3s;
+}
+
+/* 
+  4. Variables de tema oscuro: 
+     sobrescribimos las anteriores. 
+*/
+:root[data-theme='dark'] {
+  --color-bg: #1c1c1c;
+  --color-text: #f5f5f5;
+
+  --color-primary: #3b82f6;          /* Azul algo distinto en oscuro */
+  --color-primary-hover: #336fd1;    /* Hover manual */
+  --color-accent: #ffb020;
+  --color-accent-hover: #ff9f00;
+
+  --glass-bg: rgba(0, 0, 0, 0.3);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-blur: 8px;
+
+  --header-bg: rgba(0, 0, 0, 0.3);
+  --header-text: #fafafa;
+  --header-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+
+  --wave-color: #222;
+
+  --switch-bg-off: #777;
+  --switch-bg-on: #fafafa;
+  --switch-knob: #111;
+}
+
+/* ----------------------------------------
+   5. Estilos base
+---------------------------------------- */
 html,
 body {
   font-family: 'Poppins', sans-serif;
-  background: c.$background-color;
-  color: c.$text-color;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+
+  /* Suave transición entre temas */
+  transition: background-color var(--transition-speed),
+              color var(--transition-speed);
+  -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  min-height: 100vh;
-  // Gradiente animado
-  background: c.$main-gradient;
-  background-size: 600% 600%;
-  animation: rainbow 20s ease infinite;
 }
 
-@keyframes rainbow {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
+/* Contenedor base */
 .container {
   width: 90%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 0;
+  padding: 1rem 0;
 }
 
+/* Links */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-speed);
+
+  &:hover {
+    color: var(--color-primary-hover);
+  }
+}
+
+/* Botones */
 .btn-primary {
-  background-color: c.$primary-color;
+  background-color: var(--color-primary);
   color: #fff;
   border: none;
   padding: 0.75rem 1.25rem;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color c.$transition-duration, box-shadow c.$transition-duration, transform 0.2s;
+  font-size: 1rem;
+  transition: background-color var(--transition-speed), transform 0.2s;
 
   &:hover {
-    background-color: color.adjust(c.$primary-color, $lightness: -10%);
-    box-shadow: 0 0 15px c.$primary-color;
+    background-color: var(--color-primary-hover);
     transform: translateY(-2px);
   }
 
@@ -1551,43 +1916,51 @@ body {
   }
 }
 
-.card {
-  background: c.$glass-bg;
-  backdrop-filter: blur(c.$backdrop-blur);
-  border: 1px solid c.$glass-border;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin: 1rem 0;
-  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.3);
-}
-
-a {
-  text-decoration: none;
-  color: c.$secondary-color;
-  transition: color c.$transition-duration;
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  padding: 0.6rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color var(--transition-speed),
+              color var(--transition-speed),
+              transform 0.2s;
 
   &:hover {
-    color: color.adjust(c.$secondary-color, $lightness: 15%);
+    background-color: var(--color-primary);
+    color: #fff;
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: scale(0.98);
   }
 }
 
-.flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.flex-col {
-  display: flex;
-  flex-direction: column;
+/* Ejemplo de carta “glass” */
+.card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: background-color var(--transition-speed), 
+              box-shadow var(--transition-speed);
 }
 
+/* Animación fade-in */
 .fade-in {
-  animation: fadeIn 0.5s ease forwards;
+  animation: fadeIn var(--transition-speed) forwards;
 }
 
 @keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0% { opacity: 0; transform: translateY(15px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 
@@ -1596,36 +1969,44 @@ a {
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/sass/_colors.scss
 
 Contenido:
-// _colors_minimal1.scss
-// Minimal con grises suaves y acento azul.
+// _colors.scss
+// Estilo "NeonTech-Futurista"
+// Paleta de colores fuertes en fondo oscuro, con acentos neón.
 
-$primary-color: #5f5f5f;       // Gris medio-oscuro
-$secondary-color: #9ea7aa;     // Gris claro-azulado
-$accent-color: #3b82f6;        // Azul medio (acento)
+$primary-color: #00eeff;   // Neón turquesa
+$secondary-color: #ff00f4; // Neón magenta
+$accent-color: #00ff6a;    // Neón verde
+$warning-color: #ff9933;   // Naranja neón de alerta
+$error-color: #ff0044;     // Rojo neón
 
-$background-color: #f9fafb;    // Fondo claro
-$text-color: #1f2937;          // Gris muy oscuro
+$background-color: #0a0c10; // Fondo oscuro
+$text-color: #fafafa;       // Texto claro
 
-$gray-100: #f3f4f6;
-$gray-200: #e5e7eb;
-$gray-300: #d1d5db;
+// Grises si necesitas
+$gray-100: #2c2f36;
+$gray-200: #41434a;
+$gray-300: #5a5d63;
 
-// Para glassmorphism ligero
-$glass-bg: rgba(255, 255, 255, 0.2);
-$glass-border: rgba(0, 0, 0, 0.05);
-$backdrop-blur: 5px;
-
-// Gradiente principal (sutil)
+// Gradiente principal animado con colores vibrantes
 $main-gradient: linear-gradient(
-  270deg,
-  #f9fafb,
-  #ffffff,
-  #e5e7eb,
-  #f9fafb
+  135deg,
+  #0a0c10,
+  #1b1d23,
+  #0a0c10,
+  #1b1d23
 );
 
-// Duración de animaciones / transiciones
+// Duraciones de transición / animaciones
 $transition-duration: 0.3s;
+
+// Efectos "neón" genéricos
+$neon-glow-primary: 0 0 10px rgba(0, 238, 255, 0.7), 0 0 20px rgba(0, 238, 255, 0.5);
+$neon-glow-secondary: 0 0 10px rgba(255, 0, 244, 0.7), 0 0 20px rgba(255, 0, 244, 0.5);
+
+// Para modales o fondos difuminados
+$glass-bg: rgba(255, 255, 255, 0.1);
+$glass-border: rgba(255, 255, 255, 0.2);
+$backdrop-blur: 10px;
 
 
 --------------------------------------------------------------------------------
@@ -1776,6 +2157,51 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/context/ThemeContext.tsx
+
+Contenido:
+// src/context/ThemeContext.tsx
+import React, { createContext, useState, useContext, useEffect } from 'react';
+
+interface ThemeContextProps {
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
+}
+
+const ThemeContext = createContext<ThemeContextProps>({
+  theme: 'light',
+  toggleTheme: () => {},
+});
+
+export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Lee del localStorage si existe el tema guardado, o por defecto 'light'
+  const [theme, setTheme] = useState<'light' | 'dark'>(
+    () => (localStorage.getItem('theme') as 'light' | 'dark') || 'light'
+  );
+
+  useEffect(() => {
+    // Aplica la clase del tema al <body> y guarda en localStorage
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+
+// Hook de conveniencia
+export const useTheme = () => useContext(ThemeContext);
 
 
 --------------------------------------------------------------------------------
