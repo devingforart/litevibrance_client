@@ -5,7 +5,8 @@ import './Register.scss';
 const Register: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Lógica de registro
+    // Lógica de registro real (petición a tu backend)
+    alert('Usuario registrado correctamente');
   };
 
   return (

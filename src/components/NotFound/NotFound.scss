@@ -1,0 +1,19 @@
+// src/components/NotFound/NotFound.scss
+
+@use "../sass/_colors.scss" as c;
+
+.notfound {
+  margin-top: 2rem;
+  text-align: center;
+
+  h2 {
+    font-size: 2rem;
+    color: c.$primary-color;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: c.$text-color;
+    font-size: 1.1rem;
+  }
+}

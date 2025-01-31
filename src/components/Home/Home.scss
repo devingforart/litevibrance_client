@@ -45,7 +45,6 @@
   }
 }
 
-// Keyframes
 @keyframes fadeIn {
   to {
     opacity: 1;
@@ -63,7 +62,6 @@
   }
 }
 
-// Responsividad
 @media (max-width: 768px) {
   .home__hero {
     padding: 2rem 1rem;

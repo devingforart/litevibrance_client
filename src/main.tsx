@@ -3,12 +3,17 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
-import './components/sass/global.scss'; // Importamos los estilos globales
+import './components/sass/global.scss';
+
+// Context del Carrito
+import { CartProvider } from './context/CartContext';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <CartProvider>
+        <App />
+      </CartProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

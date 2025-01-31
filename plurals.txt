@@ -75,6 +75,7 @@ Contenido:
 
 .checkout {
   margin-top: 2rem;
+  animation: fadeIn 0.6s ease forwards;
 
   h2 {
     text-align: center;
@@ -82,6 +83,8 @@ Contenido:
     color: c.$secondary-color;
     text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
     margin-bottom: 2rem;
+    opacity: 0;
+    animation: slideDown 0.7s ease forwards;
   }
 
   &__form {
@@ -95,6 +98,9 @@ Contenido:
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeUp 0.6s ease forwards 0.4s; // Retardo para un efecto escalonado
 
     label {
       display: flex;
@@ -112,8 +118,11 @@ Contenido:
         outline: none;
         background: rgba(255,255,255,0.2);
         color: c.$text-color;
+        transition: border-color 0.3s, box-shadow 0.3s;
+
         &:focus {
           border-color: c.$accent-color;
+          box-shadow: 0 0 6px rgba(c.$accent-color, 0.3);
         }
       }
     }
@@ -122,6 +131,38 @@ Contenido:
       margin-top: 1rem;
       align-self: center;
     }
+  }
+}
+
+// Animaciones keyframes
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsividad
+@media (max-width: 768px) {
+  .checkout__form {
+    padding: 1.5rem;
   }
 }
 
@@ -172,12 +213,15 @@ Contenido:
 .admin-dashboard {
   margin-top: 2rem;
   text-align: center;
+  animation: fadeIn 0.5s ease forwards;
 
   h2 {
     font-size: 2.2rem;
     color: c.$primary-color;
     margin-bottom: 2rem;
     text-shadow: 0 0 6px c.$primary-color;
+    opacity: 0;
+    animation: slideDown 0.6s ease forwards;
   }
 
   &__sections {
@@ -196,7 +240,19 @@ Contenido:
     padding: 1.5rem;
     text-align: center;
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    transition: transform 0.3s;
+    transition: transform 0.3s, box-shadow 0.3s;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+    // Cada tarjeta tendrá un pequeño retardo según su posición
+    &:nth-child(1) {
+      animation-delay: 0.4s;
+    }
+    &:nth-child(2) {
+      animation-delay: 0.6s;
+    }
+    &:nth-child(3) {
+      animation-delay: 0.8s;
+    }
 
     &:hover {
       transform: translateY(-3px);
@@ -216,6 +272,42 @@ Contenido:
     .btn-primary {
       font-size: 0.9rem;
     }
+  }
+}
+
+// Keyframes
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translateY(-15px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeUp {
+  0% {
+    transform: translateY(15px);
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// Responsividad
+@media (max-width: 768px) {
+  .admin-dashboard__card {
+    width: 100%;
+    max-width: 400px;
   }
 }
 
@@ -294,6 +386,7 @@ export default Header;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Header/Header.scss
 
 Contenido:
+@use "sass:color";
 // src/components/Header/Header.scss
 
 @use "../sass/_colors.scss" as c;
@@ -310,6 +403,7 @@ Contenido:
   border-bottom: 1px solid c.$glass-border;
   padding: 1rem 2rem;
   box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  animation: slideDown 0.5s ease forwards;
 
   &__logo a {
     font-weight: 700;
@@ -317,24 +411,44 @@ Contenido:
     color: c.$secondary-color;
     transition: color 0.3s;
     &:hover {
-      color: lighten(c.$secondary-color, 15%);
+      color: color.adjust(c.$secondary-color, $lightness: 15%);
     }
   }
 
-  &__nav ul {
-    display: flex;
-    gap: 1.5rem;
-    list-style: none;
+  &__nav {
+    ul {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
 
-    li a {
-      color: c.$text-color;
-      font-weight: 500;
-      font-size: 1rem;
-      transition: color 0.3s;
-      &:hover {
-        color: c.$accent-color;
+      li a {
+        color: c.$text-color;
+        font-weight: 500;
+        font-size: 1rem;
+        transition: color 0.3s;
+
+        &:hover {
+          color: c.$accent-color;
+        }
       }
     }
+
+    // Responsivo: menú colapsable (opcional)
+    @media (max-width: 768px) {
+      ul {
+        gap: 1rem;
+      }
+    }
+  }
+}
+
+// Animación
+@keyframes slideDown {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
   }
 }
 
@@ -350,6 +464,7 @@ Contenido:
 
 .product-list {
   margin-top: 2rem;
+  animation: fadeIn 0.5s ease forwards;
 
   h2 {
     font-size: 2rem;
@@ -357,6 +472,8 @@ Contenido:
     margin-bottom: 1.5rem;
     text-align: center;
     text-shadow: 0 0 5px c.$accent-color;
+    opacity: 0;
+    animation: slideDown 0.6s ease forwards;
   }
 
   &__grid {
@@ -364,6 +481,40 @@ Contenido:
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 2rem;
     margin-top: 1rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.7s ease forwards 0.5s; // retardo para escalonar
+
+    // Responsividad
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+// Keyframes
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  0% {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+}
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -418,6 +569,7 @@ Contenido:
 
 .register {
   margin-top: 2rem;
+  animation: fadeIn 0.5s ease forwards;
 
   h2 {
     text-align: center;
@@ -425,6 +577,8 @@ Contenido:
     color: c.$secondary-color;
     margin-bottom: 2rem;
     text-shadow: 0 0 5px c.$secondary-color;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
   }
 
   &__form {
@@ -438,6 +592,9 @@ Contenido:
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeUp 0.6s ease forwards 0.3s;
 
     label {
       display: flex;
@@ -452,8 +609,11 @@ Contenido:
         border-radius: 4px;
         background: rgba(255,255,255,0.2);
         color: c.$text-color;
+        transition: border-color 0.3s, box-shadow 0.3s;
+
         &:focus {
           border-color: c.$accent-color;
+          box-shadow: 0 0 6px rgba(c.$accent-color, 0.3);
         }
       }
     }
@@ -462,6 +622,19 @@ Contenido:
       margin-top: 1rem;
       align-self: center;
     }
+  }
+}
+
+// Keyframes
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -541,17 +714,39 @@ Contenido:
 .cart {
   margin-top: 2rem;
   text-align: center;
+  animation: fadeIn 0.6s ease forwards;
 
   h2 {
     font-size: 2rem;
     color: c.$accent-color;
     margin-bottom: 2rem;
     text-shadow: 0 0 5px c.$accent-color;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
   }
 
   p {
     font-size: 1.1rem;
     color: c.$text-color;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.3s;
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
 }
 
@@ -603,6 +798,7 @@ Contenido:
 
 .login {
   margin-top: 2rem;
+  animation: fadeIn 0.5s ease forwards;
 
   h2 {
     text-align: center;
@@ -610,6 +806,8 @@ Contenido:
     color: c.$secondary-color;
     margin-bottom: 2rem;
     text-shadow: 0 0 5px c.$secondary-color;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
   }
 
   &__form {
@@ -623,6 +821,9 @@ Contenido:
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeUp 0.6s ease forwards 0.3s;
 
     label {
       display: flex;
@@ -637,8 +838,11 @@ Contenido:
         border-radius: 4px;
         background: rgba(255,255,255,0.2);
         color: c.$text-color;
+        transition: border-color 0.3s, box-shadow 0.3s;
+
         &:focus {
           border-color: c.$accent-color;
+          box-shadow: 0 0 6px rgba(c.$accent-color, 0.3);
         }
       }
     }
@@ -647,6 +851,19 @@ Contenido:
       margin-top: 1rem;
       align-self: center;
     }
+  }
+}
+
+// Keyframes
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -691,17 +908,21 @@ Contenido:
     padding: 4rem 2rem;
     margin: 2rem 0;
     border-radius: 12px;
-
     background: c.$glass-bg;
     backdrop-filter: blur(c.$backdrop-blur);
     border: 1px solid c.$glass-border;
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    animation: fadeIn 0.7s ease forwards;
+    transform: translateY(10px);
+    opacity: 0;
 
     h1 {
       font-size: 3rem;
       color: c.$primary-color;
       margin-bottom: 1rem;
       text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.3s;
     }
 
     p {
@@ -709,12 +930,165 @@ Contenido:
       margin-bottom: 2rem;
       max-width: 600px;
       line-height: 1.5;
+      margin: 0 auto 2rem auto;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.5s;
     }
 
     .btn-primary {
       font-size: 1.2rem;
       padding: 1rem 2rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.7s;
     }
+  }
+}
+
+// Keyframes
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsividad
+@media (max-width: 768px) {
+  .home__hero {
+    padding: 2rem 1rem;
+
+    h1 {
+      font-size: 2rem;
+    }
+  }
+}
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductModal/ProductModal.tsx
+
+Contenido:
+// src/components/ProductModal/ProductModal.tsx
+
+import React from 'react';
+import './ProductModal.scss';
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+}
+
+interface ProductModalProps {
+  product: Product;
+  onClose: () => void;
+}
+
+const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) => {
+  return (
+    <div className="product-modal">
+      {/* Fondo oscuro/overlay */}
+      <div className="product-modal__overlay" onClick={onClose}></div>
+      
+      {/* Contenido del modal */}
+      <div className="product-modal__content card">
+        <h2>{product.name}</h2>
+        <img src={product.image} alt={product.name} />
+        <p>Precio: ${product.price.toFixed(2)}</p>
+        <p>Descripción extendida o características del producto...</p>
+        
+        <button className="btn-primary" onClick={onClose}>
+          Cerrar
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default ProductModal;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductModal/ProductModal.scss
+
+Contenido:
+// src/components/ProductModal/ProductModal.scss
+
+@use "sass:color";
+@use "../sass/_colors.scss" as c;
+
+.product-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999; // sobre todo
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+  }
+
+  &__content {
+    position: relative;
+    width: 90%;
+    max-width: 600px;
+    padding: 2rem;
+    background: c.$glass-bg;
+    backdrop-filter: blur(c.$backdrop-blur);
+    border: 1px solid c.$glass-border;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    text-align: center;
+    z-index: 2;
+    animation: fadeInUp 0.3s ease forwards;
+    transform: translateY(20px);
+    opacity: 0;
+
+    h2 {
+      margin-bottom: 1rem;
+      color: c.$primary-color;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+// Animación
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -724,6 +1098,7 @@ Contenido:
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/sass/global.scss
 
 Contenido:
+@use "sass:color";
 // src/components/sass/global.scss
 
 @use "./_colors.scss" as c;
@@ -741,7 +1116,7 @@ body {
   color: c.$text-color;
   overflow-x: hidden;
   min-height: 100vh;
-  // Gradiente animado: para lograr el efecto se combina con animación keyframes.
+  // Gradiente animado (mantener si te gusta el efecto)
   background: c.$main-gradient;
   background-size: 600% 600%;
   animation: rainbow 20s ease infinite;
@@ -776,11 +1151,16 @@ body {
   padding: 0.75rem 1.25rem;
   border-radius: 6px;
   cursor: pointer;
-  transition: background-color c.$transition-duration, box-shadow c.$transition-duration;
+  transition: background-color c.$transition-duration, box-shadow c.$transition-duration, transform 0.2s;
 
   &:hover {
-    background-color: darken(c.$primary-color, 10%);
+    background-color: color.adjust(c.$primary-color, $lightness: -10%);
     box-shadow: 0 0 15px c.$primary-color;
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: scale(0.98);
   }
 }
 
@@ -801,7 +1181,7 @@ a {
   transition: color c.$transition-duration;
 
   &:hover {
-    color: lighten(c.$secondary-color, 15%);
+    color: color.adjust(c.$secondary-color, $lightness: 15%);
   }
 }
 
@@ -814,6 +1194,16 @@ a {
 .flex-col {
   display: flex;
   flex-direction: column;
+}
+
+// Animaciones reutilizables
+.fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 
@@ -865,6 +1255,9 @@ Contenido:
 
 .product-card {
   transition: transform 0.3s, box-shadow 0.3s;
+  animation: fadeIn 0.4s ease forwards;
+  opacity: 0;
+
   &:hover {
     transform: translateY(-5px) scale(1.02);
     box-shadow: 0 8px 20px rgba(0,0,0,0.4);
@@ -899,6 +1292,12 @@ Contenido:
       align-self: flex-start;
       font-size: 0.9rem;
     }
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
   }
 }
 
@@ -957,10 +1356,20 @@ Contenido:
   padding: 1.5rem;
   margin-top: 2rem;
   color: c.$text-color;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.5s ease forwards;
 
   p {
     font-size: 0.9rem;
     opacity: 0.85;
+  }
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

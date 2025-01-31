@@ -5,7 +5,8 @@ import './Login.scss';
 const Login: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Lógica de autenticación
+    // Lógica de autenticación real
+    alert('Inicio de sesión exitoso');
   };
 
   return (

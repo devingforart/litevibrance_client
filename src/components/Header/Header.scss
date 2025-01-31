@@ -1,6 +1,4 @@
 @use "sass:color";
-// src/components/Header/Header.scss
-
 @use "../sass/_colors.scss" as c;
 
 .header {
@@ -45,7 +43,6 @@
       }
     }
 
-    // Responsivo: menú colapsable (opcional)
     @media (max-width: 768px) {
       ul {
         gap: 1rem;
@@ -54,7 +51,6 @@
   }
 }
 
-// Animación
 @keyframes slideDown {
   0% {
     transform: translateY(-100%);
