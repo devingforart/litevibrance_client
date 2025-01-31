@@ -52,11 +52,14 @@ import Register from './components/Register/Register';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import NotFound from './components/NotFound/NotFound';
+import FloatingThemeSwitch from './components/ThemeSwitch/FloatingThemeSwitch';
 
 const App: React.FC = () => {
   return (
     <>
       <Header />
+      <FloatingThemeSwitch />
+
       <main style={{ paddingTop: '80px' }}>
 
       <Routes>
@@ -431,8 +434,7 @@ export default NotFound;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Header/Header.tsx
 
 Contenido:
-// Header.tsx (Ejemplo sencillo con estado local)
-
+// src/components/Header/Header.tsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Header.scss';
@@ -440,26 +442,15 @@ import './Header.scss';
 const navLinks = [
   { name: 'Inicio', path: '/' },
   { name: 'Productos', path: '/products' },
-  // ... Resto de rutas
+  { name: 'Carrito', path: '/cart' },
+  { name: 'Ofertas', path: '/products?filter=ofertas' }, // Ejemplo
+  { name: 'Contacto', path: '/contact' }, // Ejemplo
 ];
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Estado para tema
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
-
-  // Aplica el tema al <html> cada vez que cambie "theme"
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
-
-  // Alterna light/dark
-  const handleToggleTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
-  };
-
-  // Manejo del menú hamburguesa
+  // Bloquea el scroll del body al abrir el menú en móvil
   useEffect(() => {
     if (isOpen) {
       document.body.classList.add('no-scroll');
@@ -478,20 +469,8 @@ const Header: React.FC = () => {
         </Link>
       </div>
 
-      {/* Switch para Dark/Light */}
-      <div className="header__theme-switch">
-        <label className="switch">
-          <input
-            type="checkbox"
-            checked={theme === 'dark'}
-            onChange={handleToggleTheme}
-          />
-          <span className="slider round"></span>
-        </label>
-      </div>
-
       <div className="header__toggle" onClick={toggleMenu}>
-        {isOpen ? 'X' : '≡'}
+        {isOpen ? '✕' : '☰'}
       </div>
 
       <nav className={`header__nav ${isOpen ? 'open' : ''}`}>
@@ -510,6 +489,7 @@ const Header: React.FC = () => {
         </ul>
       </nav>
 
+      {/* Onda decorativa */}
       <div className="header__wave">
         <svg viewBox="0 0 500 80" preserveAspectRatio="none">
           <path d="M0,30 C150,90 350,0 500,30 L500,00 L0,0 Z" />
@@ -529,7 +509,7 @@ export default Header;
 Contenido:
 /* src/components/Header/Header.scss */
 
-/* Desactiva el scroll del body cuando el menú está abierto */
+/* Evitar scroll cuando menú está abierto (móvil) */
 .no-scroll {
   overflow: hidden;
 }
@@ -537,117 +517,57 @@ Contenido:
 .header {
   position: fixed;
   top: 0;
-  left: 0;
   width: 100%;
-  height: 60px;
-
-  /* Fondo y blur: utiliza las variables definidas */
+  height: 65px;
   background: var(--header-bg);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 1.5rem;
   z-index: 1000;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--header-box-shadow);
   transition: all 0.3s ease-in-out;
 }
 
-/* BRAND */
 .header__brand {
   .brand__logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    /* color dinámico */
-    color: var(--header-text); 
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--header-text);
     text-decoration: none;
   }
 }
 
-/* THEME SWITCH */
-.header__theme-switch {
-  margin-right: 1rem;
-  z-index: 1100;
-
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 38px;
-    height: 20px;
-
-    input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-    .slider {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: var(--switch-bg-off);
-      border-radius: 34px;
-      cursor: pointer;
-      transition: .4s;
-      
-      &::before {
-        content: "";
-        position: absolute;
-        width: 14px;
-        height: 14px;
-        left: 3px;
-        bottom: 3px;
-        background-color: var(--switch-knob);
-        border-radius: 50%;
-        transition: .4s;
-      }
-    }
-    input:checked + .slider {
-      background-color: var(--switch-bg-on);
-    }
-    input:checked + .slider::before {
-      transform: translateX(18px);
-    }
-    &.round {
-      .slider {
-        border-radius: 34px;
-      }
-    }
-  }
-}
-
-/* TOGGLE (ICONO HAMBURGUESA/CERRAR) */
 .header__toggle {
   display: none;
-  font-size: 1.5rem;
-  cursor: pointer;
+  font-size: 1.6rem;
   color: var(--header-text);
+  cursor: pointer;
   z-index: 1100;
 
-  @media screen and (max-width: 768px) {
+  @media (max-width: 768px) {
     display: block;
   }
 }
 
-/* NAVEGACIÓN */
 .header__nav {
-  @media screen and (min-width: 769px) {
+  @media (min-width: 769px) {
     ul {
       display: flex;
       gap: 2rem;
     }
   }
   position: fixed;
-  top: 60px;
+  top: 65px;
   left: 0;
   width: 100%;
-  height: calc(100vh - 60px);
-  background: rgba(255, 255, 255, 0.98);
+  height: calc(100vh - 65px);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
-  overflow: auto;
+  overflow-y: auto;
 
   &.open {
     transform: translateX(0);
@@ -656,26 +576,24 @@ Contenido:
   .nav__list {
     list-style: none;
     padding: 2rem;
-    margin: 0;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
   }
 
   .nav__item {
     margin: 1rem 0;
     .nav__link {
-      text-decoration: none;
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       color: var(--header-text);
-      transition: color 0.3s;
+      text-decoration: none;
+      transition: color 0.2s ease;
       &:hover {
         color: var(--color-primary);
       }
     }
   }
 
-  @media screen and (min-width: 769px) {
+  @media (min-width: 769px) {
     position: static;
     transform: none;
     background: transparent;
@@ -699,22 +617,24 @@ Contenido:
   }
 }
 
-/* ONDA DECORATIVA */
+/* Onda decorativa */
 .header__wave {
   position: absolute;
   bottom: -1px;
   left: 0;
   width: 100%;
   height: 80px;
-  overflow: hidden;
   z-index: -1;
+  overflow: hidden;
+
   svg {
     width: 100%;
     height: 100%;
-    fill: var(--wave-color); /* <-- Aquí usas la variable del wave */
+    fill: var(--wave-color);
     transition: fill 0.3s;
   }
-  @media screen and (max-width: 768px) {
+
+  @media (max-width: 768px) {
     display: none;
   }
 }
@@ -1471,42 +1391,28 @@ Contenido:
 // src/components/Home/Home.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
+import heroImage from '../../assets/pictures/Gtransp.png';
 import './Home.scss';
 
 const Home: React.FC = () => {
   return (
-    <section className="home container">
-      {/* Sección de Intro/Hero */}
-      <div className="home__intro">
-        <h1>Bienvenido!</h1>
-        <p className="home__subtitle">
-          Traemos para ti los mejores productos, cuidadosamente seleccionados por nuestros expertos.
-        </p>
-        <p>
-          Disfruta de una experiencia de compra única con ofertas exclusivas y la máxima calidad
-          en todas nuestras categorías.
-        </p>
-        <Link to="/products" className="btn-primary">
-          Explora nuestro catálogo
-        </Link>
-      </div>
-
-      {/* Sección de destacados u oportunidades */}
-      <div className="home__highlights">
-        <div className="highlight__item">
-          <h2>Novedades</h2>
-          <p>Descubre los lanzamientos más recientes en tecnología, moda y más.</p>
-          <Link to="/products" className="btn-secondary">Ver novedades</Link>
+    <section className="home">
+      <div className="home__hero container">
+        {/* Imagen arriba */}
+{/*         <div className="hero__image">
+          <img src={heroImage} alt="Hero principal" />
         </div>
-        <div className="highlight__item">
-          <h2>Ofertas Imperdibles</h2>
-          <p>Aprovecha descuentos especiales y promociones limitadas.</p>
-          <Link to="/products" className="btn-secondary">Ver ofertas</Link>
-        </div>
-        <div className="highlight__item">
-          <h2>Más Vendidos</h2>
-          <p>Echa un vistazo a los productos favoritos de nuestros clientes.</p>
-          <Link to="/products" className="btn-secondary">Ver más vendidos</Link>
+ */}
+        {/* Texto (Hero Content) abajo */}
+        <div className="hero__content">
+          <h1>Descubre lo mejor en tecnología</h1>
+          <p>
+            Ofertas exclusivas, lanzamientos recientes 
+            y una experiencia de compra inigualable.
+          </p>
+          <Link to="/products" className="btn-primary btn-hero">
+            Compra ahora
+          </Link>
         </div>
       </div>
     </section>
@@ -1521,134 +1427,74 @@ export default Home;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Home/Home.scss
 
 Contenido:
-// src/components/Home/Home.scss
-
-@use "../sass/_colors.scss" as c;
-@use "sass:color";
+/* src/components/Home/Home.scss */
 
 .home {
-  margin-top: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 3rem;
+  margin-top: 65px; /* Dejar espacio si tienes un header fijo */
 
-  &__intro {
-    background: c.$glass-bg;
-    backdrop-filter: blur(c.$backdrop-blur);
-    border: 1px solid c.$glass-border;
-    border-radius: 12px;
-    text-align: center;
-    padding: 3rem 2rem;
-    animation: fadeIn 0.7s ease forwards;
-    transform: translateY(10px);
-    opacity: 0;
-
-    h1 {
-      font-size: 3rem;
-      color: c.$primary-color;
-      margin-bottom: 1rem;
-      text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-      opacity: 0;
-      animation: fadeUp 0.6s ease forwards 0.3s;
-    }
-
-    &__subtitle {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      color: c.$accent-color;
-      opacity: 0;
-      animation: fadeUp 0.6s ease forwards 0.4s;
-    }
-
-    p {
-      font-size: 1.1rem;
-      margin-bottom: 2rem;
-      max-width: 600px;
-      line-height: 1.5;
-      margin: 0 auto 2rem auto;
-      opacity: 0;
-      animation: fadeUp 0.6s ease forwards 0.5s;
-    }
-
-    .btn-primary {
-      font-size: 1.2rem;
-      padding: 1rem 2rem;
-      opacity: 0;
-      animation: fadeUp 0.6s ease forwards 0.6s;
-    }
-  }
-
-  &__highlights {
+  &__hero {
     display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;  /* Centra en horizontal */
+    min-height: calc(100vh - 120px); /* Ocupa casi toda la pantalla */
     gap: 2rem;
-    animation: fadeIn 0.7s ease forwards;
-    transform: translateY(10px);
-    opacity: 0;
+    position: relative;
+    border-radius: 8px;
+    padding: 2rem;
 
-    .highlight__item {
-      background: c.$glass-bg;
-      backdrop-filter: blur(c.$backdrop-blur);
-      border: 1px solid c.$glass-border;
-      border-radius: 8px;
-      width: 300px;
-      padding: 2rem;
-      text-align: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    /* Fondo sutil o un gradiente, opcional */
 
-      h2 {
-        margin-bottom: 0.5rem;
-        color: c.$secondary-color;
+    /* Imagen arriba */
+    .hero__image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 12px;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+        &:hover {
+          transform: scale(1.02);
+        }
+      }
+    }
+
+    /* Contenido (texto, CTA) debajo */
+    .hero__content {
+      text-align: center; /* Centra el texto */
+      max-width: 600px;   /* Limita el ancho para mejor legibilidad */
+
+      h1 {
+        font-size: 2.6rem;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+        color: var(--color-text);
       }
 
       p {
-        margin-bottom: 1rem;
-        color: c.$text-color;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        color: var(--color-text);
         opacity: 0.8;
       }
 
-      .btn-secondary {
-        background-color: c.$secondary-color;
-        color: #fff;
-        padding: 0.75rem 1.25rem;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        transition: background-color c.$transition-duration, 
-                    box-shadow c.$transition-duration, 
-                    transform 0.2s;
-
-        &:hover {
-          background-color: color.adjust(c.$secondary-color, $lightness: -10%);
-          box-shadow: 0 0 15px c.$secondary-color;
-          transform: translateY(-2px);
-        }
-
-        &:active {
-          transform: scale(0.98);
-        }
+      .btn-hero {
+        font-size: 1.2rem;
+        padding: 1rem 2rem;
       }
     }
   }
-}
 
-// Animaciones
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeUp {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
+  /* Responsividad: 
+     Dado que ya es single-column, no se necesita demasiado. 
+     Pero si quieres ajustar la altura en pantallas pequeñas: */
+  @media (max-width: 768px) {
+    &__hero {
+      min-height: auto;
+      padding: 1rem;
+    }
   }
 }
 
@@ -1777,106 +1623,105 @@ Contenido:
 
 Contenido:
 /* ----------------------------------------
-   global.scss
+   global.scss (Unificación de variables)
    ---------------------------------------- */
 
-/* 
-  1. Tipografía: ejemplo (opcional).
-  Cambia la fuente si lo deseas.
-*/
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+/* 1. Tipografía (opcional) */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Montserrat:wght@400;700&display=swap');
+html,
+body {
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: background-color var(--transition-speed),
+              color var(--transition-speed);
+  overflow-x: hidden;
+}
 
-/* 
-  2. Reset básico 
-*/
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+}
+
+
+/* 2. Reset básico */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* 
-  3. Variables de tema claro (por defecto).
-     Definimos también variantes “hover” manuales para no usar darken().
-*/
+/* --------------------------------------------------
+   3. VARIABLES: Modo Claro (por defecto)
+-------------------------------------------------- */
+/* global.scss (fragmento) */
 :root {
-  /* Fondo y texto base */
-  --color-bg: #f2f2f2;
-  --color-text: #111;
-
-  /* Paleta principal */
-  --color-primary: #005be9;           /* Azul primario */
-  --color-primary-hover: #0048cc;     /* Azul primario hover */
-  --color-accent: #ff9800;           
-  --color-accent-hover: #ff7a00;     
-
-  /* Efecto glass */
-  --glass-bg: rgba(255, 255, 255, 0.2);
-  --glass-border: rgba(255, 255, 255, 0.4);
-  --glass-blur: 8px;
+  /* ===== MODO CLARO (más sobrio) ===== */
+  --color-bg:               #f9fafb;   /* Gris muy claro */
+  --color-text:             #1f2933;   /* Gris muy oscuro */
+  --color-primary:          #3b82f6;   /* Azul medio */
+  --color-primary-hover:    #2563eb;   /* Azul un poco más oscuro */
+  --color-accent:           #10b981;   /* Verde suave */
+  --color-accent-hover:     #059669;
+  
+  /* Efecto glass suave */
+  --glass-bg:               rgba(255, 255, 255, 0.3);
+  --glass-border:           rgba(255, 255, 255, 0.4);
+  --glass-blur:             6px;
 
   /* Header */
-  --header-bg: rgba(255, 255, 255, 0.2);
-  --header-text: #111;
-  --header-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --header-bg:              rgba(255, 255, 255, 0.7);
+  --header-text:            #1f2933;
+  --header-box-shadow:      0 2px 10px rgba(0, 0, 0, 0.1);
 
-  /* Onda (wave) en modo claro */
-  --wave-color: #fff;
+  /* Onda */
+  --wave-color:             #fff;
 
-  /* Switch (light theme) */
-  --switch-bg-off: #bbb;    /* color base switch OFF */
-  --switch-bg-on: #4a4a4a;  /* color base switch ON */
-  --switch-knob: #fff;
-
-  /* Transiciones */
-  --transition-speed: 0.3s;
+  /* Switch */
+  --switch-bg-off:          #bbb;
+  --switch-bg-on:           #666;
+  --switch-knob:            #fff;
 }
 
-/* 
-  4. Variables de tema oscuro: 
-     sobrescribimos las anteriores. 
-*/
 :root[data-theme='dark'] {
-  --color-bg: #1c1c1c;
-  --color-text: #f5f5f5;
+  /* ===== MODO OSCURO (más sobrio) ===== */
+  --color-bg:               #1f1f1f;   /* Gris oscuro */
+  --color-text:             #f2f2f2;   /* Texto claro */
+  --color-primary:          #4f46e5;   /* Indigo */
+  --color-primary-hover:    #4338ca;   /* Indigo más oscuro */
+  --color-accent:           #10b98141;   /* Verde suave */
+  --color-accent-hover:     #059669;
 
-  --color-primary: #3b82f6;          /* Azul algo distinto en oscuro */
-  --color-primary-hover: #336fd1;    /* Hover manual */
-  --color-accent: #ffb020;
-  --color-accent-hover: #ff9f00;
+  --glass-bg:               rgba(255, 255, 255, 0.08);
+  --glass-border:           rgba(255, 255, 255, 0.15);
+  --glass-blur:             8px;
 
-  --glass-bg: rgba(0, 0, 0, 0.3);
-  --glass-border: rgba(255, 255, 255, 0.2);
-  --glass-blur: 8px;
+  --header-bg:              rgba(0, 0, 0, 0.5);
+  --header-text:            #f2f2f2;
+  --header-box-shadow:      0 2px 10px rgba(0, 0, 0, 0.3);
 
-  --header-bg: rgba(0, 0, 0, 0.3);
-  --header-text: #fafafa;
-  --header-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  --wave-color:             #333;
 
-  --wave-color: #222;
-
-  --switch-bg-off: #777;
-  --switch-bg-on: #fafafa;
-  --switch-knob: #111;
+  --switch-bg-off:          #777;
+  --switch-bg-on:           #bbb;
+  --switch-knob:            #111;
 }
 
-/* ----------------------------------------
-   5. Estilos base
----------------------------------------- */
+
+/* 5. Estilos base */
 html,
 body {
   font-family: 'Poppins', sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text);
 
-  /* Suave transición entre temas */
   transition: background-color var(--transition-speed),
               color var(--transition-speed);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
-/* Contenedor base */
+/* Container base */
 .container {
   width: 90%;
   max-width: 1200px;
@@ -1910,7 +1755,6 @@ a {
     background-color: var(--color-primary-hover);
     transform: translateY(-2px);
   }
-
   &:active {
     transform: scale(0.98);
   }
@@ -1933,13 +1777,12 @@ a {
     color: #fff;
     transform: translateY(-2px);
   }
-
   &:active {
     transform: scale(0.98);
   }
 }
 
-/* Ejemplo de carta “glass” */
+/* Cartas “glass” */
 .card {
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
@@ -1953,13 +1796,12 @@ a {
               box-shadow var(--transition-speed);
 }
 
-/* Animación fade-in */
+/* Animación fade-in (opcional) */
 .fade-in {
   animation: fadeIn var(--transition-speed) forwards;
 }
-
 @keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(15px); }
+  0%   { opacity: 0; transform: translateY(15px); }
   100% { opacity: 1; transform: translateY(0); }
 }
 
@@ -1969,44 +1811,31 @@ a {
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/sass/_colors.scss
 
 Contenido:
-// _colors.scss
-// Estilo "NeonTech-Futurista"
-// Paleta de colores fuertes en fondo oscuro, con acentos neón.
+// _colors.scss (Propuesta de colores más sobrios)
 
-$primary-color: #00eeff;   // Neón turquesa
-$secondary-color: #ff00f4; // Neón magenta
-$accent-color: #00ff6a;    // Neón verde
-$warning-color: #ff9933;   // Naranja neón de alerta
-$error-color: #ff0044;     // Rojo neón
+$primary-color:       #4f46e5;  // Indigo oscuro
+$secondary-color:     #6366f1;  // Indigo claro
+$accent-color:        #283291;  // Verde "subdued" (Tailwind style)
+$warning-color:       #f59e0b;  // Ámbar
+$error-color:         #ef4444;  // Rojo
 
-$background-color: #0a0c10; // Fondo oscuro
-$text-color: #fafafa;       // Texto claro
+// Fondo y texto
+$background-color:    #1f1f1f;  // Un gris oscuro, en lugar de #0a0c10
+$text-color:          #f2f2f2;  // Texto claro
 
-// Grises si necesitas
-$gray-100: #2c2f36;
-$gray-200: #41434a;
-$gray-300: #5a5d63;
+// Grises
+$gray-100:            #2a2a2a;
+$gray-200:            #3a3a3a;
+$gray-300:            #5a5d63;
 
-// Gradiente principal animado con colores vibrantes
-$main-gradient: linear-gradient(
-  135deg,
-  #0a0c10,
-  #1b1d23,
-  #0a0c10,
-  #1b1d23
-);
+// Efectos "glass" un poco más sutiles
+$glass-bg:            rgba(255, 255, 255, 0.07);
+$glass-border:        rgba(255, 255, 255, 0.15);
+$backdrop-blur:       8px;
 
-// Duraciones de transición / animaciones
-$transition-duration: 0.3s;
-
-// Efectos "neón" genéricos
-$neon-glow-primary: 0 0 10px rgba(0, 238, 255, 0.7), 0 0 20px rgba(0, 238, 255, 0.5);
-$neon-glow-secondary: 0 0 10px rgba(255, 0, 244, 0.7), 0 0 20px rgba(255, 0, 244, 0.5);
-
-// Para modales o fondos difuminados
-$glass-bg: rgba(255, 255, 255, 0.1);
-$glass-border: rgba(255, 255, 255, 0.2);
-$backdrop-blur: 10px;
+/* Si quieres mantener algo de “glow” muy discreto */
+$neon-glow-primary:   0 0 8px rgba(79,70,229, 0.4);
+$neon-glow-secondary: 0 0 8px rgba(99,102,241, 0.4);
 
 
 --------------------------------------------------------------------------------
@@ -2157,6 +1986,84 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/ThemeSwitch/FloatingThemeSwitch.tsx
+
+Contenido:
+// src/components/ThemeSwitch/FloatingThemeSwitch.tsx
+
+import React from 'react';
+import { useTheme } from '../../context/ThemeContext'; // Tu custom hook
+import './FloatingThemeSwitch.scss';
+import { FaSun, FaMoon } from 'react-icons/fa';
+
+const FloatingThemeSwitch: React.FC = () => {
+  const { theme, toggleTheme } = useTheme();
+
+  // Determina el icono
+  const isDark = theme === 'dark';
+  const icon = isDark ? <FaSun /> : <FaMoon />;
+
+  return (
+    <button className="floating-theme-switch" onClick={toggleTheme}>
+      {icon}
+    </button>
+  );
+};
+
+export default FloatingThemeSwitch;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/ThemeSwitch/FloatingThemeSwitch.scss
+
+Contenido:
+/* src/components/ThemeSwitch/FloatingThemeSwitch.scss */
+
+.floating-theme-switch {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1500;
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: #fff;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  transition: background-color var(--transition-speed),
+              transform 0.2s;
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-3px);
+  }
+  &:active {
+    transform: scale(0.95);
+  }
+
+  /* Pequeña animación cuando se monta */
+  animation: slideUp 0.5s ease forwards;
+  transform: translateY(100px);
+  opacity: 0;
+}
+
+@keyframes slideUp {
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
 
 
 --------------------------------------------------------------------------------

@@ -1,6 +1,4 @@
-// src/components/ProductCard/ProductCard.scss
-
-@use "../sass/_colors.scss" as c;
+/* src/components/ProductCard/ProductCard.scss */
 
 .product-card {
   transition: transform 0.3s, box-shadow 0.3s;
@@ -9,7 +7,7 @@
 
   &:hover {
     transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
   }
 
   &__img {
@@ -26,12 +24,14 @@
 
     h3 {
       font-size: 1.2rem;
-      color: c.$text-color;
+      /* Antes: color: c.$text-color; */
+      color: var(--color-text); /* Usa la variable CSS */
       margin-bottom: 0.2rem;
     }
 
     p {
-      color: c.$accent-color;
+      /* Antes: color: c.$accent-color; */
+      color: var(--color-accent);
       font-weight: 600;
       font-size: 1.1rem;
       margin-bottom: 1rem;

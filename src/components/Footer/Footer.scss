@@ -1,15 +1,13 @@
-// src/components/Footer/Footer.scss
-
-@use "../sass/_colors.scss" as c;
-
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/Footer/Footer.scss */
 .footer {
-  background: c.$glass-bg;
-  backdrop-filter: blur(c.$backdrop-blur);
-  border-top: 1px solid c.$glass-border;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border-top: 1px solid var(--glass-border);
   text-align: center;
   padding: 1.5rem;
   margin-top: 2rem;
-  color: c.$text-color;
+  /* c.$text-color -> var(--color-text) */
+  color: var(--color-text);
   opacity: 0;
   transform: translateY(20px);
   animation: fadeUp 0.5s ease forwards;

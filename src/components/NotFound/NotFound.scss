@@ -1,19 +1,18 @@
-// src/components/NotFound/NotFound.scss
-
-@use "../sass/_colors.scss" as c;
-
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/NotFound/NotFound.scss */
 .notfound {
   margin-top: 2rem;
   text-align: center;
 
   h2 {
     font-size: 2rem;
-    color: c.$primary-color;
+    /* c.$primary-color -> var(--color-primary) */
+    color: var(--color-primary);
     margin-bottom: 1rem;
   }
 
   p {
-    color: c.$text-color;
+    /* c.$text-color -> var(--color-text) */
+    color: var(--color-text);
     font-size: 1.1rem;
   }
 }

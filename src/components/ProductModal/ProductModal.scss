@@ -1,8 +1,4 @@
-// src/components/ProductModal/ProductModal.scss
-
-@use "sass:color";
-@use "../sass/_colors.scss" as c;
-
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductModal/ProductModal.scss */
 .product-modal {
   position: fixed;
   top: 0;
@@ -28,9 +24,9 @@
     width: 90%;
     max-width: 600px;
     padding: 2rem;
-    background: c.$glass-bg;
-    backdrop-filter: blur(c.$backdrop-blur);
-    border: 1px solid c.$glass-border;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
     border-radius: 8px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.3);
     text-align: center;
@@ -41,7 +37,8 @@
 
     h2 {
       margin-bottom: 1rem;
-      color: c.$primary-color;
+      /* c.$primary-color -> var(--color-primary) */
+      color: var(--color-primary);
     }
 
     img {
@@ -53,6 +50,8 @@
 
     p {
       margin-bottom: 1rem;
+      /* color: var(--color-text); // si quieres forzar, sino heredado */
+      color: var(--color-text);
     }
   }
 }
