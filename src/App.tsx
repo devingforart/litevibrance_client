@@ -17,6 +17,8 @@ const App: React.FC = () => {
   return (
     <>
       <Header />
+      <main style={{ paddingTop: '80px' }}>
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<ProductList />} />
@@ -28,6 +30,8 @@ const App: React.FC = () => {
         <Route path="/register" element={<Register />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      </main>
+
       <Footer />
     </>
   );
