@@ -3,29 +3,62 @@
 @use "../sass/_colors.scss" as c;
 
 .header {
+  position: sticky;
+  top: 0;
+  z-index: 999;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: c.$primary-color;
-  padding: 1rem;
+  background: c.$glass-bg;
+  backdrop-filter: blur(c.$backdrop-blur);
+  border-bottom: 1px solid c.$glass-border;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  animation: slideDown 0.5s ease forwards;
 
   &__logo a {
     font-weight: 700;
-    font-size: 1.5rem;
-    color: #fff;
+    font-size: 1.8rem;
+    color: c.$secondary-color;
+    transition: color 0.3s;
+    &:hover {
+      color: lighten(c.$secondary-color, 15%);
+    }
   }
 
-  &__nav ul {
-    display: flex;
-    gap: 1rem;
-    list-style: none;
+  &__nav {
+    ul {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
 
-    li a {
-      color: #fff;
-      font-weight: 500;
-      &:hover {
-        text-decoration: underline;
+      li a {
+        color: c.$text-color;
+        font-weight: 500;
+        font-size: 1rem;
+        transition: color 0.3s;
+
+        &:hover {
+          color: c.$accent-color;
+        }
       }
     }
+
+    // Responsivo: menú colapsable (opcional)
+    @media (max-width: 768px) {
+      ul {
+        gap: 1rem;
+      }
+    }
+  }
+}
+
+// Animación
+@keyframes slideDown {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
   }
 }

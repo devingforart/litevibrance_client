@@ -2,16 +2,20 @@
 
 @use "../sass/_colors.scss" as c;
 
-/* 
-   La clase .card ya existe en global.scss (importada en main.tsx),
-   así que solo definimos estilos propios de .product-card
-*/
-
 .product-card {
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: fadeIn 0.4s ease forwards;
+  opacity: 0;
+
+  &:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  }
+
   &__img {
     width: 100%;
     height: auto;
-    border-radius: 4px;
+    border-radius: 8px;
     margin-bottom: 1rem;
   }
 
@@ -21,13 +25,27 @@
     gap: 0.5rem;
 
     h3 {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       color: c.$text-color;
+      margin-bottom: 0.2rem;
     }
 
     p {
       color: c.$accent-color;
       font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
     }
+
+    a.btn-primary {
+      align-self: flex-start;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
   }
 }

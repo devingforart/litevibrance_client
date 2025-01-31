@@ -6,7 +6,7 @@ directories = [
 "/home/southatoms/Escritorio/lite_vibrance_web/src"
 
 ]
-file_extensions = ['.js', '.jsx', '.ts', '.tsx']
+file_extensions = ['.js', '.jsx', '.ts', '.tsx', 'scss']
 output_file = 'plurals.txt'
 analyzed_files = set()  # Para evitar procesar el mismo archivo varias veces
 

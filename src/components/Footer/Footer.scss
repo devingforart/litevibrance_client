@@ -3,8 +3,26 @@
 @use "../sass/_colors.scss" as c;
 
 .footer {
-  background-color: c.$secondary-color;
-  color: #fff;
+  background: c.$glass-bg;
+  backdrop-filter: blur(c.$backdrop-blur);
+  border-top: 1px solid c.$glass-border;
   text-align: center;
-  padding: 1rem;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  color: c.$text-color;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.5s ease forwards;
+
+  p {
+    font-size: 0.9rem;
+    opacity: 0.85;
+  }
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

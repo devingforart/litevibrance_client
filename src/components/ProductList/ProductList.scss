@@ -4,11 +4,56 @@
 
 .product-list {
   margin-top: 2rem;
+  animation: fadeIn 0.5s ease forwards;
+
+  h2 {
+    font-size: 2rem;
+    color: c.$accent-color;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    text-shadow: 0 0 5px c.$accent-color;
+    opacity: 0;
+    animation: slideDown 0.6s ease forwards;
+  }
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 2rem;
     margin-top: 1rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.7s ease forwards 0.5s; // retardo para escalonar
+
+    // Responsividad
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+// Keyframes
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  0% {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+}
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

@@ -1,14 +1,30 @@
-// src/components/sass/_colors.scss
+// _colors_minimal1.scss
+// Minimal con grises suaves y acento azul.
 
-// Paleta de colores para fácil edición
-$primary-color: #4f46e5;   // Ejemplo: un tono púrpura
-$secondary-color: #22d3ee; // Ejemplo: cian
-$accent-color: #ef4444;    // Ejemplo: rojo
-$background-color: #f9fafb;
-$text-color: #111827;
+$primary-color: #5f5f5f;       // Gris medio-oscuro
+$secondary-color: #9ea7aa;     // Gris claro-azulado
+$accent-color: #3b82f6;        // Azul medio (acento)
 
-// Puedes agregar más variantes o tonos
+$background-color: #f9fafb;    // Fondo claro
+$text-color: #1f2937;          // Gris muy oscuro
+
 $gray-100: #f3f4f6;
 $gray-200: #e5e7eb;
 $gray-300: #d1d5db;
 
+// Para glassmorphism ligero
+$glass-bg: rgba(255, 255, 255, 0.2);
+$glass-border: rgba(0, 0, 0, 0.05);
+$backdrop-blur: 5px;
+
+// Gradiente principal (sutil)
+$main-gradient: linear-gradient(
+  270deg,
+  #f9fafb,
+  #ffffff,
+  #e5e7eb,
+  #f9fafb
+);
+
+// Duración de animaciones / transiciones
+$transition-duration: 0.3s;

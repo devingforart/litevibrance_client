@@ -66,6 +66,68 @@ export default App;
 
 --------------------------------------------------------------------------------
 
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Checkout/Checkout.scss
+
+Contenido:
+// src/components/Checkout/Checkout.scss
+
+@use "../sass/_colors.scss" as c;
+
+.checkout {
+  margin-top: 2rem;
+
+  h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: c.$secondary-color;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    margin-bottom: 2rem;
+  }
+
+  &__form {
+    background: c.$glass-bg;
+    backdrop-filter: blur(c.$backdrop-blur);
+    border: 1px solid c.$glass-border;
+    border-radius: 8px;
+    padding: 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: c.$text-color;
+
+      input,
+      select {
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+        border: 1px solid c.$gray-300;
+        border-radius: 4px;
+        outline: none;
+        background: rgba(255,255,255,0.2);
+        color: c.$text-color;
+        &:focus {
+          border-color: c.$accent-color;
+        }
+      }
+    }
+
+    .btn-primary {
+      margin-top: 1rem;
+      align-self: center;
+    }
+  }
+}
+
+
+--------------------------------------------------------------------------------
+
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Checkout/Checkout.tsx
 
 Contenido:
@@ -96,6 +158,66 @@ const Checkout: React.FC = () => {
 };
 
 export default Checkout;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/AdminDashboard/AdminDashboard.scss
+
+Contenido:
+// src/components/AdminDashboard/AdminDashboard.scss
+
+@use "../sass/_colors.scss" as c;
+
+.admin-dashboard {
+  margin-top: 2rem;
+  text-align: center;
+
+  h2 {
+    font-size: 2.2rem;
+    color: c.$primary-color;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 6px c.$primary-color;
+  }
+
+  &__sections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+  }
+
+  &__card {
+    width: 280px;
+    background: c.$glass-bg;
+    backdrop-filter: blur(c.$backdrop-blur);
+    border: 1px solid c.$glass-border;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: transform 0.3s;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+
+    h3 {
+      margin-bottom: 0.5rem;
+      color: c.$text-color;
+    }
+    p {
+      margin-bottom: 1rem;
+      color: c.$text-color;
+      opacity: 0.8;
+    }
+
+    .btn-primary {
+      font-size: 0.9rem;
+    }
+  }
+}
 
 
 --------------------------------------------------------------------------------
@@ -169,6 +291,85 @@ export default Header;
 
 --------------------------------------------------------------------------------
 
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Header/Header.scss
+
+Contenido:
+// src/components/Header/Header.scss
+
+@use "../sass/_colors.scss" as c;
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: c.$glass-bg;
+  backdrop-filter: blur(c.$backdrop-blur);
+  border-bottom: 1px solid c.$glass-border;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+
+  &__logo a {
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: c.$secondary-color;
+    transition: color 0.3s;
+    &:hover {
+      color: lighten(c.$secondary-color, 15%);
+    }
+  }
+
+  &__nav ul {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+
+    li a {
+      color: c.$text-color;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: color 0.3s;
+      &:hover {
+        color: c.$accent-color;
+      }
+    }
+  }
+}
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductList/ProductList.scss
+
+Contenido:
+// src/components/ProductList/ProductList.scss
+
+@use "../sass/_colors.scss" as c;
+
+.product-list {
+  margin-top: 2rem;
+
+  h2 {
+    font-size: 2rem;
+    color: c.$accent-color;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    text-shadow: 0 0 5px c.$accent-color;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+}
+
+
+--------------------------------------------------------------------------------
+
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductList/ProductList.tsx
 
 Contenido:
@@ -204,6 +405,65 @@ const ProductList: React.FC = () => {
 };
 
 export default ProductList;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Register/Register.scss
+
+Contenido:
+// src/components/Register/Register.scss
+
+@use "../sass/_colors.scss" as c;
+
+.register {
+  margin-top: 2rem;
+
+  h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: c.$secondary-color;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 5px c.$secondary-color;
+  }
+
+  &__form {
+    max-width: 400px;
+    margin: 0 auto;
+    background: c.$glass-bg;
+    backdrop-filter: blur(c.$backdrop-blur);
+    border: 1px solid c.$glass-border;
+    border-radius: 8px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      font-weight: 500;
+      color: c.$text-color;
+
+      input {
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+        border: 1px solid c.$gray-300;
+        border-radius: 4px;
+        background: rgba(255,255,255,0.2);
+        color: c.$text-color;
+        &:focus {
+          border-color: c.$accent-color;
+        }
+      }
+    }
+
+    .btn-primary {
+      margin-top: 1rem;
+      align-self: center;
+    }
+  }
+}
 
 
 --------------------------------------------------------------------------------
@@ -271,6 +531,33 @@ export default Cart;
 
 --------------------------------------------------------------------------------
 
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Cart/Cart.scss
+
+Contenido:
+// src/components/Cart/Cart.scss
+
+@use "../sass/_colors.scss" as c;
+
+.cart {
+  margin-top: 2rem;
+  text-align: center;
+
+  h2 {
+    font-size: 2rem;
+    color: c.$accent-color;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 5px c.$accent-color;
+  }
+
+  p {
+    font-size: 1.1rem;
+    color: c.$text-color;
+  }
+}
+
+
+--------------------------------------------------------------------------------
+
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Login/Login.tsx
 
 Contenido:
@@ -307,6 +594,65 @@ export default Login;
 
 --------------------------------------------------------------------------------
 
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Login/Login.scss
+
+Contenido:
+// src/components/Login/Login.scss
+
+@use "../sass/_colors.scss" as c;
+
+.login {
+  margin-top: 2rem;
+
+  h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: c.$secondary-color;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 5px c.$secondary-color;
+  }
+
+  &__form {
+    max-width: 400px;
+    margin: 0 auto;
+    background: c.$glass-bg;
+    backdrop-filter: blur(c.$backdrop-blur);
+    border: 1px solid c.$glass-border;
+    border-radius: 8px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      font-weight: 500;
+      color: c.$text-color;
+
+      input {
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+        border: 1px solid c.$gray-300;
+        border-radius: 4px;
+        background: rgba(255,255,255,0.2);
+        color: c.$text-color;
+        &:focus {
+          border-color: c.$accent-color;
+        }
+      }
+    }
+
+    .btn-primary {
+      margin-top: 1rem;
+      align-self: center;
+    }
+  }
+}
+
+
+--------------------------------------------------------------------------------
+
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Home/Home.tsx
 
 Contenido:
@@ -327,6 +673,296 @@ const Home: React.FC = () => {
 };
 
 export default Home;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Home/Home.scss
+
+Contenido:
+// src/components/Home/Home.scss
+
+@use "../sass/_colors.scss" as c;
+
+.home {
+  &__hero {
+    flex-direction: column;
+    text-align: center;
+    padding: 4rem 2rem;
+    margin: 2rem 0;
+    border-radius: 12px;
+
+    background: c.$glass-bg;
+    backdrop-filter: blur(c.$backdrop-blur);
+    border: 1px solid c.$glass-border;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+
+    h1 {
+      font-size: 3rem;
+      color: c.$primary-color;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      line-height: 1.5;
+    }
+
+    .btn-primary {
+      font-size: 1.2rem;
+      padding: 1rem 2rem;
+    }
+  }
+}
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/sass/global.scss
+
+Contenido:
+// src/components/sass/global.scss
+
+@use "./_colors.scss" as c;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: 'Poppins', sans-serif;
+  background: c.$background-color;
+  color: c.$text-color;
+  overflow-x: hidden;
+  min-height: 100vh;
+  // Gradiente animado: para lograr el efecto se combina con animación keyframes.
+  background: c.$main-gradient;
+  background-size: 600% 600%;
+  animation: rainbow 20s ease infinite;
+}
+
+// Animación de fondo multicolor (keyframes)
+@keyframes rainbow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+// Contenedor principal
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+// Botón principal con “glow” en hover
+.btn-primary {
+  background-color: c.$primary-color;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color c.$transition-duration, box-shadow c.$transition-duration;
+
+  &:hover {
+    background-color: darken(c.$primary-color, 10%);
+    box-shadow: 0 0 15px c.$primary-color;
+  }
+}
+
+// Card estilo “glassmorphism”
+.card {
+  background: c.$glass-bg;
+  backdrop-filter: blur(c.$backdrop-blur);
+  border: 1px solid c.$glass-border;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.3);
+}
+
+a {
+  text-decoration: none;
+  color: c.$secondary-color;
+  transition: color c.$transition-duration;
+
+  &:hover {
+    color: lighten(c.$secondary-color, 15%);
+  }
+}
+
+// Clases de utilidad
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/sass/_colors.scss
+
+Contenido:
+// _colors_minimal1.scss
+// Minimal con grises suaves y acento azul.
+
+$primary-color: #5f5f5f;       // Gris medio-oscuro
+$secondary-color: #9ea7aa;     // Gris claro-azulado
+$accent-color: #3b82f6;        // Azul medio (acento)
+
+$background-color: #f9fafb;    // Fondo claro
+$text-color: #1f2937;          // Gris muy oscuro
+
+$gray-100: #f3f4f6;
+$gray-200: #e5e7eb;
+$gray-300: #d1d5db;
+
+// Para glassmorphism ligero
+$glass-bg: rgba(255, 255, 255, 0.2);
+$glass-border: rgba(0, 0, 0, 0.05);
+$backdrop-blur: 5px;
+
+// Gradiente principal (sutil)
+$main-gradient: linear-gradient(
+  270deg,
+  #f9fafb,
+  #ffffff,
+  #e5e7eb,
+  #f9fafb
+);
+
+// Duración de animaciones / transiciones
+$transition-duration: 0.3s;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductCard/ProductCard.scss
+
+Contenido:
+// src/components/ProductCard/ProductCard.scss
+
+@use "../sass/_colors.scss" as c;
+
+.product-card {
+  transition: transform 0.3s, box-shadow 0.3s;
+  &:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  }
+
+  &__img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    h3 {
+      font-size: 1.2rem;
+      color: c.$text-color;
+      margin-bottom: 0.2rem;
+    }
+
+    p {
+      color: c.$accent-color;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    a.btn-primary {
+      align-self: flex-start;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductCard/ProductCard.tsx
+
+Contenido:
+// src/components/ProductCard/ProductCard.tsx
+import React from 'react';
+import './ProductCard.scss';
+import { Link } from 'react-router-dom';
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+}
+
+interface ProductCardProps {
+  product: Product;
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  return (
+    <div className="product-card card">
+      <img src={product.image} alt={product.name} className="product-card__img" />
+      <div className="product-card__info">
+        <h3>{product.name}</h3>
+        <p>${product.price.toFixed(2)}</p>
+        <Link to={`/products/${product.id}`} className="btn-primary">Ver detalle</Link>
+      </div>
+    </div>
+  );
+};
+
+export default ProductCard;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Footer/Footer.scss
+
+Contenido:
+// src/components/Footer/Footer.scss
+
+@use "../sass/_colors.scss" as c;
+
+.footer {
+  background: c.$glass-bg;
+  backdrop-filter: blur(c.$backdrop-blur);
+  border-top: 1px solid c.$glass-border;
+  text-align: center;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  color: c.$text-color;
+
+  p {
+    font-size: 0.9rem;
+    opacity: 0.85;
+  }
+}
 
 
 --------------------------------------------------------------------------------
