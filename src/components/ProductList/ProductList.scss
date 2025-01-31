@@ -1,42 +1,38 @@
-/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductList/ProductList.scss */
+/* src/components/ProductList/ProductList.scss */
 .product-list {
-  margin-top: 2rem;
+  margin-top: 3rem;
+  padding: 0 1rem;
   animation: fadeIn 0.5s ease forwards;
 
   h2 {
-    font-size: 2rem;
-    /* c.$accent-color -> var(--color-accent) */
+    font-size: 2.5rem;
     color: var(--color-accent);
-    margin-bottom: 1.5rem;
     text-align: center;
-    text-shadow: 0 0 5px var(--color-accent);
+    margin-bottom: 2rem;
+    text-shadow: 0 0 8px var(--color-accent);
     opacity: 0;
     animation: slideDown 0.6s ease forwards;
   }
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
-    margin-top: 1rem;
     opacity: 0;
     transform: translateY(20px);
     animation: fadeUp 0.7s ease forwards 0.5s;
-
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr 1fr;
-    }
-    @media (max-width: 480px) {
-      grid-template-columns: 1fr;
-    }
   }
 }
 
 @keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
   to {
     opacity: 1;
   }
 }
+
 @keyframes slideDown {
   0% {
     opacity: 0;
@@ -47,7 +43,12 @@
     transform: translateY(0);
   }
 }
+
 @keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
   to {
     opacity: 1;
     transform: translateY(0);

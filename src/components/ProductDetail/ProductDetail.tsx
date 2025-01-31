@@ -3,26 +3,7 @@ import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import './ProductDetail.scss';
 import { useCart } from '../../context/CartContext';
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  description: string;
-}
-
-const products: Product[] = [
-  {
-    id: 1,
-    name: 'Audífonos Inalámbricos',
-    price: 59.99,
-    image: 'https://images.unsplash.com/photo-1606813906572-cb9c504a6d4c?auto=format&fit=crop&w=600&q=80',
-    description:
-      'Estos audífonos ofrecen un sonido envolvente, conexión Bluetooth 5.0 y una batería que dura hasta 20 horas. Ideales para entrenamientos o para disfrutar de música sin cables.',
-  },
-  // …otros productos con sus respectivas descripciones
-];
+import { products } from '../../data/products';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams();
@@ -44,7 +25,6 @@ const ProductDetail: React.FC = () => {
   }
 
   const handleAddToCart = () => {
-    // Para esta maqueta, se simula agregar la cantidad indicada
     for (let i = 0; i < quantity; i++) {
       addToCart(product);
     }
