@@ -1,0 +1,59 @@
+// src/components/sass/global.scss
+
+// Usamos @use para importar variables
+@use "./_colors.scss" as c;
+
+// --------------------
+// Estilos globales
+// --------------------
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: c.$background-color;
+  color: c.$text-color;
+}
+
+a {
+  text-decoration: none;
+  color: c.$primary-color;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+// Contenedor principal reutilizable
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// Botón principal
+.btn-primary {
+  background-color: c.$primary-color;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    // Ejemplo con la función lighten/darken de Sass
+    background-color: darken(c.$primary-color, 10%);
+  }
+}
+
+// Card genérica
+.card {
+  background-color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+}

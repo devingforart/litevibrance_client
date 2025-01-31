@@ -1,0 +1,10 @@
+// src/components/Footer/Footer.scss
+
+@use "../sass/_colors.scss" as c;
+
+.footer {
+  background-color: c.$secondary-color;
+  color: #fff;
+  text-align: center;
+  padding: 1rem;
+}

@@ -1,0 +1,31 @@
+// src/components/Header/Header.scss
+
+@use "../sass/_colors.scss" as c;
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: c.$primary-color;
+  padding: 1rem;
+
+  &__logo a {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #fff;
+  }
+
+  &__nav ul {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+
+    li a {
+      color: #fff;
+      font-weight: 500;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

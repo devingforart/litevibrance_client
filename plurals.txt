@@ -1,0 +1,353 @@
+/home/southatoms/Escritorio/lite_vibrance_web/src/vite-env.d.ts
+
+Contenido:
+/// <reference types="vite/client" />
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/main.tsx
+
+Contenido:
+// src/main.tsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
+import './components/sass/global.scss'; // Importamos los estilos globales
+
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>
+);
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/App.tsx
+
+Contenido:
+// src/App.tsx
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Home from './components/Home/Home';
+import ProductList from './components/ProductList/ProductList';
+import Cart from './components/Cart/Cart';
+import Checkout from './components/Checkout/Checkout';
+import AdminDashboard from './components/AdminDashboard/AdminDashboard';
+import Login from './components/Login/Login';
+import Register from './components/Register/Register';
+import Header from './components/Header/Header';
+import Footer from './components/Footer/Footer';
+
+const App: React.FC = () => {
+  return (
+    <>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/products" element={<ProductList />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
+      <Footer />
+    </>
+  );
+};
+
+export default App;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Checkout/Checkout.tsx
+
+Contenido:
+// src/components/Checkout/Checkout.tsx
+import React from 'react';
+import './Checkout.scss';
+
+const Checkout: React.FC = () => {
+  return (
+    <div className="checkout container">
+      <h2>Proceso de Pago</h2>
+      <form className="checkout__form">
+        <label>
+          Dirección de Envío:
+          <input type="text" name="address" />
+        </label>
+        <label>
+          Método de Pago:
+          <select name="paymentMethod">
+            <option value="creditCard">Tarjeta de Crédito</option>
+            <option value="paypal">PayPal</option>
+          </select>
+        </label>
+        <button type="submit" className="btn-primary">Finalizar Compra</button>
+      </form>
+    </div>
+  );
+};
+
+export default Checkout;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/AdminDashboard/AdminDashboard.tsx
+
+Contenido:
+// src/components/AdminDashboard/AdminDashboard.tsx
+import React from 'react';
+import './AdminDashboard.scss';
+
+const AdminDashboard: React.FC = () => {
+  return (
+    <div className="admin-dashboard container">
+      <h2>Panel de Administración</h2>
+      <div className="admin-dashboard__sections">
+        <div className="admin-dashboard__card">
+          <h3>Productos</h3>
+          <p>Gestiona el catálogo, precios, stock, etc.</p>
+          <button className="btn-primary">Ir a Productos</button>
+        </div>
+        <div className="admin-dashboard__card">
+          <h3>Pedidos</h3>
+          <p>Revisa y gestiona los pedidos de los clientes.</p>
+          <button className="btn-primary">Ir a Pedidos</button>
+        </div>
+        <div className="admin-dashboard__card">
+          <h3>Usuarios</h3>
+          <p>Administra roles, permisos y perfiles de usuarios.</p>
+          <button className="btn-primary">Ir a Usuarios</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AdminDashboard;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Header/Header.tsx
+
+Contenido:
+// src/components/Header/Header.tsx
+import React from 'react';
+import { Link } from 'react-router-dom';
+import './Header.scss';
+
+const Header: React.FC = () => {
+  return (
+    <header className="header">
+      <div className="header__logo">
+        <Link to="/">MiTienda</Link>
+      </div>
+      <nav className="header__nav">
+        <ul>
+          <li><Link to="/products">Productos</Link></li>
+          <li><Link to="/cart">Carrito</Link></li>
+          <li><Link to="/login">Iniciar Sesión</Link></li>
+          <li><Link to="/register">Registrarse</Link></li>
+          <li><Link to="/admin">Admin</Link></li>
+        </ul>
+      </nav>
+    </header>
+  );
+};
+
+export default Header;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductList/ProductList.tsx
+
+Contenido:
+// src/components/ProductList/ProductList.tsx
+import React from 'react';
+import './ProductList.scss';
+import ProductCard from '../ProductCard/ProductCard';
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+}
+
+const dummyProducts: Product[] = [
+  { id: 1, name: 'Producto A', price: 29.99, image: 'https://via.placeholder.com/200' },
+  { id: 2, name: 'Producto B', price: 19.99, image: 'https://via.placeholder.com/200' },
+  { id: 3, name: 'Producto C', price: 39.99, image: 'https://via.placeholder.com/200' },
+];
+
+const ProductList: React.FC = () => {
+  return (
+    <div className="product-list container">
+      <h2>Catálogo de Productos</h2>
+      <div className="product-list__grid">
+        {dummyProducts.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default ProductList;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Register/Register.tsx
+
+Contenido:
+// src/components/Register/Register.tsx
+import React from 'react';
+import './Register.scss';
+
+const Register: React.FC = () => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Lógica de registro
+  };
+
+  return (
+    <div className="register container">
+      <h2>Crear Cuenta</h2>
+      <form className="register__form" onSubmit={handleSubmit}>
+        <label>
+          Nombre
+          <input type="text" required />
+        </label>
+        <label>
+          Correo electrónico
+          <input type="email" required />
+        </label>
+        <label>
+          Contraseña
+          <input type="password" required />
+        </label>
+        <button type="submit" className="btn-primary">Registrarse</button>
+      </form>
+    </div>
+  );
+};
+
+export default Register;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Cart/Cart.tsx
+
+Contenido:
+// src/components/Cart/Cart.tsx
+import React from 'react';
+import './Cart.scss';
+
+const Cart: React.FC = () => {
+  // Lógica para mostrar los productos en el carrito
+  return (
+    <div className="cart container">
+      <h2>Tu Carrito</h2>
+      <p>Actualmente no tienes productos en el carrito.</p>
+      {/* Aquí iría la lista de productos, subtotal, etc. */}
+    </div>
+  );
+};
+
+export default Cart;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Login/Login.tsx
+
+Contenido:
+// src/components/Login/Login.tsx
+import React from 'react';
+import './Login.scss';
+
+const Login: React.FC = () => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Lógica de autenticación
+  };
+
+  return (
+    <div className="login container">
+      <h2>Iniciar Sesión</h2>
+      <form className="login__form" onSubmit={handleSubmit}>
+        <label>
+          Correo electrónico
+          <input type="email" required />
+        </label>
+        <label>
+          Contraseña
+          <input type="password" required />
+        </label>
+        <button type="submit" className="btn-primary">Acceder</button>
+      </form>
+    </div>
+  );
+};
+
+export default Login;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Home/Home.tsx
+
+Contenido:
+// src/components/Home/Home.tsx
+import React from 'react';
+import './Home.scss';
+
+const Home: React.FC = () => {
+  return (
+    <section className="home container">
+      <div className="home__hero">
+        <h1>Bienvenido a MiTienda</h1>
+        <p>Encuentra los mejores productos al mejor precio.</p>
+        <button className="btn-primary">Ver productos destacados</button>
+      </div>
+    </section>
+  );
+};
+
+export default Home;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Footer/Footer.tsx
+
+Contenido:
+// src/components/Footer/Footer.tsx
+import React from 'react';
+import './Footer.scss';
+
+const Footer: React.FC = () => {
+  return (
+    <footer className="footer">
+      <p>&copy; {new Date().getFullYear()} MiTienda. Todos los derechos reservados.</p>
+    </footer>
+  );
+};
+
+export default Footer;
+
+
+--------------------------------------------------------------------------------
+

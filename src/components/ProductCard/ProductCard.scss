@@ -1,0 +1,33 @@
+// src/components/ProductCard/ProductCard.scss
+
+@use "../sass/_colors.scss" as c;
+
+/* 
+   La clase .card ya existe en global.scss (importada en main.tsx),
+   así que solo definimos estilos propios de .product-card
+*/
+
+.product-card {
+  &__img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    h3 {
+      font-size: 1.1rem;
+      color: c.$text-color;
+    }
+
+    p {
+      color: c.$accent-color;
+      font-weight: 600;
+    }
+  }
+}
