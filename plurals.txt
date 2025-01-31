@@ -88,10 +88,8 @@ export default App;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Checkout/Checkout.scss
 
 Contenido:
-// src/components/Checkout/Checkout.scss
-
-@use "../sass/_colors.scss" as c;
-
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/Checkout/Checkout.scss */
+/* Quitamos: @use "../sass/_colors.scss" as c; */
 .checkout {
   margin-top: 2rem;
   animation: fadeIn 0.6s ease forwards;
@@ -99,7 +97,8 @@ Contenido:
   h2 {
     text-align: center;
     font-size: 2rem;
-    color: c.$secondary-color;
+    /* Antes: color: c.$secondary-color; */
+    color: var(--color-secondary);
     text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
     margin-bottom: 2rem;
     opacity: 0;
@@ -107,9 +106,9 @@ Contenido:
   }
 
   &__form {
-    background: c.$glass-bg;
-    backdrop-filter: blur(c.$backdrop-blur);
-    border: 1px solid c.$glass-border;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
     border-radius: 8px;
     padding: 2rem;
     max-width: 600px;
@@ -119,29 +118,32 @@ Contenido:
     gap: 1.5rem;
     opacity: 0;
     transform: translateY(10px);
-    animation: fadeUp 0.6s ease forwards 0.4s; // Retardo para un efecto escalonado
+    animation: fadeUp 0.6s ease forwards 0.4s;
 
     label {
       display: flex;
       flex-direction: column;
       font-weight: 500;
       margin-bottom: 0.5rem;
-      color: c.$text-color;
+      /* c.$text-color -> var(--color-text) */
+      color: var(--color-text);
 
       input,
       select {
         margin-top: 0.5rem;
         padding: 0.75rem;
-        border: 1px solid c.$gray-300;
+        /* c.$gray-300 -> var(--gray-300) */
+        border: 1px solid var(--gray-300);
         border-radius: 4px;
         outline: none;
         background: rgba(255,255,255,0.2);
-        color: c.$text-color;
+        color: var(--color-text);
         transition: border-color 0.3s, box-shadow 0.3s;
 
         &:focus {
-          border-color: c.$accent-color;
-          box-shadow: 0 0 6px rgba(c.$accent-color, 0.3);
+          /* c.$accent-color -> var(--color-accent) */
+          border-color: var(--color-accent);
+          box-shadow: 0 0 6px rgba(16,185,129, 0.3);
         }
       }
     }
@@ -153,7 +155,7 @@ Contenido:
   }
 }
 
-// Animaciones keyframes
+/* Animaciones keyframes */
 @keyframes fadeIn {
   to {
     opacity: 1;
@@ -178,7 +180,7 @@ Contenido:
   }
 }
 
-// Responsividad
+/* Responsividad */
 @media (max-width: 768px) {
   .checkout__form {
     padding: 1.5rem;
@@ -239,10 +241,7 @@ export default Checkout;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/AdminDashboard/AdminDashboard.scss
 
 Contenido:
-// src/components/AdminDashboard/AdminDashboard.scss
-
-@use "../sass/_colors.scss" as c;
-
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/AdminDashboard/AdminDashboard.scss */
 .admin-dashboard {
   margin-top: 2rem;
   text-align: center;
@@ -250,9 +249,10 @@ Contenido:
 
   h2 {
     font-size: 2.2rem;
-    color: c.$primary-color;
+    /* c.$primary-color -> var(--color-primary) */
+    color: var(--color-primary);
     margin-bottom: 2rem;
-    text-shadow: 0 0 6px c.$primary-color;
+    text-shadow: 0 0 6px var(--color-primary);
     opacity: 0;
     animation: slideDown 0.6s ease forwards;
   }
@@ -266,9 +266,9 @@ Contenido:
 
   &__card {
     width: 280px;
-    background: c.$glass-bg;
-    backdrop-filter: blur(c.$backdrop-blur);
-    border: 1px solid c.$glass-border;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
     border-radius: 8px;
     padding: 1.5rem;
     text-align: center;
@@ -276,16 +276,10 @@ Contenido:
     transition: transform 0.3s, box-shadow 0.3s;
     opacity: 0;
     animation: fadeUp 0.8s ease forwards;
-    // Cada tarjeta tendrá un pequeño retardo según su posición
-    &:nth-child(1) {
-      animation-delay: 0.4s;
-    }
-    &:nth-child(2) {
-      animation-delay: 0.6s;
-    }
-    &:nth-child(3) {
-      animation-delay: 0.8s;
-    }
+
+    &:nth-child(1) { animation-delay: 0.4s; }
+    &:nth-child(2) { animation-delay: 0.6s; }
+    &:nth-child(3) { animation-delay: 0.8s; }
 
     &:hover {
       transform: translateY(-3px);
@@ -294,11 +288,12 @@ Contenido:
 
     h3 {
       margin-bottom: 0.5rem;
-      color: c.$text-color;
+      /* c.$text-color -> var(--color-text) */
+      color: var(--color-text);
     }
     p {
       margin-bottom: 1rem;
-      color: c.$text-color;
+      color: var(--color-text);
       opacity: 0.8;
     }
 
@@ -308,7 +303,7 @@ Contenido:
   }
 }
 
-// Keyframes
+/* Keyframes */
 @keyframes fadeIn {
   to {
     opacity: 1;
@@ -336,7 +331,7 @@ Contenido:
   }
 }
 
-// Responsividad
+/* Responsividad */
 @media (max-width: 768px) {
   .admin-dashboard__card {
     width: 100%;
@@ -387,22 +382,21 @@ export default AdminDashboard;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/NotFound/NotFound.scss
 
 Contenido:
-// src/components/NotFound/NotFound.scss
-
-@use "../sass/_colors.scss" as c;
-
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/NotFound/NotFound.scss */
 .notfound {
   margin-top: 2rem;
   text-align: center;
 
   h2 {
     font-size: 2rem;
-    color: c.$primary-color;
+    /* c.$primary-color -> var(--color-primary) */
+    color: var(--color-primary);
     margin-bottom: 1rem;
   }
 
   p {
-    color: c.$text-color;
+    /* c.$text-color -> var(--color-text) */
+    color: var(--color-text);
     font-size: 1.1rem;
   }
 }
@@ -551,13 +545,9 @@ Contenido:
   }
 }
 
+/* Reestructuramos para evitar "mixed declarations" */
 .header__nav {
-  @media (min-width: 769px) {
-    ul {
-      display: flex;
-      gap: 2rem;
-    }
-  }
+  /* Declaraciones principales primero */
   position: fixed;
   top: 65px;
   left: 0;
@@ -568,6 +558,14 @@ Contenido:
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
   overflow-y: auto;
+
+  /* Luego la regla @media */
+  @media (min-width: 769px) {
+    ul {
+      display: flex;
+      gap: 2rem;
+    }
+  }
 
   &.open {
     transform: translateX(0);
@@ -593,6 +591,7 @@ Contenido:
     }
   }
 
+  /* Ajustes para pantallas grandes */
   @media (min-width: 769px) {
     position: static;
     transform: none;
@@ -645,20 +644,18 @@ Contenido:
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductList/ProductList.scss
 
 Contenido:
-// src/components/ProductList/ProductList.scss
-
-@use "../sass/_colors.scss" as c;
-
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductList/ProductList.scss */
 .product-list {
   margin-top: 2rem;
   animation: fadeIn 0.5s ease forwards;
 
   h2 {
     font-size: 2rem;
-    color: c.$accent-color;
+    /* c.$accent-color -> var(--color-accent) */
+    color: var(--color-accent);
     margin-bottom: 1.5rem;
     text-align: center;
-    text-shadow: 0 0 5px c.$accent-color;
+    text-shadow: 0 0 5px var(--color-accent);
     opacity: 0;
     animation: slideDown 0.6s ease forwards;
   }
@@ -687,13 +684,13 @@ Contenido:
   }
 }
 @keyframes slideDown {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
   0% {
     opacity: 0;
     transform: translateY(-15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 @keyframes fadeUp {
@@ -892,10 +889,7 @@ export default ProductDetail;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductDetail/ProductDetail.scss
 
 Contenido:
-// src/components/ProductDetail/ProductDetail.scss
-
-@use "../sass/_colors.scss" as c;
-
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductDetail/ProductDetail.scss */
 .product-detail {
   margin-top: 2rem;
   animation: fadeIn 0.5s ease forwards;
@@ -904,9 +898,9 @@ Contenido:
     display: flex;
     gap: 2rem;
     align-items: flex-start;
-    background: c.$glass-bg;
-    backdrop-filter: blur(c.$backdrop-blur);
-    border: 1px solid c.$glass-border;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
     border-radius: 8px;
     padding: 2rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
@@ -929,17 +923,20 @@ Contenido:
 
       h2 {
         font-size: 2rem;
-        color: c.$primary-color;
+        /* c.$primary-color -> var(--color-primary) */
+        color: var(--color-primary);
       }
 
       &__price {
         font-size: 1.5rem;
-        color: c.$accent-color;
+        /* c.$accent-color -> var(--color-accent) */
+        color: var(--color-accent);
         font-weight: bold;
       }
 
       &__description {
-        color: c.$text-color;
+        /* c.$text-color -> var(--color-text) */
+        color: var(--color-text);
         line-height: 1.4;
       }
 
@@ -958,13 +955,13 @@ Contenido:
 }
 
 @keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  from {
+  0% {
     opacity: 0;
     transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -986,10 +983,7 @@ Contenido:
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Register/Register.scss
 
 Contenido:
-// src/components/Register/Register.scss
-
-@use "../sass/_colors.scss" as c;
-
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/Register/Register.scss */
 .register {
   margin-top: 2rem;
   animation: fadeIn 0.5s ease forwards;
@@ -997,9 +991,10 @@ Contenido:
   h2 {
     text-align: center;
     font-size: 2rem;
-    color: c.$secondary-color;
+    /* c.$secondary-color -> var(--color-secondary) */
+    color: var(--color-secondary);
     margin-bottom: 2rem;
-    text-shadow: 0 0 5px c.$secondary-color;
+    text-shadow: 0 0 5px var(--color-secondary);
     opacity: 0;
     animation: fadeUp 0.6s ease forwards;
   }
@@ -1007,9 +1002,9 @@ Contenido:
   &__form {
     max-width: 400px;
     margin: 0 auto;
-    background: c.$glass-bg;
-    backdrop-filter: blur(c.$backdrop-blur);
-    border: 1px solid c.$glass-border;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
     border-radius: 8px;
     padding: 2rem;
     display: flex;
@@ -1023,20 +1018,23 @@ Contenido:
       display: flex;
       flex-direction: column;
       font-weight: 500;
-      color: c.$text-color;
+      /* c.$text-color -> var(--color-text) */
+      color: var(--color-text);
 
       input {
         margin-top: 0.5rem;
         padding: 0.75rem;
-        border: 1px solid c.$gray-300;
+        /* c.$gray-300 -> var(--gray-300) */
+        border: 1px solid var(--gray-300);
         border-radius: 4px;
         background: rgba(255,255,255,0.2);
-        color: c.$text-color;
+        color: var(--color-text);
         transition: border-color 0.3s, box-shadow 0.3s;
 
         &:focus {
-          border-color: c.$accent-color;
-          box-shadow: 0 0 6px rgba(c.$accent-color, 0.3);
+          /* c.$accent-color -> var(--color-accent) */
+          border-color: var(--color-accent);
+          box-shadow: 0 0 6px rgba(16,185,129, 0.3);
         }
       }
     }
@@ -1165,10 +1163,7 @@ export default Cart;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Cart/Cart.scss
 
 Contenido:
-// src/components/Cart/Cart.scss
-
-@use "../sass/_colors.scss" as c;
-
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/Cart/Cart.scss */
 .cart {
   margin-top: 2rem;
   text-align: center;
@@ -1176,9 +1171,10 @@ Contenido:
 
   h2 {
     font-size: 2rem;
-    color: c.$accent-color;
+    /* c.$accent-color -> var(--color-accent) */
+    color: var(--color-accent);
     margin-bottom: 2rem;
-    text-shadow: 0 0 5px c.$accent-color;
+    text-shadow: 0 0 5px var(--color-accent);
     opacity: 0;
     animation: fadeUp 0.6s ease forwards;
   }
@@ -1200,9 +1196,9 @@ Contenido:
     display: flex;
     align-items: center;
     gap: 1rem;
-    background: c.$glass-bg;
-    backdrop-filter: blur(c.$backdrop-blur);
-    border: 1px solid c.$glass-border;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
     border-radius: 8px;
     padding: 1rem;
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
@@ -1239,7 +1235,7 @@ Contenido:
 
     h3 {
       font-size: 1.5rem;
-      color: c.$accent-color;
+      color: var(--color-accent);
     }
 
     .btn-primary {
@@ -1255,13 +1251,13 @@ Contenido:
 }
 
 @keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  from {
+  0% {
     opacity: 0;
     transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -1308,10 +1304,7 @@ export default Login;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Login/Login.scss
 
 Contenido:
-// src/components/Login/Login.scss
-
-@use "../sass/_colors.scss" as c;
-
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/Login/Login.scss */
 .login {
   margin-top: 2rem;
   animation: fadeIn 0.5s ease forwards;
@@ -1319,9 +1312,10 @@ Contenido:
   h2 {
     text-align: center;
     font-size: 2rem;
-    color: c.$secondary-color;
+    /* c.$secondary-color -> var(--color-secondary) */
+    color: var(--color-secondary);
     margin-bottom: 2rem;
-    text-shadow: 0 0 5px c.$secondary-color;
+    text-shadow: 0 0 5px var(--color-secondary);
     opacity: 0;
     animation: fadeUp 0.6s ease forwards;
   }
@@ -1329,9 +1323,9 @@ Contenido:
   &__form {
     max-width: 400px;
     margin: 0 auto;
-    background: c.$glass-bg;
-    backdrop-filter: blur(c.$backdrop-blur);
-    border: 1px solid c.$glass-border;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
     border-radius: 8px;
     padding: 2rem;
     display: flex;
@@ -1345,20 +1339,23 @@ Contenido:
       display: flex;
       flex-direction: column;
       font-weight: 500;
-      color: c.$text-color;
+      /* c.$text-color -> var(--color-text) */
+      color: var(--color-text);
 
       input {
         margin-top: 0.5rem;
         padding: 0.75rem;
-        border: 1px solid c.$gray-300;
+        /* c.$gray-300 -> var(--gray-300) */
+        border: 1px solid var(--gray-300);
         border-radius: 4px;
         background: rgba(255,255,255,0.2);
-        color: c.$text-color;
+        color: var(--color-text);
         transition: border-color 0.3s, box-shadow 0.3s;
 
         &:focus {
-          border-color: c.$accent-color;
-          box-shadow: 0 0 6px rgba(c.$accent-color, 0.3);
+          /* c.$accent-color -> var(--color-accent) */
+          border-color: var(--color-accent);
+          box-shadow: 0 0 6px rgba(16,185,129, 0.3);
         }
       }
     }
@@ -1427,24 +1424,20 @@ export default Home;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Home/Home.scss
 
 Contenido:
-/* src/components/Home/Home.scss */
-
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/Home/Home.scss */
 .home {
   margin-top: 65px; /* Dejar espacio si tienes un header fijo */
 
   &__hero {
     display: flex;
     flex-direction: column;
-    align-items: center;  /* Centra en horizontal */
-    min-height: calc(100vh - 120px); /* Ocupa casi toda la pantalla */
+    align-items: center; 
+    min-height: calc(100vh - 120px);
     gap: 2rem;
     position: relative;
     border-radius: 8px;
     padding: 2rem;
 
-    /* Fondo sutil o un gradiente, opcional */
-
-    /* Imagen arriba */
     .hero__image {
       display: flex;
       justify-content: center;
@@ -1461,15 +1454,15 @@ Contenido:
       }
     }
 
-    /* Contenido (texto, CTA) debajo */
     .hero__content {
-      text-align: center; /* Centra el texto */
-      max-width: 600px;   /* Limita el ancho para mejor legibilidad */
-
+      text-align: center;
+      max-width: 600px; 
+      
       h1 {
         font-size: 2.6rem;
         margin-bottom: 1rem;
         line-height: 1.2;
+        /* color: var(--color-text); // ya heredaría, pero OK para seguridad */
         color: var(--color-text);
       }
 
@@ -1487,9 +1480,6 @@ Contenido:
     }
   }
 
-  /* Responsividad: 
-     Dado que ya es single-column, no se necesita demasiado. 
-     Pero si quieres ajustar la altura en pantallas pequeñas: */
   @media (max-width: 768px) {
     &__hero {
       min-height: auto;
@@ -1550,11 +1540,7 @@ export default ProductModal;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductModal/ProductModal.scss
 
 Contenido:
-// src/components/ProductModal/ProductModal.scss
-
-@use "sass:color";
-@use "../sass/_colors.scss" as c;
-
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductModal/ProductModal.scss */
 .product-modal {
   position: fixed;
   top: 0;
@@ -1580,9 +1566,9 @@ Contenido:
     width: 90%;
     max-width: 600px;
     padding: 2rem;
-    background: c.$glass-bg;
-    backdrop-filter: blur(c.$backdrop-blur);
-    border: 1px solid c.$glass-border;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
     border-radius: 8px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.3);
     text-align: center;
@@ -1593,7 +1579,8 @@ Contenido:
 
     h2 {
       margin-bottom: 1rem;
-      color: c.$primary-color;
+      /* c.$primary-color -> var(--color-primary) */
+      color: var(--color-primary);
     }
 
     img {
@@ -1605,6 +1592,8 @@ Contenido:
 
     p {
       margin-bottom: 1rem;
+      /* color: var(--color-text); // si quieres forzar, sino heredado */
+      color: var(--color-text);
     }
   }
 }
@@ -1622,27 +1611,13 @@ Contenido:
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/sass/global.scss
 
 Contenido:
-/* ----------------------------------------
-   global.scss (Unificación de variables)
-   ---------------------------------------- */
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/sass/global.scss */
+/* ------------------------------------------------------
+   global.scss (Unificación de variables y estilos base)
+   ------------------------------------------------------ */
 
-/* 1. Tipografía (opcional) */
+/* 1. Tipografía (Google Fonts) */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Montserrat:wght@400;700&display=swap');
-html,
-body {
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  transition: background-color var(--transition-speed),
-              color var(--transition-speed);
-  overflow-x: hidden;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 300;
-}
-
 
 /* 2. Reset básico */
 * {
@@ -1651,74 +1626,96 @@ h1, h2, h3, h4, h5, h6 {
   box-sizing: border-box;
 }
 
-/* --------------------------------------------------
-   3. VARIABLES: Modo Claro (por defecto)
--------------------------------------------------- */
-/* global.scss (fragmento) */
+/* 3. VARIABLES: Modo Claro (por defecto) */
 :root {
-  /* ===== MODO CLARO (más sobrio) ===== */
-  --color-bg:               #f9fafb;   /* Gris muy claro */
-  --color-text:             #1f2933;   /* Gris muy oscuro */
-  --color-primary:          #3b82f6;   /* Azul medio */
-  --color-primary-hover:    #2563eb;   /* Azul un poco más oscuro */
-  --color-accent:           #10b981;   /* Verde suave */
-  --color-accent-hover:     #059669;
-  
-  /* Efecto glass suave */
-  --glass-bg:               rgba(255, 255, 255, 0.3);
-  --glass-border:           rgba(255, 255, 255, 0.4);
-  --glass-blur:             6px;
+  /* Fondo y texto */
+  --color-bg:              #f9fafb;      /* Gris muy claro */
+  --color-text:            #1f2933;      /* Gris muy oscuro */
+
+  /* Paleta principal */
+  --color-primary:         #3b82f6;      /* Azul medio */
+  --color-primary-hover:   #2563eb;      /* Azul un poco más oscuro */
+  --color-secondary:       #6366f1;      /* Indigo clarito */
+  --color-accent:          #10b981;      /* Verde suave */
+  --color-accent-hover:    #059669;
+
+  /* Un gris intermedio para bordes, inputs, etc. */
+  --gray-300:             #d1d5db;       /* Gris clarito */
+
+  /* Efecto “glass” suave */
+  --glass-bg:             rgba(255, 255, 255, 0.3);
+  --glass-border:         rgba(255, 255, 255, 0.4);
+  --glass-blur:           6px;
 
   /* Header */
-  --header-bg:              rgba(255, 255, 255, 0.7);
-  --header-text:            #1f2933;
-  --header-box-shadow:      0 2px 10px rgba(0, 0, 0, 0.1);
+  --header-bg:            rgba(255, 255, 255, 0.7);
+  --header-text:          #1f2933;
+  --header-box-shadow:    0 2px 10px rgba(0, 0, 0, 0.1);
 
   /* Onda */
-  --wave-color:             #fff;
+  --wave-color:           #fff;
 
   /* Switch */
-  --switch-bg-off:          #bbb;
-  --switch-bg-on:           #666;
-  --switch-knob:            #fff;
+  --switch-bg-off:        #bbb;
+  --switch-bg-on:         #666;
+  --switch-knob:          #fff;
+
+  /* Transición */
+  --transition-speed:     0.3s;
 }
 
+/* 4. VARIABLES: Modo Oscuro */
 :root[data-theme='dark'] {
-  /* ===== MODO OSCURO (más sobrio) ===== */
-  --color-bg:               #1f1f1f;   /* Gris oscuro */
-  --color-text:             #f2f2f2;   /* Texto claro */
-  --color-primary:          #4f46e5;   /* Indigo */
-  --color-primary-hover:    #4338ca;   /* Indigo más oscuro */
-  --color-accent:           #10b98141;   /* Verde suave */
-  --color-accent-hover:     #059669;
+  /* Fondo y texto */
+  --color-bg:             #1f1f1f;       /* Gris oscuro */
+  --color-text:           #f2f2f2;       /* Texto claro */
 
-  --glass-bg:               rgba(255, 255, 255, 0.08);
-  --glass-border:           rgba(255, 255, 255, 0.15);
-  --glass-blur:             8px;
+  /* Paleta principal */
+  --color-primary:        #4f46e5;       /* Indigo */
+  --color-primary-hover:  #4338ca;       /* Indigo más oscuro */
+  --color-secondary:      #8b8efc;       /* Indigo clarito para dark */
+  --color-accent:         #10b981;       /* Verde. Ajusta si quieres */
+  --color-accent-hover:   #059669;
 
-  --header-bg:              rgba(0, 0, 0, 0.5);
-  --header-text:            #f2f2f2;
-  --header-box-shadow:      0 2px 10px rgba(0, 0, 0, 0.3);
+  /* Gris para bordes/inputs en dark */
+  --gray-300:            #888;          /* Más claro que el fondo */
 
-  --wave-color:             #333;
+  /* Efecto “glass” un poco más oscuro */
+  --glass-bg:            rgba(255, 255, 255, 0.08);
+  --glass-border:        rgba(255, 255, 255, 0.15);
+  --glass-blur:          8px;
 
-  --switch-bg-off:          #777;
-  --switch-bg-on:           #bbb;
-  --switch-knob:            #111;
+  /* Header */
+  --header-bg:           rgba(0, 0, 0, 0.5);
+  --header-text:         #f2f2f2;
+  --header-box-shadow:   0 2px 10px rgba(0, 0, 0, 0.3);
+
+  /* Onda */
+  --wave-color:          #333;
+
+  /* Switch */
+  --switch-bg-off:       #777;
+  --switch-bg-on:        #bbb;
+  --switch-knob:         #111;
+
+  --transition-speed:    0.3s;
 }
 
-
-/* 5. Estilos base */
+/* 5. Estilos base para tipografías */
 html,
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text);
-
-  transition: background-color var(--transition-speed),
-              color var(--transition-speed);
+  transition: background-color var(--transition-speed), color var(--transition-speed);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+
+/* Encabezados usan Montserrat */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
 }
 
 /* Container base */
@@ -1734,7 +1731,6 @@ a {
   color: var(--color-primary);
   text-decoration: none;
   transition: color var(--transition-speed);
-
   &:hover {
     color: var(--color-primary-hover);
   }
@@ -1750,7 +1746,6 @@ a {
   cursor: pointer;
   font-size: 1rem;
   transition: background-color var(--transition-speed), transform 0.2s;
-
   &:hover {
     background-color: var(--color-primary-hover);
     transform: translateY(-2px);
@@ -1768,10 +1763,10 @@ a {
   border-radius: 6px;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color var(--transition-speed),
-              color var(--transition-speed),
-              transform 0.2s;
-
+  transition:
+    background-color var(--transition-speed),
+    color var(--transition-speed),
+    transform 0.2s;
   &:hover {
     background-color: var(--color-primary);
     color: #fff;
@@ -1782,7 +1777,7 @@ a {
   }
 }
 
-/* Cartas “glass” */
+/* Cartas (glass) */
 .card {
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
@@ -1792,14 +1787,16 @@ a {
   padding: 1.5rem;
   margin: 1rem 0;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  transition: background-color var(--transition-speed), 
-              box-shadow var(--transition-speed);
+  transition:
+    background-color var(--transition-speed),
+    box-shadow var(--transition-speed);
 }
 
-/* Animación fade-in (opcional) */
+/* Animación fadeIn */
 .fade-in {
   animation: fadeIn var(--transition-speed) forwards;
 }
+
 @keyframes fadeIn {
   0%   { opacity: 0; transform: translateY(15px); }
   100% { opacity: 1; transform: translateY(0); }
@@ -1808,44 +1805,10 @@ a {
 
 --------------------------------------------------------------------------------
 
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/sass/_colors.scss
-
-Contenido:
-// _colors.scss (Propuesta de colores más sobrios)
-
-$primary-color:       #4f46e5;  // Indigo oscuro
-$secondary-color:     #6366f1;  // Indigo claro
-$accent-color:        #283291;  // Verde "subdued" (Tailwind style)
-$warning-color:       #f59e0b;  // Ámbar
-$error-color:         #ef4444;  // Rojo
-
-// Fondo y texto
-$background-color:    #1f1f1f;  // Un gris oscuro, en lugar de #0a0c10
-$text-color:          #f2f2f2;  // Texto claro
-
-// Grises
-$gray-100:            #2a2a2a;
-$gray-200:            #3a3a3a;
-$gray-300:            #5a5d63;
-
-// Efectos "glass" un poco más sutiles
-$glass-bg:            rgba(255, 255, 255, 0.07);
-$glass-border:        rgba(255, 255, 255, 0.15);
-$backdrop-blur:       8px;
-
-/* Si quieres mantener algo de “glow” muy discreto */
-$neon-glow-primary:   0 0 8px rgba(79,70,229, 0.4);
-$neon-glow-secondary: 0 0 8px rgba(99,102,241, 0.4);
-
-
---------------------------------------------------------------------------------
-
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductCard/ProductCard.scss
 
 Contenido:
-// src/components/ProductCard/ProductCard.scss
-
-@use "../sass/_colors.scss" as c;
+/* src/components/ProductCard/ProductCard.scss */
 
 .product-card {
   transition: transform 0.3s, box-shadow 0.3s;
@@ -1854,7 +1817,7 @@ Contenido:
 
   &:hover {
     transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
   }
 
   &__img {
@@ -1871,12 +1834,14 @@ Contenido:
 
     h3 {
       font-size: 1.2rem;
-      color: c.$text-color;
+      /* Antes: color: c.$text-color; */
+      color: var(--color-text); /* Usa la variable CSS */
       margin-bottom: 0.2rem;
     }
 
     p {
-      color: c.$accent-color;
+      /* Antes: color: c.$accent-color; */
+      color: var(--color-accent);
       font-weight: 600;
       font-size: 1.1rem;
       margin-bottom: 1rem;
@@ -1938,18 +1903,16 @@ export default ProductCard;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Footer/Footer.scss
 
 Contenido:
-// src/components/Footer/Footer.scss
-
-@use "../sass/_colors.scss" as c;
-
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/Footer/Footer.scss */
 .footer {
-  background: c.$glass-bg;
-  backdrop-filter: blur(c.$backdrop-blur);
-  border-top: 1px solid c.$glass-border;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border-top: 1px solid var(--glass-border);
   text-align: center;
   padding: 1.5rem;
   margin-top: 2rem;
-  color: c.$text-color;
+  /* c.$text-color -> var(--color-text) */
+  color: var(--color-text);
   opacity: 0;
   transform: translateY(20px);
   animation: fadeUp 0.5s ease forwards;

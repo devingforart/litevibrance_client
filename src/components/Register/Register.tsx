@@ -1,12 +1,24 @@
 // src/components/Register/Register.tsx
-import React from 'react';
+import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import './Register.scss';
 
 const Register: React.FC = () => {
-  const handleSubmit = (e: React.FormEvent) => {
+  const { register } = useAuth();
+  const navigate = useNavigate();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Lógica de registro real (petición a tu backend)
-    alert('Usuario registrado correctamente');
+    try {
+      await register(name, email, password);
+      navigate('/'); // O a una página de bienvenida
+    } catch (error) {
+      alert('Error en el registro');
+    }
   };
 
   return (
@@ -15,15 +27,15 @@ const Register: React.FC = () => {
       <form className="register__form" onSubmit={handleSubmit}>
         <label>
           Nombre
-          <input type="text" required />
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
         </label>
         <label>
           Correo electrónico
-          <input type="email" required />
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </label>
         <label>
           Contraseña
-          <input type="password" required />
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </label>
         <button type="submit" className="btn-primary">Registrarse</button>
       </form>
