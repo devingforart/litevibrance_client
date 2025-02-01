@@ -1,27 +1,31 @@
 // src/components/ProductCard/ProductCard.tsx
 import React from 'react';
-import './ProductCard.scss';
 import { Link } from 'react-router-dom';
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-}
+import './ProductCard.scss';
+import { Product } from '../../data/products';
 
 interface ProductCardProps {
   product: Product;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  // Usamos la primera imagen del array 'photos'
+  const imageUrl =
+    product.photos && product.photos.length > 0
+      ? product.photos[0]
+      : 'https://via.placeholder.com/600x400?text=No+Image';
+
   return (
-    <div className="product-card card">
-      <img src={product.image} alt={product.name} className="product-card__img" />
+    <div className="product-card">
+      <div className="product-card__image-wrapper">
+        <img src={imageUrl} alt={product.name} className="product-card__img" />
+      </div>
       <div className="product-card__info">
-        <h3>{product.name}</h3>
-        <p>${product.price.toFixed(2)}</p>
-        <Link to={`/products/${product.id}`} className="btn-primary">Ver detalle</Link>
+        <h3 className="product-card__title">{product.name}</h3>
+        <p className="product-card__price">${product.price.toFixed(2)}</p>
+        <Link to={`/products/${product.id}`} className="btn-primary product-card__button">
+          Ver detalle
+        </Link>
       </div>
     </div>
   );
