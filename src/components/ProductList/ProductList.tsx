@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './ProductList.scss';
 import { products } from '../../data/products';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import ProductCard from '../ProductCard/ProductCard';
 import ProductListItem from '../ProductListItem/ProductListItem';
 import ViewSwitcher, { ViewMode } from '../ViewSwitcher/ViewSwitcher';
@@ -39,7 +39,7 @@ const ProductList: React.FC = () => {
     <div className="product-list container">
       <div className="product-list__header">
         <h2>Catálogo de Productos</h2>
-        <ViewSwitcher viewMode={viewMode} setViewMode={setViewMode} />
+        <ViewSwitcher viewMode={viewMode} setViewMode={setViewMode} isDarkMode={false} />
       </div>
 
       {searchQuery && filteredProducts.length === 0 ? (
@@ -65,6 +65,24 @@ const ProductList: React.FC = () => {
                 <div className="product-list__list">
                   {(searchQuery ? filteredProducts : products).map((product) => (
                     <ProductListItem key={product.id} product={product} />
+                  ))}
+                </div>
+              )}
+              {viewMode === 'detailed' && (
+                <div className="product-list__detailed">
+                  {(searchQuery ? filteredProducts : products).map((product) => (
+                    <div key={product.id} className="product-detail">
+                      <h3>{product.name}</h3>
+                      <img
+                        src={product.photos[0] || 'https://via.placeholder.com/600x400?text=No+Image'}
+                        alt={product.name}
+                      />
+                      <p>{product.description}</p>
+                      <p>${product.price.toFixed(2)}</p>
+                      <Link to={`/products/${product.id}/${product.slug}`} className="btn-primary">
+                        Ver detalle
+                      </Link>
+                    </div>
                   ))}
                 </div>
               )}
