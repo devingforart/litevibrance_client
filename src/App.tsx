@@ -15,6 +15,7 @@ import NotFound from './components/NotFound/NotFound';
 import FloatingThemeSwitch from './components/ThemeSwitch/FloatingThemeSwitch';
 import Notification from './components/Notification/Notification'; // Importamos el componente de notificaciones
 import './components/sass/global.scss';
+import Contact from './components/Contact/Contact';
 
 const App: React.FC = () => {
   return (
@@ -31,6 +32,8 @@ const App: React.FC = () => {
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/contact" element={<Contact />} /> {/* Nueva ruta */}
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
