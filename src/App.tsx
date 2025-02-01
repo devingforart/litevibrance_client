@@ -24,18 +24,18 @@ const App: React.FC = () => {
       <FloatingThemeSwitch />
       <main>
         <Routes>
-          <Route path="/" element={<Home />} /> 
+          <Route path="/" element={<Home />} />
           <Route path="/products" element={<ProductList />} />
-          <Route path="/products/:id" element={<ProductDetail />} />
+          {/* Cambiamos la ruta del producto para incluir el slug */}
+          <Route path="/products/:id/:slug" element={<ProductDetail />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/contact" element={<Contact />} /> {/* Nueva ruta */}
-
           <Route path="*" element={<NotFound />} />
         </Routes>
+
       </main>
       <Footer />
       <Notification /> {/* Aquí se renderizan las notificaciones */}

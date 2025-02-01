@@ -1,7 +1,10 @@
 // src/data/products.ts
+import { slugify } from '../utils/slugify';
+
 export interface Product {
   id: number;
   name: string;
+  slug: string;  // Agregar el slug
   price: number;
   photos: string[];
   description: string;
@@ -11,6 +14,7 @@ export const products: Product[] = [
   {
     id: 3,
     name: 'Cámara Reflex Profesional',
+    slug: slugify('Cámara Reflex Profesional'),  // Generamos el slug
     price: 799.99,
     photos: [
       'https://picsum.photos/seed/camera1/600/400',
@@ -24,6 +28,7 @@ export const products: Product[] = [
   {
     id: 4,
     name: 'Laptop Ultrabook',
+    slug: slugify('Laptop Ultrabook'),  // Generamos el slug
     price: 999.99,
     photos: [
       'https://images.unsplash.com/photo-1481277542470-605612bd2d61?auto=format&fit=crop&w=600&q=80'
@@ -34,6 +39,7 @@ export const products: Product[] = [
   {
     id: 5,
     name: 'Smartphone Pro',
+    slug: slugify('Smartphone Pro'),  // Generamos el slug
     price: 899.99,
     photos: [
       'https://images.unsplash.com/photo-1495433324511-bf8e92934d90?auto=format&fit=crop&w=600&q=80'
@@ -44,6 +50,7 @@ export const products: Product[] = [
   {
     id: 6,
     name: 'Tablet 10"',
+    slug: slugify('Tablet 10"'),  // Generamos el slug
     price: 349.99,
     photos: [
       'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80'

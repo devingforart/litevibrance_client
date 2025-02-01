@@ -7,14 +7,14 @@ import { useNotification } from '../../context/NotificationContext';
 import { products } from '../../data/products';
 
 const ProductDetail: React.FC = () => {
-  const { id } = useParams();
+  const { id, slug } = useParams();  // Obtenemos tanto el id como el slug desde la URL
   const { addToCart } = useCart();
   const { addNotification } = useNotification();
   const [quantity, setQuantity] = useState(1);
   const [selectedPhoto, setSelectedPhoto] = useState(0);
 
   const productId = Number(id);
-  const product = products.find((p) => p.id === productId);
+  const product = products.find((p) => p.id === productId && p.slug === slug);  // Buscamos el producto por id y slug
 
   if (!product) {
     return (

@@ -1717,7 +1717,7 @@ Contenido:
     position: absolute;
     top: 60px;
     right: 0;
-    background: #fff;
+    background: #fff; /* Fondo claro por defecto */
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     display: flex;
@@ -1743,6 +1743,19 @@ Contenido:
 
   &__menu button:hover {
     background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  /* Estilos para el modo oscuro */
+  &.dark-mode .view-switcher__menu {
+    background: #333;  /* Fondo oscuro */
+  }
+
+  &.dark-mode .view-switcher__menu button {
+    color: #fff;  /* Texto blanco */
+  }
+
+  &.dark-mode .view-switcher__menu button:hover {
+    background-color: rgba(255, 255, 255, 0.1);  /* Hover más sutil en modo oscuro */
   }
 }
 
@@ -1775,9 +1788,10 @@ export type ViewMode = 'grid' | 'list' | 'detailed';
 interface ViewSwitcherProps {
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
+  isDarkMode: boolean;  // Prop para manejar el modo oscuro
 }
 
-const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ viewMode, setViewMode }) => {
+const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ viewMode, setViewMode, isDarkMode }) => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -1788,7 +1802,6 @@ const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ viewMode, setViewMode }) =>
     setOpen(false);
   };
 
-  // Cierra el menú si se hace clic fuera del contenedor
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -1802,13 +1815,11 @@ const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ viewMode, setViewMode }) =>
       document.removeEventListener('mousedown', handleClickOutside);
     }
     
-    // Limpieza en caso de desmontaje o cambio de 'open'
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [open]);
 
-  // Selecciona el icono principal según la vista actual
   const getMainIcon = () => {
     if (viewMode === 'grid') return <FaTh />;
     if (viewMode === 'list') return <FaList />;
@@ -1816,7 +1827,7 @@ const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ viewMode, setViewMode }) =>
   };
 
   return (
-    <div className="view-switcher" ref={containerRef}>
+    <div className={`view-switcher ${isDarkMode ? 'dark-mode' : ''}`} ref={containerRef}>
       <button className="view-switcher__toggle" onClick={toggleMenu}>
         {getMainIcon()}
       </button>
@@ -2115,7 +2126,7 @@ Contenido:
       }
     }
   }
-
+ 
   @media (max-width: 768px) {
     &__hero {
       min-height: auto;
@@ -2124,6 +2135,16 @@ Contenido:
   }
 }
 
+.home__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: calc(100vh - 250px); /* Hace que la sección Hero ocupe el espacio restante */
+  gap: 2rem;
+  position: relative;
+  border-radius: 8px;
+  padding: 2rem;
+}
 
 --------------------------------------------------------------------------------
 
@@ -2265,7 +2286,14 @@ html, body {
   flex-direction: column;
   min-height: 100vh;
 }
+.home {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Asegura que el footer se alinee al fondo */
 
+
+}
 /* El main debe ocupar el espacio disponible para empujar el footer hacia abajo */
 main {
   padding-top: 80px; /* O el valor que compense la altura del header */
@@ -2324,9 +2352,8 @@ main {
 
 /* 4. VARIABLES: Modo Oscuro */
 :root[data-theme='dark'] {
-  --card-shadow: 0 4px 12px rgba(161, 154, 154, 0.8);
+  --card-shadow: 0 4px 12px rgba(46, 87, 110, 0.8);
   --card-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.9);
-
   
   /* Fondo y texto */
   --color-bg:             #1f1f1f;       /* Gris oscuro */
@@ -2339,7 +2366,7 @@ main {
   --color-primary:        #4f46e5;       /* Índigo */
   --color-primary-hover:  #4338ca;       /* Índigo más oscuro */
   --color-secondary:      #8b8efc;       /* Índigo clarito para dark */
-  --color-accent:         #43beb8;       /* Verde (ajusta si deseas) */
+  --color-accent:         #d5eceb;       /* Verde (ajusta si deseas) */
   --color-accent-hover:   #059669;
 
   /* Gris para bordes/inputs en dark */
@@ -2363,6 +2390,12 @@ main {
   --switch-bg-on:        #bbb;
   --switch-knob:         #111;
 
+
+  .view-switcher__menu{
+    background-color: var(--wave-color);
+    box-shadow:   0 2px 10px rgba(231, 213, 213, 0.3);
+
+  }
 }
 
 /* 5. Estilos base para tipografías */
@@ -2594,7 +2627,8 @@ export default ProductCard;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Footer/Footer.scss
 
 Contenido:
-/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/Footer/Footer.scss */
+/* src/components/Footer/Footer.scss */
+
 .footer {
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
@@ -2602,16 +2636,13 @@ Contenido:
   text-align: center;
   padding: 1.5rem;
   margin-top: 2rem;
-  /* c.$text-color -> var(--color-text) */
   color: var(--color-text);
   opacity: 0;
   transform: translateY(20px);
   animation: fadeUp 0.5s ease forwards;
-
-  p {
-    font-size: 0.9rem;
-    opacity: 0.85;
-  }
+  position: relative; /* Asegúrate de que no se posicione fuera del flujo */
+  bottom: 0;
+  width: 100%; /* Asegura que el footer ocupe todo el ancho */
 }
 
 @keyframes fadeUp {
@@ -2889,44 +2920,91 @@ export default FloatingThemeSwitch;
 Contenido:
 /* src/components/ThemeSwitch/FloatingThemeSwitch.scss */
 
+/* Botón de interruptor flotante para cambiar de tema */
 .floating-theme-switch {
   position: fixed;
   bottom: 20px;
   right: 20px;
   z-index: 1500;
-  width: 50px;
-  height: 50px;
+  width: 60px;  /* Tamaño más grande para mayor visibilidad */
+  height: 60px;
   border: none;
   border-radius: 50%;
-  background-color: var(--color-primary);
+  background-color: var(--color-primary); /* Color base */
   color: #fff;
-  font-size: 1.4rem;
+  font-size: 1.8rem; /* Mayor tamaño para mejor visibilidad */
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-  transition: background-color var(--transition-speed),
-              transform 0.2s;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Sombra intensa para un look más impactante */
+  transition: all 0.3s ease; /* Transición más suave */
+  transform: scale(1); /* Animación de escala */
 
+  /* Efecto cuando pasa el mouse sobre el botón */
   &:hover {
-    background-color: var(--color-primary-hover);
-    transform: translateY(-3px);
+    background-color: var(--color-accent);
+    transform: translateY(-5px) scale(1.1); /* Efecto de "flotación" y ampliación */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); /* Sombra más grande */
   }
+
+  /* Efecto al hacer clic */
   &:active {
     transform: scale(0.95);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Sombra más suave */
   }
 
-  /* Pequeña animación cuando se monta */
+  /* Animación de aparición */
   animation: slideUp 0.5s ease forwards;
   transform: translateY(100px);
   opacity: 0;
 }
 
+/* Animación para que aparezca desde abajo */
 @keyframes slideUp {
   100% {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+/* Modo oscuro */
+:root[data-theme='dark'] {
+  .floating-theme-switch {
+    background-color: var(--color-accent); /* Fondo más oscuro */
+    color: #000;
+    font-size: 2rem; /* Aumentamos el tamaño para hacerlo más prominente */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7); /* Sombra más intensa */
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  }
+
+  .floating-theme-switch:hover {
+    background-color: var(--color-primary-hover);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+  }
+
+  .floating-theme-switch:active {
+    transform: scale(1.05); /* Efecto de expansión en lugar de reducción */
+  }
+}
+
+/* Modo claro */
+:root[data-theme='light'] {
+  .floating-theme-switch {
+    background-color: var(--color-primary); /* Color brillante para el modo claro */
+    color: #fff;
+    font-size: 1.8rem; /* Mantener tamaño visible */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Sombra sutil */
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  }
+
+  .floating-theme-switch:hover {
+    background-color: var(--color-accent);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .floating-theme-switch:active {
+    transform: scale(1.1); /* Efecto de "click" expandido */
   }
 }
 
