@@ -9,26 +9,6 @@ export interface Product {
 
 export const products: Product[] = [
   {
-    id: 1,
-    name: 'Audífonos Inalámbricos',
-    price: 59.99,
-    photos: [
-      'https://images.unsplash.com/photo-1606813906572-cb9c504a6d4c?auto=format&fit=crop&w=600&q=80'
-    ],
-    description:
-      'Estos audífonos ofrecen un sonido envolvente, conexión Bluetooth 5.0 y una batería de larga duración.',
-  },
-  {
-    id: 2,
-    name: 'Smartwatch Deportivo',
-    price: 129.99,
-    photos: [
-      'https://images.unsplash.com/photo-1586545177230-45fe08c59ecc?auto=format&fit=crop&w=600&q=80'
-    ],
-    description:
-      'Este smartwatch combina diseño moderno y funciones deportivas, ideal para monitorizar tu actividad física.',
-  },
-  {
     id: 3,
     name: 'Cámara Reflex Profesional',
     price: 799.99,
