@@ -10,7 +10,7 @@ directories = [
 
 ]
 
-file_extensions = ['slint','rs']
+file_extensions = ['tsx','rs']
 output_file = 'plurals.txt'
 
 def is_code_file(file):
