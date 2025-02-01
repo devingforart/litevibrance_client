@@ -8,9 +8,10 @@ export type ViewMode = 'grid' | 'list' | 'detailed';
 interface ViewSwitcherProps {
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
+  isDarkMode: boolean;  // Prop para manejar el modo oscuro
 }
 
-const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ viewMode, setViewMode }) => {
+const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ viewMode, setViewMode, isDarkMode }) => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -21,7 +22,6 @@ const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ viewMode, setViewMode }) =>
     setOpen(false);
   };
 
-  // Cierra el menú si se hace clic fuera del contenedor
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -35,13 +35,11 @@ const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ viewMode, setViewMode }) =>
       document.removeEventListener('mousedown', handleClickOutside);
     }
     
-    // Limpieza en caso de desmontaje o cambio de 'open'
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [open]);
 
-  // Selecciona el icono principal según la vista actual
   const getMainIcon = () => {
     if (viewMode === 'grid') return <FaTh />;
     if (viewMode === 'list') return <FaList />;
@@ -49,7 +47,7 @@ const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ viewMode, setViewMode }) =>
   };
 
   return (
-    <div className="view-switcher" ref={containerRef}>
+    <div className={`view-switcher ${isDarkMode ? 'dark-mode' : ''}`} ref={containerRef}>
       <button className="view-switcher__toggle" onClick={toggleMenu}>
         {getMainIcon()}
       </button>

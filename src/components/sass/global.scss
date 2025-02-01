@@ -84,7 +84,6 @@ main {
 :root[data-theme='dark'] {
   --card-shadow: 0 4px 12px rgba(46, 87, 110, 0.8);
   --card-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.9);
-
   
   /* Fondo y texto */
   --color-bg:             #1f1f1f;       /* Gris oscuro */
@@ -121,6 +120,12 @@ main {
   --switch-bg-on:        #bbb;
   --switch-knob:         #111;
 
+
+  .view-switcher__menu{
+    background-color: var(--wave-color);
+    box-shadow:   0 2px 10px rgba(231, 213, 213, 0.3);
+
+  }
 }
 
 /* 5. Estilos base para tipografías */
