@@ -13,6 +13,7 @@ import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import NotFound from './components/NotFound/NotFound';
 import FloatingThemeSwitch from './components/ThemeSwitch/FloatingThemeSwitch';
+import Notification from './components/Notification/Notification'; // Importamos el componente de notificaciones
 import './components/sass/global.scss';
 
 const App: React.FC = () => {
@@ -34,6 +35,7 @@ const App: React.FC = () => {
         </Routes>
       </main>
       <Footer />
+      <Notification /> {/* Aquí se renderizan las notificaciones */}
     </div>
   );
 };

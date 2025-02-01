@@ -3,11 +3,13 @@ import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import './ProductDetail.scss';
 import { useCart } from '../../context/CartContext';
+import { useNotification } from '../../context/NotificationContext';
 import { products } from '../../data/products';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams();
   const { addToCart } = useCart();
+  const { addNotification } = useNotification();
   const [quantity, setQuantity] = useState(1);
   const [selectedPhoto, setSelectedPhoto] = useState(0);
 
@@ -25,26 +27,18 @@ const ProductDetail: React.FC = () => {
     );
   }
 
-  // Convertir product.photos en un array (o, en su defecto, usar product.image)
-  const photoArray =
-    product.photos && product.photos.length > 0
-      ? product.photos
-      : [];
-
-  const mainImage =
-    photoArray.length > 0
-      ? photoArray[selectedPhoto]
-      : 'https://via.placeholder.com/600x400?text=No+Image';
+  const photoArray = product.photos && product.photos.length > 0 ? product.photos : [];
+  const mainImage = photoArray.length > 0 ? photoArray[selectedPhoto] : 'https://via.placeholder.com/600x400?text=No+Image';
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
       addToCart(product);
     }
-    alert(`${product.name} (x${quantity}) agregado al carrito`);
+    addNotification(`${product.name} (x${quantity}) agregado al carrito`, 'success');
   };
 
-  const increaseQuantity = () => setQuantity((prev) => prev + 1);
-  const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  const increaseQuantity = () => setQuantity(prev => prev + 1);
+  const decreaseQuantity = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 
   return (
     <div className="product-detail container">

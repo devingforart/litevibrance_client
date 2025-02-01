@@ -2,18 +2,20 @@
 import React from 'react';
 import './Checkout.scss';
 import { useCart } from '../../context/CartContext';
+import { useNotification } from '../../context/NotificationContext';
 
 const Checkout: React.FC = () => {
   const { cartItems, clearCart } = useCart();
-
-  const totalPrice = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  const { addNotification } = useNotification();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí se simula la finalización de la compra y se podría enviar la orden a un backend
-    alert('Compra finalizada con éxito!');
+    addNotification('Compra finalizada con éxito!', 'success');
     clearCart();
   };
+
+  const totalPrice = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
 
   return (
     <div className="checkout container">

@@ -9,6 +9,7 @@ import './components/sass/global.scss';
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
+import { NotificationProvider } from './context/NotificationContext';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -16,7 +17,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <ThemeProvider>
         <AuthProvider>
           <CartProvider>
-            <App />
+            <NotificationProvider>
+              <App />
+            </NotificationProvider>
           </CartProvider>
         </AuthProvider>
       </ThemeProvider>
