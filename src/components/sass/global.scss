@@ -82,7 +82,7 @@ main {
 
 /* 4. VARIABLES: Modo Oscuro */
 :root[data-theme='dark'] {
-  --card-shadow: 0 4px 12px rgba(161, 154, 154, 0.8);
+  --card-shadow: 0 4px 12px rgba(46, 87, 110, 0.8);
   --card-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.9);
 
   
@@ -97,7 +97,7 @@ main {
   --color-primary:        #4f46e5;       /* Índigo */
   --color-primary-hover:  #4338ca;       /* Índigo más oscuro */
   --color-secondary:      #8b8efc;       /* Índigo clarito para dark */
-  --color-accent:         #43beb8;       /* Verde (ajusta si deseas) */
+  --color-accent:         #d5eceb;       /* Verde (ajusta si deseas) */
   --color-accent-hover:   #059669;
 
   /* Gris para bordes/inputs en dark */
