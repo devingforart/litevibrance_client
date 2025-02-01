@@ -181,6 +181,17 @@
     font-size: 1.2rem;
   }
 }
+.cart-badge {
+  background-color: var(--color-primary);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.4rem;
+  margin-left: 0.5rem;
+  display: inline-block;
+  min-width: 20px;
+  text-align: center;
+}
 
 /* Ocultar la marca en mobile para evitar conflictos con el buscador */
 @media (max-width: 768px) {
@@ -189,4 +200,3 @@
   }
 }
 
-/* ... resto de estilos ... */

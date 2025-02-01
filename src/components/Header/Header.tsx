@@ -1,6 +1,8 @@
+// src/components/Header/Header.tsx
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaSearch } from 'react-icons/fa'; // Icono de lupa
+import { useCart } from '../../context/CartContext';
 import './Header.scss';
 
 const navLinks = [
@@ -15,6 +17,10 @@ const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
+  const { cartItems } = useCart();
+
+  // Calcula el total de artículos en el carrito sumando las cantidades de cada ítem
+  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   useEffect(() => {
     if (isOpen) {
@@ -67,12 +73,12 @@ const Header: React.FC = () => {
         <ul className="nav__list">
           {navLinks.map((link) => (
             <li key={link.name} className="nav__item">
-              <Link
-                to={link.path}
-                className="nav__link"
-                onClick={() => setIsOpen(false)}
-              >
+              <Link to={link.path} className="nav__link" onClick={() => setIsOpen(false)}>
                 {link.name}
+                {/* Si es el enlace "Carrito" y hay ítems, se muestra el badge */}
+                {link.name === 'Carrito' && totalItems > 0 && (
+                  <span className="cart-badge">{totalItems}</span>
+                )}
               </Link>
             </li>
           ))}
