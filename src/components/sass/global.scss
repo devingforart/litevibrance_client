@@ -16,7 +16,14 @@ html, body {
   flex-direction: column;
   min-height: 100vh;
 }
+.home {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Asegura que el footer se alinee al fondo */
 
+
+}
 /* El main debe ocupar el espacio disponible para empujar el footer hacia abajo */
 main {
   padding-top: 80px; /* O el valor que compense la altura del header */

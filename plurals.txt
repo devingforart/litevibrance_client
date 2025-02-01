@@ -12,6 +12,7 @@ import './components/sass/global.scss';
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
+import { NotificationProvider } from './context/NotificationContext';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -19,7 +20,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <ThemeProvider>
         <AuthProvider>
           <CartProvider>
-            <App />
+            <NotificationProvider>
+              <App />
+            </NotificationProvider>
           </CartProvider>
         </AuthProvider>
       </ThemeProvider>
@@ -48,7 +51,9 @@ import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import NotFound from './components/NotFound/NotFound';
 import FloatingThemeSwitch from './components/ThemeSwitch/FloatingThemeSwitch';
+import Notification from './components/Notification/Notification'; // Importamos el componente de notificaciones
 import './components/sass/global.scss';
+import Contact from './components/Contact/Contact';
 
 const App: React.FC = () => {
   return (
@@ -57,7 +62,7 @@ const App: React.FC = () => {
       <FloatingThemeSwitch />
       <main>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home />} /> 
           <Route path="/products" element={<ProductList />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/cart" element={<Cart />} />
@@ -65,10 +70,13 @@ const App: React.FC = () => {
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/contact" element={<Contact />} /> {/* Nueva ruta */}
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />
+      <Notification /> {/* Aquí se renderizan las notificaciones */}
     </div>
   );
 };
@@ -190,18 +198,20 @@ Contenido:
 import React from 'react';
 import './Checkout.scss';
 import { useCart } from '../../context/CartContext';
+import { useNotification } from '../../context/NotificationContext';
 
 const Checkout: React.FC = () => {
   const { cartItems, clearCart } = useCart();
-
-  const totalPrice = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  const { addNotification } = useNotification();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí se simula la finalización de la compra y se podría enviar la orden a un backend
-    alert('Compra finalizada con éxito!');
+    addNotification('Compra finalizada con éxito!', 'success');
     clearCart();
   };
+
+  const totalPrice = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
 
   return (
     <div className="checkout container">
@@ -434,9 +444,11 @@ export default NotFound;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Header/Header.tsx
 
 Contenido:
+// src/components/Header/Header.tsx
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaSearch } from 'react-icons/fa'; // Icono de lupa
+import { useCart } from '../../context/CartContext';
 import './Header.scss';
 
 const navLinks = [
@@ -451,6 +463,10 @@ const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
+  const { cartItems } = useCart();
+
+  // Calcula el total de artículos en el carrito sumando las cantidades de cada ítem
+  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   useEffect(() => {
     if (isOpen) {
@@ -503,12 +519,12 @@ const Header: React.FC = () => {
         <ul className="nav__list">
           {navLinks.map((link) => (
             <li key={link.name} className="nav__item">
-              <Link
-                to={link.path}
-                className="nav__link"
-                onClick={() => setIsOpen(false)}
-              >
+              <Link to={link.path} className="nav__link" onClick={() => setIsOpen(false)}>
                 {link.name}
+                {/* Si es el enlace "Carrito" y hay ítems, se muestra el badge */}
+                {link.name === 'Carrito' && totalItems > 0 && (
+                  <span className="cart-badge">{totalItems}</span>
+                )}
               </Link>
             </li>
           ))}
@@ -716,6 +732,17 @@ Contenido:
     font-size: 1.2rem;
   }
 }
+.cart-badge {
+  background-color: var(--color-primary);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.4rem;
+  margin-left: 0.5rem;
+  display: inline-block;
+  min-width: 20px;
+  text-align: center;
+}
 
 /* Ocultar la marca en mobile para evitar conflictos con el buscador */
 @media (max-width: 768px) {
@@ -724,7 +751,6 @@ Contenido:
   }
 }
 
-/* ... resto de estilos ... */
 
 
 --------------------------------------------------------------------------------
@@ -946,11 +972,13 @@ import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import './ProductDetail.scss';
 import { useCart } from '../../context/CartContext';
+import { useNotification } from '../../context/NotificationContext';
 import { products } from '../../data/products';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams();
   const { addToCart } = useCart();
+  const { addNotification } = useNotification();
   const [quantity, setQuantity] = useState(1);
   const [selectedPhoto, setSelectedPhoto] = useState(0);
 
@@ -968,26 +996,18 @@ const ProductDetail: React.FC = () => {
     );
   }
 
-  // Convertir product.photos en un array (o, en su defecto, usar product.image)
-  const photoArray =
-    product.photos && product.photos.length > 0
-      ? product.photos
-      : [];
-
-  const mainImage =
-    photoArray.length > 0
-      ? photoArray[selectedPhoto]
-      : 'https://via.placeholder.com/600x400?text=No+Image';
+  const photoArray = product.photos && product.photos.length > 0 ? product.photos : [];
+  const mainImage = photoArray.length > 0 ? photoArray[selectedPhoto] : 'https://via.placeholder.com/600x400?text=No+Image';
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
       addToCart(product);
     }
-    alert(`${product.name} (x${quantity}) agregado al carrito`);
+    addNotification(`${product.name} (x${quantity}) agregado al carrito`, 'success');
   };
 
-  const increaseQuantity = () => setQuantity((prev) => prev + 1);
-  const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  const increaseQuantity = () => setQuantity(prev => prev + 1);
+  const decreaseQuantity = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 
   return (
     <div className="product-detail container">
@@ -1918,6 +1938,86 @@ Contenido:
 
 --------------------------------------------------------------------------------
 
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Notification/Notification.tsx
+
+Contenido:
+// src/components/Notification/Notification.tsx
+import React from 'react';
+import './Notification.scss';
+import { useNotification } from '../../context/NotificationContext';
+
+const Notification: React.FC = () => {
+  const { notifications, removeNotification } = useNotification();
+
+  return (
+    <div className="notification-container">
+      {notifications.map((notification) => (
+        <div
+          key={notification.id}
+          className={`notification notification--${notification.type}`}
+          onClick={() => removeNotification(notification.id)}
+        >
+          {notification.message}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default Notification;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Notification/Notification.scss
+
+Contenido:
+/* src/components/Notification/Notification.scss */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .notification {
+    padding: 15px 20px;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    opacity: 0;
+    animation: slideIn 0.5s forwards;
+  }
+  
+  .notification--success {
+    background-color: #48bb78; /* Verde */
+  }
+  
+  .notification--error {
+    background-color: #f56565; /* Rojo */
+  }
+  
+  .notification--info {
+    background-color: #4299e1; /* Azul */
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+
+--------------------------------------------------------------------------------
+
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Home/Home.tsx
 
 Contenido:
@@ -2534,13 +2634,224 @@ import './Footer.scss';
 const Footer: React.FC = () => {
   return (
     <footer className="footer">
-      <p>&copy; {new Date().getFullYear()} MiTienda. Todos los derechos reservados.</p>
+      <p>&copy; {new Date().getFullYear()} liteVibrance. Todos los derechos reservados.</p>
     </footer>
   );
 };
 
 export default Footer;
 
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Contact/Contact.tsx
+
+Contenido:
+// src/components/Contact/Contact.tsx
+import React, { useState } from 'react';
+import { useNotification } from '../../context/NotificationContext';
+import './Contact.scss';
+
+const Contact: React.FC = () => {
+  const { addNotification } = useNotification();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Aquí iría la lógica para enviar el formulario a tu backend o servicio
+    addNotification('Mensaje enviado con éxito!', 'success');
+
+    // Limpiar el formulario
+    setName('');
+    setEmail('');
+    setSubject('');
+    setMessage('');
+  };
+
+  return (
+    <div className="contact container">
+      <h2>Contáctanos</h2>
+      <p>Si tienes alguna duda o comentario, ¡no dudes en escribirnos!</p>
+
+      <form className="contact__form" onSubmit={handleSubmit}>
+        <div className="contact__form-group">
+          <label htmlFor="name">Nombre</label>
+          <input
+            type="text"
+            id="name"
+            placeholder="Tu nombre"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+        </div>
+        <div className="contact__form-group">
+          <label htmlFor="email">Correo electrónico</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Tu correo"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div className="contact__form-group">
+          <label htmlFor="subject">Asunto</label>
+          <input
+            type="text"
+            id="subject"
+            placeholder="Asunto del mensaje"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            required
+          />
+        </div>
+        <div className="contact__form-group">
+          <label htmlFor="message">Mensaje</label>
+          <textarea
+            id="message"
+            placeholder="Escribe tu mensaje aquí"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit" className="btn-primary">Enviar Mensaje</button>
+      </form>
+
+      <div className="contact__info">
+        <div className="contact__info-item">
+          <h3>Dirección</h3>
+          <p>Calle Falsa 123, Ciudad, País</p>
+        </div>
+        <div className="contact__info-item">
+          <h3>Teléfono</h3>
+          <p>+1 234 567 890</p>
+        </div>
+        <div className="contact__info-item">
+          <h3>Email</h3>
+          <p>info@litevibrance.com</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Contact;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Contact/Contact.scss
+
+Contenido:
+// src/components/Contact/Contact.scss
+.contact {
+    margin-top: 2rem;
+    text-align: center;
+    animation: fadeIn 0.6s ease forwards;
+  
+    h2 {
+      font-size: 2.2rem;
+      color: var(--color-primary);
+      margin-bottom: 1rem;
+    }
+  
+    p {
+      font-size: 1.1rem;
+      color: var(--color-text);
+      margin-bottom: 2rem;
+    }
+  
+    &__form {
+      max-width: 600px;
+      margin: 0 auto 2rem auto;
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      text-align: left;
+    }
+  
+    &__form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+  
+      label {
+        font-weight: 500;
+        color: var(--color-text);
+      }
+  
+      input,
+      textarea {
+        padding: 0.75rem;
+        border: 1px solid var(--gray-300);
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.2);
+        color: var(--color-text);
+        transition: border-color 0.3s, box-shadow 0.3s;
+  
+        &:focus {
+          border-color: var(--color-accent);
+          box-shadow: 0 0 6px rgba(16, 185, 129, 0.3);
+        }
+      }
+  
+      textarea {
+        resize: vertical;
+        min-height: 120px;
+      }
+    }
+  
+    &__info {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 2rem;
+  
+      &-item {
+        background: var(--glass-bg);
+        backdrop-filter: blur(var(--glass-blur));
+        border: 1px solid var(--glass-border);
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+        min-width: 250px;
+  
+        h3 {
+          margin-bottom: 0.5rem;
+          color: var(--color-primary);
+        }
+  
+        p {
+          margin: 0;
+          color: var(--color-text);
+        }
+      }
+    }
+  }
+  
+  /* Animación de entrada */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
 
 --------------------------------------------------------------------------------
 
@@ -2618,6 +2929,60 @@ Contenido:
     opacity: 1;
   }
 }
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/context/NotificationContext.tsx
+
+Contenido:
+// src/context/NotificationContext.tsx
+import React, { createContext, useContext, useState } from 'react';
+
+export type NotificationType = 'success' | 'error' | 'info';
+
+export interface Notification {
+  id: number;
+  message: string;
+  type: NotificationType;
+}
+
+interface NotificationContextProps {
+  notifications: Notification[];
+  addNotification: (message: string, type?: NotificationType) => void;
+  removeNotification: (id: number) => void;
+}
+
+const NotificationContext = createContext<NotificationContextProps>({
+  notifications: [],
+  addNotification: () => {},
+  removeNotification: () => {},
+});
+
+export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  const addNotification = (message: string, type: NotificationType = 'info') => {
+    const id = Date.now();
+    setNotifications(prev => [...prev, { id, message, type }]);
+    // Remover la notificación automáticamente después de 3 segundos
+    setTimeout(() => {
+      setNotifications(prev => prev.filter(n => n.id !== id));
+    }, 3000);
+  };
+
+  const removeNotification = (id: number) => {
+    setNotifications(prev => prev.filter(n => n.id !== id));
+  };
+
+  return (
+    <NotificationContext.Provider value={{ notifications, addNotification, removeNotification }}>
+      {children}
+    </NotificationContext.Provider>
+  );
+};
+
+export const useNotification = () => useContext(NotificationContext);
 
 
 --------------------------------------------------------------------------------

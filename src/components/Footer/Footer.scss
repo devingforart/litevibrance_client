@@ -1,4 +1,5 @@
-/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/Footer/Footer.scss */
+/* src/components/Footer/Footer.scss */
+
 .footer {
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
@@ -6,16 +7,13 @@
   text-align: center;
   padding: 1.5rem;
   margin-top: 2rem;
-  /* c.$text-color -> var(--color-text) */
   color: var(--color-text);
   opacity: 0;
   transform: translateY(20px);
   animation: fadeUp 0.5s ease forwards;
-
-  p {
-    font-size: 0.9rem;
-    opacity: 0.85;
-  }
+  position: relative; /* Asegúrate de que no se posicione fuera del flujo */
+  bottom: 0;
+  width: 100%; /* Asegura que el footer ocupe todo el ancho */
 }
 
 @keyframes fadeUp {
