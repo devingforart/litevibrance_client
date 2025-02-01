@@ -134,3 +134,59 @@
     display: none;
   }
 }
+
+
+
+/* ... estilos previos ... */
+
+.header__center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.header__search {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  input {
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    outline: none;
+    width: 200px;
+  }
+
+  button {
+    background-color: var(--color-primary);
+    border: none;
+    padding: 0.5rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+  }
+
+  button:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  svg {
+    font-size: 1.2rem;
+  }
+}
+
+/* Ocultar la marca en mobile para evitar conflictos con el buscador */
+@media (max-width: 768px) {
+  .header__brand {
+    display: none;
+  }
+}
+
+/* ... resto de estilos ... */

@@ -16,14 +16,20 @@
 /* 3. VARIABLES: Modo Claro (por defecto) */
 :root {
   /* Fondo y texto */
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --card-shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.4);
+
   --color-bg:              #f9fafb;      /* Gris muy claro */
   --color-text:            #1f2933;      /* Gris muy oscuro */
+
+  /* Fondo para tarjetas (por ejemplo, ProductCard) */
+  --color-card-bg:         #ffffff;      /* Blanco para modo claro */
 
   /* Paleta principal */
   --color-primary:         #3b82f6;      /* Azul medio */
   --color-primary-hover:   #2563eb;      /* Azul un poco más oscuro */
-  --color-secondary:       #6366f1;      /* Indigo clarito */
-  --color-accent:          #10b981;      /* Verde suave */
+  --color-secondary:       #6366f1;      /* Índigo clarito */
+  --color-accent:          #104bb9;      /* Azul oscuro o acento */
   --color-accent-hover:    #059669;
 
   /* Un gris intermedio para bordes, inputs, etc. */
@@ -53,15 +59,22 @@
 
 /* 4. VARIABLES: Modo Oscuro */
 :root[data-theme='dark'] {
+  --card-shadow: 0 4px 12px rgba(161, 154, 154, 0.8);
+  --card-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.9);
+
+  
   /* Fondo y texto */
   --color-bg:             #1f1f1f;       /* Gris oscuro */
   --color-text:           #f2f2f2;       /* Texto claro */
 
+  /* Fondo para tarjetas (por ejemplo, ProductCard) */
+  --color-card-bg:        #1e1e1e;       /* Fondo oscuro para tarjetas */
+
   /* Paleta principal */
-  --color-primary:        #4f46e5;       /* Indigo */
-  --color-primary-hover:  #4338ca;       /* Indigo más oscuro */
-  --color-secondary:      #8b8efc;       /* Indigo clarito para dark */
-  --color-accent:         #10b981;       /* Verde. Ajusta si quieres */
+  --color-primary:        #4f46e5;       /* Índigo */
+  --color-primary-hover:  #4338ca;       /* Índigo más oscuro */
+  --color-secondary:      #8b8efc;       /* Índigo clarito para dark */
+  --color-accent:         #43beb8;       /* Verde (ajusta si deseas) */
   --color-accent-hover:   #059669;
 
   /* Gris para bordes/inputs en dark */
@@ -85,7 +98,6 @@
   --switch-bg-on:        #bbb;
   --switch-knob:         #111;
 
-  --transition-speed:    0.3s;
 }
 
 /* 5. Estilos base para tipografías */
@@ -173,7 +185,7 @@ a {
   border-radius: 8px;
   padding: 1.5rem;
   margin: 1rem 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition:
     background-color var(--transition-speed),
     box-shadow var(--transition-speed);

@@ -1,11 +1,3 @@
-/home/southatoms/Escritorio/lite_vibrance_web/src/vite-env.d.ts
-
-Contenido:
-/// <reference types="vite/client" />
-
-
---------------------------------------------------------------------------------
-
 /home/southatoms/Escritorio/lite_vibrance_web/src/main.tsx
 
 Contenido:
@@ -16,17 +8,20 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './components/sass/global.scss';
 
-// Contexts
+// Contextos
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { AuthProvider } from './context/AuthContext';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
       <ThemeProvider>
-        <CartProvider>
-          <App />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <App />
+          </CartProvider>
+        </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>
   </React.StrictMode>
@@ -193,7 +188,7 @@ Contenido:
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Checkout/Checkout.tsx
 
 Contenido:
-// src/components/Checkout/Checkout.tsx
+// src/components/Checkout/Checkout.tsx (fragmento modificado)
 import React from 'react';
 import './Checkout.scss';
 import { useCart } from '../../context/CartContext';
@@ -201,9 +196,11 @@ import { useCart } from '../../context/CartContext';
 const Checkout: React.FC = () => {
   const { cartItems, clearCart } = useCart();
 
+  const totalPrice = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Lógica de finalizar compra (aquí iría llamada a tu backend)
+    // Aquí se simula la finalización de la compra y se podría enviar la orden a un backend
     alert('Compra finalizada con éxito!');
     clearCart();
   };
@@ -215,6 +212,17 @@ const Checkout: React.FC = () => {
         <p>El carrito está vacío. Agrega productos antes de pagar.</p>
       ) : (
         <form className="checkout__form" onSubmit={handleSubmit}>
+          <div className="checkout__summary">
+            <h3>Resumen de tu orden</h3>
+            <ul>
+              {cartItems.map(item => (
+                <li key={item.id}>
+                  {item.name} x {item.quantity} - ${(item.price * item.quantity).toFixed(2)}
+                </li>
+              ))}
+            </ul>
+            <p>Total: ${totalPrice.toFixed(2)}</p>
+          </div>
           <label>
             Dirección de Envío:
             <input type="text" name="address" required />
@@ -644,45 +652,42 @@ Contenido:
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductList/ProductList.scss
 
 Contenido:
-/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductList/ProductList.scss */
 .product-list {
-  margin-top: 2rem;
+  margin-top: 3rem;
+  padding: 0 1rem;
+  background-color: var(--color-bg, #fff); // si quieres que el fondo del listado cambie según el tema
   animation: fadeIn 0.5s ease forwards;
 
   h2 {
-    font-size: 2rem;
-    /* c.$accent-color -> var(--color-accent) */
+    font-size: 2.5rem;
     color: var(--color-accent);
-    margin-bottom: 1.5rem;
     text-align: center;
-    text-shadow: 0 0 5px var(--color-accent);
+    margin-bottom: 2rem;
+    text-shadow: 0 0 8px var(--color-accent);
     opacity: 0;
     animation: slideDown 0.6s ease forwards;
   }
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
-    margin-top: 1rem;
     opacity: 0;
     transform: translateY(20px);
     animation: fadeUp 0.7s ease forwards 0.5s;
-
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr 1fr;
-    }
-    @media (max-width: 480px) {
-      grid-template-columns: 1fr;
-    }
   }
 }
 
+
 @keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
   to {
     opacity: 1;
   }
 }
+
 @keyframes slideDown {
   0% {
     opacity: 0;
@@ -693,7 +698,12 @@ Contenido:
     transform: translateY(0);
   }
 }
+
 @keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
   to {
     opacity: 1;
     transform: translateY(0);
@@ -710,60 +720,14 @@ Contenido:
 import React from 'react';
 import './ProductList.scss';
 import ProductCard from '../ProductCard/ProductCard';
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-}
-
-// Productos más realistas (puedes cambiarlos libremente)
-const dummyProducts: Product[] = [
-  {
-    id: 1,
-    name: 'Audífonos Inalámbricos',
-    price: 59.99,
-    image: 'https://images.unsplash.com/photo-1606813906572-cb9c504a6d4c?auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    id: 2,
-    name: 'Smartwatch Deportivo',
-    price: 129.99,
-    image: 'https://images.unsplash.com/photo-1586545177230-45fe08c59ecc?auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    id: 3,
-    name: 'Cámara Reflex',
-    price: 499.99,
-    image: 'https://images.unsplash.com/photo-1526179881101-60a42dcd27a5?auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    id: 4,
-    name: 'Laptop Ultrabook',
-    price: 999.99,
-    image: 'https://images.unsplash.com/photo-1481277542470-605612bd2d61?auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    id: 5,
-    name: 'Smartphone Pro',
-    price: 899.99,
-    image: 'https://images.unsplash.com/photo-1495433324511-bf8e92934d90?auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    id: 6,
-    name: 'Tablet 10"',
-    price: 349.99,
-    image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80',
-  },
-];
+import { products } from '../../data/products';
 
 const ProductList: React.FC = () => {
   return (
     <div className="product-list container">
       <h2>Catálogo de Productos</h2>
       <div className="product-list__grid">
-        {dummyProducts.map((product) => (
+        {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
@@ -780,65 +744,18 @@ export default ProductList;
 
 Contenido:
 // src/components/ProductDetail/ProductDetail.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import './ProductDetail.scss';
 import { useCart } from '../../context/CartContext';
-
-// Mismo tipo de Product
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-}
-
-// Podrías extraer la misma lista de productos de un servicio o de la DB
-// De momento, usaremos un array local para simular
-const products: Product[] = [
-  {
-    id: 1,
-    name: 'Audífonos Inalámbricos',
-    price: 59.99,
-    image: 'https://images.unsplash.com/photo-1606813906572-cb9c504a6d4c?auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    id: 2,
-    name: 'Smartwatch Deportivo',
-    price: 129.99,
-    image: 'https://images.unsplash.com/photo-1586545177230-45fe08c59ecc?auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    id: 3,
-    name: 'Cámara Reflex',
-    price: 499.99,
-    image: 'https://images.unsplash.com/photo-1526179881101-60a42dcd27a5?auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    id: 4,
-    name: 'Laptop Ultrabook',
-    price: 999.99,
-    image: 'https://images.unsplash.com/photo-1481277542470-605612bd2d61?auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    id: 5,
-    name: 'Smartphone Pro',
-    price: 899.99,
-    image: 'https://images.unsplash.com/photo-1495433324511-bf8e92934d90?auto=format&fit=crop&w=600&q=80',
-  },
-  {
-    id: 6,
-    name: 'Tablet 10"',
-    price: 349.99,
-    image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80',
-  },
-];
+import { products } from '../../data/products';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams();
   const { addToCart } = useCart();
+  const [quantity, setQuantity] = useState(1);
+  const [selectedPhoto, setSelectedPhoto] = useState(0);
 
-  // Convertimos id a número para buscar en el array
   const productId = Number(id);
   const product = products.find((p) => p.id === productId);
 
@@ -846,32 +763,72 @@ const ProductDetail: React.FC = () => {
     return (
       <div className="product-detail container">
         <h2>Producto no encontrado</h2>
-        <Link to="/products" className="btn-primary">Volver al Catálogo</Link>
+        <Link to="/products" className="btn-primary">
+          Volver al Catálogo
+        </Link>
       </div>
     );
   }
 
+  // Convertir product.photos en un array (o, en su defecto, usar product.image)
+  const photoArray =
+    product.photos && product.photos.length > 0
+      ? product.photos
+      : [];
+
+  const mainImage =
+    photoArray.length > 0
+      ? photoArray[selectedPhoto]
+      : 'https://via.placeholder.com/600x400?text=No+Image';
+
   const handleAddToCart = () => {
-    addToCart(product);
-    alert(`${product.name} agregado al carrito`);
+    for (let i = 0; i < quantity; i++) {
+      addToCart(product);
+    }
+    alert(`${product.name} (x${quantity}) agregado al carrito`);
   };
+
+  const increaseQuantity = () => setQuantity((prev) => prev + 1);
+  const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   return (
     <div className="product-detail container">
       <div className="product-detail__content">
-        <img src={product.image} alt={product.name} />
+        <div className="product-detail__gallery">
+          <div className="product-detail__main-image">
+            <img src={mainImage} alt={`${product.name} ${selectedPhoto + 1}`} />
+          </div>
+          <div className="product-detail__thumbnails">
+            {photoArray.map((photo, index) => (
+              <img
+                key={index}
+                src={photo}
+                alt={`${product.name} ${index + 1}`}
+                className={`thumbnail ${selectedPhoto === index ? 'active' : ''}`}
+                onClick={() => setSelectedPhoto(index)}
+              />
+            ))}
+          </div>
+        </div>
         <div className="product-detail__info">
-          <h2>{product.name}</h2>
+          <h2 className="product-detail__title">{product.name}</h2>
           <p className="product-detail__price">${product.price.toFixed(2)}</p>
-          <p className="product-detail__description">
-            Aquí podrías mostrar una descripción más larga, especificaciones técnicas,
-            reseñas de otros usuarios, etc.
-          </p>
+          <p className="product-detail__description">{product.description}</p>
+
+          <div className="product-detail__quantity">
+            <label>Cantidad:</label>
+            <div className="quantity-controls">
+              <button onClick={decreaseQuantity} className="quantity-btn">–</button>
+              <input type="text" readOnly value={quantity} />
+              <button onClick={increaseQuantity} className="quantity-btn">+</button>
+            </div>
+          </div>
+
           <div className="product-detail__actions">
             <button onClick={handleAddToCart} className="btn-primary">
               Agregar al Carrito
             </button>
-            <Link to="/products" className="btn-primary">
+            <Link to="/products" className="btn-secondary">
               Volver al Catálogo
             </Link>
           </div>
@@ -889,91 +846,194 @@ export default ProductDetail;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductDetail/ProductDetail.scss
 
 Contenido:
-/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductDetail/ProductDetail.scss */
+/* src/components/ProductDetail/ProductDetail.scss */
 .product-detail {
   margin-top: 2rem;
   animation: fadeIn 0.5s ease forwards;
 
   &__content {
     display: flex;
-    gap: 2rem;
-    align-items: flex-start;
+    gap: 3rem;
     background: var(--glass-bg);
     backdrop-filter: blur(var(--glass-blur));
     border: 1px solid var(--glass-border);
-    border-radius: 8px;
-    padding: 2rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    opacity: 0;
-    transform: translateY(10px);
+    border-radius: 12px;
+    padding: 3rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
     animation: fadeUp 0.6s ease forwards;
 
-    img {
-      width: 300px;
-      height: auto;
-      border-radius: 8px;
-      object-fit: cover;
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      gap: 2rem;
+    }
+  }
+
+  /* Estilos para la galería */
+  &__gallery {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    &__main-image {
+      width: 100%;
+      height: 400px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      border-radius: 12px;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
     }
 
-    &__info {
+    &__thumbnails {
       display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      flex: 1;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding: 0.5rem 0;
 
-      h2 {
-        font-size: 2rem;
-        /* c.$primary-color -> var(--color-primary) */
-        color: var(--color-primary);
+      .thumbnail {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.3s, transform 0.3s;
+        
+        &:hover {
+          opacity: 1;
+          transform: scale(1.05);
+        }
       }
-
-      &__price {
-        font-size: 1.5rem;
-        /* c.$accent-color -> var(--color-accent) */
-        color: var(--color-accent);
-        font-weight: bold;
+      
+      .active {
+        border: 2px solid var(--color-primary);
+        opacity: 1;
       }
+    }
+  }
 
-      &__description {
-        /* c.$text-color -> var(--color-text) */
+  &__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    &__title {
+      font-size: 2.5rem;
+      color: var(--color-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    &__price {
+      font-size: 2rem;
+      color: var(--color-accent);
+      font-weight: bold;
+    }
+
+    &__description {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: var(--color-text);
+    }
+  }
+
+  &__quantity {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    label {
+      font-size: 1.1rem;
+      color: var(--color-text);
+    }
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      input {
+        width: 50px;
+        text-align: center;
+        font-size: 1.1rem;
+        border: 1px solid var(--gray-300);
+        border-radius: 4px;
+        padding: 0.4rem;
+        background: transparent;
         color: var(--color-text);
-        line-height: 1.4;
       }
+      .quantity-btn {
+        background: var(--color-primary);
+        color: #fff;
+        border: none;
+        padding: 0.5rem 0.8rem;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        &:hover {
+          background: var(--color-primary-hover);
+        }
+      }
+    }
+  }
 
-      &__actions {
-        display: flex;
-        gap: 1rem;
+  &__actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    .btn-primary,
+    .btn-secondary {
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      transition: transform 0.3s, background-color 0.3s;
+    }
+    .btn-primary {
+      background-color: var(--color-primary);
+      color: #fff;
+      border: none;
+      &:hover {
+        background-color: var(--color-primary-hover);
+        transform: translateY(-3px);
+      }
+    }
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+      &:hover {
+        background-color: var(--color-primary);
+        color: #fff;
+        transform: translateY(-3px);
       }
     }
   }
 }
 
 @keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
   to {
     opacity: 1;
   }
 }
 
 @keyframes fadeUp {
-  0% {
+  from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(20px);
   }
-  100% {
+  to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@media (max-width: 768px) {
-  .product-detail__content {
-    flex-direction: column;
-    align-items: center;
-
-    img {
-      width: 100%;
-      max-width: 400px;
-    }
   }
 }
 
@@ -1065,14 +1125,26 @@ Contenido:
 
 Contenido:
 // src/components/Register/Register.tsx
-import React from 'react';
+import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import './Register.scss';
 
 const Register: React.FC = () => {
-  const handleSubmit = (e: React.FormEvent) => {
+  const { register } = useAuth();
+  const navigate = useNavigate();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Lógica de registro real (petición a tu backend)
-    alert('Usuario registrado correctamente');
+    try {
+      await register(name, email, password);
+      navigate('/'); // O a una página de bienvenida
+    } catch (error) {
+      alert('Error en el registro');
+    }
   };
 
   return (
@@ -1081,15 +1153,15 @@ const Register: React.FC = () => {
       <form className="register__form" onSubmit={handleSubmit}>
         <label>
           Nombre
-          <input type="text" required />
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
         </label>
         <label>
           Correo electrónico
-          <input type="email" required />
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </label>
         <label>
           Contraseña
-          <input type="password" required />
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </label>
         <button type="submit" className="btn-primary">Registrarse</button>
       </form>
@@ -1268,14 +1340,25 @@ Contenido:
 
 Contenido:
 // src/components/Login/Login.tsx
-import React from 'react';
+import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import './Login.scss';
 
 const Login: React.FC = () => {
-  const handleSubmit = (e: React.FormEvent) => {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Lógica de autenticación real
-    alert('Inicio de sesión exitoso');
+    try {
+      await login(email, password);
+      navigate('/'); // Redirige a la home u otra ruta protegida
+    } catch (error) {
+      alert('Error al iniciar sesión');
+    }
   };
 
   return (
@@ -1284,11 +1367,11 @@ const Login: React.FC = () => {
       <form className="login__form" onSubmit={handleSubmit}>
         <label>
           Correo electrónico
-          <input type="email" required />
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </label>
         <label>
           Contraseña
-          <input type="password" required />
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </label>
         <button type="submit" className="btn-primary">Acceder</button>
       </form>
@@ -1629,14 +1712,20 @@ Contenido:
 /* 3. VARIABLES: Modo Claro (por defecto) */
 :root {
   /* Fondo y texto */
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --card-shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.4);
+
   --color-bg:              #f9fafb;      /* Gris muy claro */
   --color-text:            #1f2933;      /* Gris muy oscuro */
+
+  /* Fondo para tarjetas (por ejemplo, ProductCard) */
+  --color-card-bg:         #ffffff;      /* Blanco para modo claro */
 
   /* Paleta principal */
   --color-primary:         #3b82f6;      /* Azul medio */
   --color-primary-hover:   #2563eb;      /* Azul un poco más oscuro */
-  --color-secondary:       #6366f1;      /* Indigo clarito */
-  --color-accent:          #10b981;      /* Verde suave */
+  --color-secondary:       #6366f1;      /* Índigo clarito */
+  --color-accent:          #104bb9;      /* Azul oscuro o acento */
   --color-accent-hover:    #059669;
 
   /* Un gris intermedio para bordes, inputs, etc. */
@@ -1666,15 +1755,22 @@ Contenido:
 
 /* 4. VARIABLES: Modo Oscuro */
 :root[data-theme='dark'] {
+  --card-shadow: 0 4px 12px rgba(161, 154, 154, 0.8);
+  --card-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.9);
+
+  
   /* Fondo y texto */
   --color-bg:             #1f1f1f;       /* Gris oscuro */
   --color-text:           #f2f2f2;       /* Texto claro */
 
+  /* Fondo para tarjetas (por ejemplo, ProductCard) */
+  --color-card-bg:        #1e1e1e;       /* Fondo oscuro para tarjetas */
+
   /* Paleta principal */
-  --color-primary:        #4f46e5;       /* Indigo */
-  --color-primary-hover:  #4338ca;       /* Indigo más oscuro */
-  --color-secondary:      #8b8efc;       /* Indigo clarito para dark */
-  --color-accent:         #10b981;       /* Verde. Ajusta si quieres */
+  --color-primary:        #4f46e5;       /* Índigo */
+  --color-primary-hover:  #4338ca;       /* Índigo más oscuro */
+  --color-secondary:      #8b8efc;       /* Índigo clarito para dark */
+  --color-accent:         #43beb8;       /* Verde (ajusta si deseas) */
   --color-accent-hover:   #059669;
 
   /* Gris para bordes/inputs en dark */
@@ -1698,7 +1794,6 @@ Contenido:
   --switch-bg-on:        #bbb;
   --switch-knob:         #111;
 
-  --transition-speed:    0.3s;
 }
 
 /* 5. Estilos base para tipografías */
@@ -1786,7 +1881,7 @@ a {
   border-radius: 8px;
   padding: 1.5rem;
   margin: 1rem 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition:
     background-color var(--transition-speed),
     box-shadow var(--transition-speed);
@@ -1808,48 +1903,70 @@ a {
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductCard/ProductCard.scss
 
 Contenido:
-/* src/components/ProductCard/ProductCard.scss */
-
 .product-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-card-bg, #fff);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);  // Usamos la variable para la sombra
   transition: transform 0.3s, box-shadow 0.3s;
   animation: fadeIn 0.4s ease forwards;
   opacity: 0;
 
   &:hover {
     transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--card-shadow-hover); // Sombra al hacer hover
   }
 
-  &__img {
+  // Contenedor para la imagen con altura fija
+  &__image-wrapper {
     width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 1rem;
+    height: 200px;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
   }
 
+  // Contenedor de la información del producto
   &__info {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    padding: 1rem;
+    flex-grow: 1;
 
     h3 {
       font-size: 1.2rem;
-      /* Antes: color: c.$text-color; */
-      color: var(--color-text); /* Usa la variable CSS */
-      margin-bottom: 0.2rem;
+      color: var(--color-text, #333);
+      margin: 0 0 0.5rem;
     }
 
     p {
-      /* Antes: color: c.$accent-color; */
-      color: var(--color-accent);
-      font-weight: 600;
       font-size: 1.1rem;
-      margin-bottom: 1rem;
+      color: var(--color-accent, #e74c3c);
+      font-weight: 600;
+      margin: 0 0 1rem;
     }
 
     a.btn-primary {
       align-self: flex-start;
       font-size: 0.9rem;
+      text-decoration: none;
+      color: #fff;
+      background-color: var(--color-primary, #3498db);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+      margin-top: auto;
+
+      &:hover {
+        background-color: #2d86c8;
+      }
     }
   }
 }
@@ -1861,6 +1978,7 @@ Contenido:
 }
 
 
+
 --------------------------------------------------------------------------------
 
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductCard/ProductCard.tsx
@@ -1868,28 +1986,32 @@ Contenido:
 Contenido:
 // src/components/ProductCard/ProductCard.tsx
 import React from 'react';
-import './ProductCard.scss';
 import { Link } from 'react-router-dom';
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-}
+import './ProductCard.scss';
+import { Product } from '../../data/products';
 
 interface ProductCardProps {
   product: Product;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  // Usamos la primera imagen del array 'photos'
+  const imageUrl =
+    product.photos && product.photos.length > 0
+      ? product.photos[0]
+      : 'https://via.placeholder.com/600x400?text=No+Image';
+
   return (
-    <div className="product-card card">
-      <img src={product.image} alt={product.name} className="product-card__img" />
+    <div className="product-card">
+      <div className="product-card__image-wrapper">
+        <img src={imageUrl} alt={product.name} className="product-card__img" />
+      </div>
       <div className="product-card__info">
-        <h3>{product.name}</h3>
-        <p>${product.price.toFixed(2)}</p>
-        <Link to={`/products/${product.id}`} className="btn-primary">Ver detalle</Link>
+        <h3 className="product-card__title">{product.name}</h3>
+        <p className="product-card__price">${product.price.toFixed(2)}</p>
+        <Link to={`/products/${product.id}`} className="btn-primary product-card__button">
+          Ver detalle
+        </Link>
       </div>
     </div>
   );
@@ -2027,6 +2149,70 @@ Contenido:
     opacity: 1;
   }
 }
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/context/AuthContext.tsx
+
+Contenido:
+// src/context/AuthContext.tsx
+import React, { createContext, useState, useContext, useEffect } from 'react';
+
+interface User {
+  name: string;
+  email: string;
+}
+
+interface AuthContextProps {
+  user: User | null;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => void;
+  register: (name: string, email: string, password: string) => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextProps>({
+  user: null,
+  login: async () => {},
+  logout: () => {},
+  register: async () => {},
+});
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(() => {
+    const stored = localStorage.getItem('user');
+    return stored ? JSON.parse(stored) : null;
+  });
+
+  const login = async (email: string, password: string) => {
+    // Simulación de llamada a API (reemplaza con tu lógica real)
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const demoUser = { name: 'Usuario Demo', email };
+    setUser(demoUser);
+    localStorage.setItem('user', JSON.stringify(demoUser));
+  };
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+  };
+
+  const register = async (name: string, email: string, password: string) => {
+    // Simulación de registro en el backend
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const newUser = { name, email };
+    setUser(newUser);
+    localStorage.setItem('user', JSON.stringify(newUser));
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, login, logout, register }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => useContext(AuthContext);
 
 
 --------------------------------------------------------------------------------

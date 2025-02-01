@@ -1,20 +1,21 @@
-// src/components/Header/Header.tsx
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { FaSearch } from 'react-icons/fa'; // Icono de lupa
 import './Header.scss';
 
 const navLinks = [
   { name: 'Inicio', path: '/' },
   { name: 'Productos', path: '/products' },
   { name: 'Carrito', path: '/cart' },
-  { name: 'Ofertas', path: '/products?filter=ofertas' }, // Ejemplo
-  { name: 'Contacto', path: '/contact' }, // Ejemplo
+  { name: 'Ofertas', path: '/products?filter=ofertas' },
+  { name: 'Contacto', path: '/contact' },
 ];
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
-  // Bloquea el scroll del body al abrir el menú en móvil
   useEffect(() => {
     if (isOpen) {
       document.body.classList.add('no-scroll');
@@ -25,12 +26,37 @@ const Header: React.FC = () => {
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
+  const normalizeString = (str: string) =>
+    str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const normalizedTerm = normalizeString(searchTerm.trim());
+    navigate(`/products?search=${encodeURIComponent(normalizedTerm)}`);
+    setSearchTerm('');
+  };
+
   return (
     <header className="header">
       <div className="header__brand">
         <Link to="/" onClick={() => setIsOpen(false)}>
           <span className="brand__logo">liteVibrance</span>
         </Link>
+      </div>
+
+      {/* Buscador centrado */}
+      <div className="header__center">
+        <form className="header__search" onSubmit={handleSearch}>
+          <input
+            type="text"
+            placeholder="Buscar productos..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button type="submit">
+            <FaSearch />
+          </button>
+        </form>
       </div>
 
       <div className="header__toggle" onClick={toggleMenu}>
