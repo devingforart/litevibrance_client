@@ -66,8 +66,8 @@ const ProductDetail: React.FC = () => {
   };
 
   // Función para "comprar ahora": agrega el producto y redirige a checkout
-  const handleBuyNow = () => {
-    add(
+  const handleBuyNow = async () => {
+    await add(
       product.uuid,
       {
         name: product.name,
@@ -79,6 +79,7 @@ const ProductDetail: React.FC = () => {
     addNotification(`${product.name} (x${quantity}) agregado al carrito`, 'success');
     navigate('/checkout');
   };
+  
 
   return (
     <div className="product-detail container">

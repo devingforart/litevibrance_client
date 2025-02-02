@@ -19,7 +19,7 @@ import './components/sass/global.scss';
 // Contextos
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext'; // Asegúrate de usar el nuevo AuthProvider
 import { NotificationProvider } from './context/NotificationContext';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
@@ -251,8 +251,10 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaSearch } from 'react-icons/fa'; // Icono de lupa
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';  // Importamos nuestro hook de autenticación
 import './Header.scss';
 
+// Rutas generales de navegación
 const navLinks = [
   { name: 'Inicio', path: '/' },
   { name: 'Productos', path: '/products' },
@@ -266,8 +268,9 @@ const Header: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const { cartItems } = useCart();
+  const { isAuthenticated, login, logout, user } = useAuth(); // Estado y funciones de autenticación
 
-  // Calcula el total de artículos en el carrito sumando las cantidades de cada ítem
+  // Calcula el total de artículos en el carrito
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   useEffect(() => {
@@ -319,17 +322,62 @@ const Header: React.FC = () => {
 
       <nav className={`header__nav ${isOpen ? 'open' : ''}`}>
         <ul className="nav__list">
+          {/* Enlaces generales */}
           {navLinks.map((link) => (
             <li key={link.name} className="nav__item">
-              <Link to={link.path} className="nav__link" onClick={() => setIsOpen(false)}>
+              <Link
+                to={link.path}
+                className="nav__link"
+                onClick={() => setIsOpen(false)}
+              >
                 {link.name}
-                {/* Si es el enlace "Carrito" y hay ítems, se muestra el badge */}
                 {link.name === 'Carrito' && totalItems > 0 && (
                   <span className="cart-badge">{totalItems}</span>
                 )}
               </Link>
             </li>
           ))}
+
+          {/* Enlaces o botones de autenticación según el estado */}
+          {!isAuthenticated ? (
+  <>
+    <li className="nav__item">
+      <Link
+        to="#"
+        className="nav__link"
+        onClick={(e) => {
+          e.preventDefault();
+          login();
+          setIsOpen(false);
+        }}
+      >
+        Iniciar Sesión / Registrarte
+      </Link>
+    </li>
+
+  </>
+) : (
+  <>
+    <li className="nav__item">
+      <span className="nav__link">
+        Hola, {user?.name || user?.email}
+      </span>
+    </li>
+    <li className="nav__item">
+      <Link
+        to="#"
+        className="nav__link"
+        onClick={(e) => {
+          e.preventDefault();
+          logout();
+          setIsOpen(false);
+        }}
+      >
+        Cerrar Sesión
+      </Link>
+    </li>
+  </>
+)}
         </ul>
       </nav>
 
@@ -540,8 +588,8 @@ const ProductDetail: React.FC = () => {
   };
 
   // Función para "comprar ahora": agrega el producto y redirige a checkout
-  const handleBuyNow = () => {
-    add(
+  const handleBuyNow = async () => {
+    await add(
       product.uuid,
       {
         name: product.name,
@@ -553,6 +601,7 @@ const ProductDetail: React.FC = () => {
     addNotification(`${product.name} (x${quantity}) agregado al carrito`, 'success');
     navigate('/checkout');
   };
+  
 
   return (
     <div className="product-detail container">
@@ -605,46 +654,22 @@ export default ProductDetail;
 
 Contenido:
 // src/components/Register/Register.tsx
-import React, { useState } from 'react';
+import React from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import './Register.scss';
 
 const Register: React.FC = () => {
-  const { register } = useAuth();
-  const navigate = useNavigate();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await register(name, email, password);
-      navigate('/'); // O a una página de bienvenida
-    } catch (error) {
-      alert('Error en el registro');
-    }
-  };
-
+  const { loginWithRedirect } = useAuth();
   return (
     <div className="register container">
       <h2>Crear Cuenta</h2>
-      <form className="register__form" onSubmit={handleSubmit}>
-        <label>
-          Nombre
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
-        </label>
-        <label>
-          Correo electrónico
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        </label>
-        <label>
-          Contraseña
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        </label>
-        <button type="submit" className="btn-primary">Registrarse</button>
-      </form>
+      {/* Al pasar la opción screen_hint: 'signup', se abre el flujo de registro */}
+      <button 
+        onClick={() => loginWithRedirect({ screen_hint: 'signup' })}
+        className="btn-primary"
+      >
+        Registrarse
+      </button>
     </div>
   );
 };
@@ -716,41 +741,19 @@ export default Cart;
 
 Contenido:
 // src/components/Login/Login.tsx
-import React, { useState } from 'react';
+import React from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import './Login.scss';
 
 const Login: React.FC = () => {
   const { login } = useAuth();
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await login(email, password);
-      navigate('/'); // Redirige a la home u otra ruta protegida
-    } catch (error) {
-      alert('Error al iniciar sesión');
-    }
-  };
 
   return (
-    <div className="login container">
+    <div className="nav__item">
       <h2>Iniciar Sesión</h2>
-      <form className="login__form" onSubmit={handleSubmit}>
-        <label>
-          Correo electrónico
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        </label>
-        <label>
-          Contraseña
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        </label>
-        <button type="submit" className="btn-primary">Acceder</button>
-      </form>
+      <button onClick={login} className="nav__link">
+        Acceder
+      </button>
     </div>
   );
 };
@@ -1313,64 +1316,35 @@ export const useNotification = () => useContext(NotificationContext);
 
 Contenido:
 // src/context/AuthContext.tsx
-import React, { createContext, useState, useContext } from 'react';
-import { loginAPI, registerAPI } from '../services/auth';
-
-interface User {
-  token: string;
-  email: string;
-}
-
-interface AuthContextProps {
-  user: User | null;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-  register: (name: string, email: string, password: string) => Promise<void>;
-}
-
-const AuthContext = createContext<AuthContextProps>({
-  user: null,
-  login: async () => {},
-  logout: () => {},
-  register: async () => {},
-});
+import React from 'react';
+import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(() => {
-    const stored = localStorage.getItem('authUser');
-    return stored ? JSON.parse(stored) : null;
-  });
-
-  const login = async (email: string, password: string) => {
-    const data = await loginAPI(email, password);
-    // data es { token: '...' }
-    const newUser = { token: data.token, email };
-    setUser(newUser);
-    localStorage.setItem('authUser', JSON.stringify(newUser));
-  };
-
-  const register = async (name: string, email: string, password: string) => {
-    const data = await registerAPI(name, email, password);
-    // data es { token: '...' }
-    const newUser = { token: data.token, email };
-    setUser(newUser);
-    localStorage.setItem('authUser', JSON.stringify(newUser));
-  };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('authUser');
-    // Si tuvieras un logout en tu backend, podrías llamarlo aquí
-  };
-
   return (
-    <AuthContext.Provider value={{ user, login, logout, register }}>
+    <Auth0Provider
+      domain={import.meta.env.VITE_AUTH0_DOMAIN!}
+      clientId={import.meta.env.VITE_AUTH0_CLIENT_ID!}
+      redirectUri={window.location.origin}
+      audience={import.meta.env.VITE_AUTH0_AUDIENCE} // Se utiliza el audience personalizado
+    >
       {children}
-    </AuthContext.Provider>
+    </Auth0Provider>
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const { isAuthenticated, loginWithRedirect, logout, user, getAccessTokenSilently } = useAuth0();
+  return {
+    isAuthenticated,
+    // Al iniciar sesión se solicita el audience para que se entregue un access token válido para la API
+    login: () => loginWithRedirect({ audience: import.meta.env.VITE_AUTH0_AUDIENCE }),
+    logout: () => logout({ returnTo: window.location.origin }),
+    user,
+    // Al solicitar el token se agrega el parámetro audience para obtener el access token adecuado
+    getAccessTokenSilently: (options?: any) =>
+      getAccessTokenSilently({ audience: import.meta.env.VITE_AUTH0_AUDIENCE, ...options }),
+  };
+};
 
 
 --------------------------------------------------------------------------------
@@ -1450,13 +1424,14 @@ const CartContext = createContext<CartContextProps>({
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const { user } = useAuth();
+  const { user, getAccessTokenSilently } = useAuth();
 
   // Cargar el carrito dependiendo del estado de autenticación
   const loadCart = async () => {
     if (user) {
       try {
-        const items = await getCart(user.token);
+        const token = await getAccessTokenSilently();
+        const items = await getCart(token);
         setCartItems(items);
       } catch (error) {
         console.error('Error al cargar el carrito:', error);
@@ -1468,13 +1443,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Actualizar el localStorage cuando el usuario no esté logueado
-  useEffect(() => {
-    if (!user) {
-      localStorage.setItem('guestCart', JSON.stringify(cartItems));
-    }
-  }, [cartItems, user]);
-
   // Función para agregar producto al carrito
   const add = async (
     productUuid: string,
@@ -1483,7 +1451,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   ) => {
     if (user) {
       try {
-        await addToCart(user.token, productUuid, quantity);
+        const token = await getAccessTokenSilently();
+        await addToCart(token, productUuid, quantity);
         await loadCart();
       } catch (error) {
         console.error('Error al agregar al carrito:', error);
@@ -1515,7 +1484,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const remove = async (productUuid: string) => {
     if (user) {
       try {
-        await removeFromCart(user.token, productUuid);
+        const token = await getAccessTokenSilently();
+        await removeFromCart(token, productUuid);
         await loadCart();
       } catch (error) {
         console.error('Error al eliminar del carrito:', error);
@@ -1529,7 +1499,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const clear = async () => {
     if (user) {
       try {
-        await checkout(user.token);
+        const token = await getAccessTokenSilently();
+        await checkout(token);
         await loadCart();
       } catch (error) {
         console.error('Error en checkout:', error);
@@ -1970,7 +1941,6 @@ mod routes;
 
 use routes::{
     health_check,
-    register_user, login_user,
     get_products, get_product_by_id,
     add_to_cart, get_cart,
     remove_from_cart, checkout,
@@ -1992,8 +1962,6 @@ async fn main() -> anyhow::Result<()> {
 
     let app = Router::new()
         .route("/api/health", get(health_check))
-        .route("/api/register", post(register_user))
-        .route("/api/login", post(login_user))
         .route("/api/products", get(get_products))
         .route("/api/products/:id", get(get_product_by_id))
         .route("/api/cart", post(add_to_cart))
@@ -2020,68 +1988,50 @@ async fn main() -> anyhow::Result<()> {
 /home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/src/auth.rs
 
 Contenido:
+// server/backend_vibrance/src/auth.rs
 use anyhow::Result;
-use argon2::{Argon2, PasswordHasher, PasswordVerifier};
-use argon2::password_hash::{SaltString, PasswordHash};
-use jsonwebtoken::{encode, Header, EncodingKey, decode, DecodingKey, Validation};
+use jsonwebtoken::{decode, DecodingKey, Validation, decode_header};
 use serde::{Serialize, Deserialize};
 use std::env;
-use uuid::Uuid;  // Si bien en este ejemplo no se usa, puedes dejarlo o eliminarlo
-use chrono::{Utc, Duration};
-use rand::thread_rng;
+use reqwest;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
-    pub sub: String, // Aquí se almacena el UUID del usuario
-    pub exp: usize,  // Expiración del token
+    pub sub: String, // UUID del usuario
+    pub exp: usize,  // Expiración del token (si es necesario)
 }
 
-/// Hashea la contraseña utilizando Argon2
-pub fn hash_password(password: &str) -> Result<String> {
-    // Genera una salt aleatoria
-    let salt = SaltString::generate(&mut thread_rng());
-    let argon2 = Argon2::default();
-    // Usamos map_err para convertir el error de argon2 a anyhow::Error
-    let password_hash = argon2
-        .hash_password(password.as_bytes(), &salt)
-        .map(|ph| ph.to_string())
-        .map_err(|e| anyhow::anyhow!(e))?;
-    Ok(password_hash)
-}
-
-/// Verifica la contraseña contra el hash almacenado
-pub fn verify_password(password: &str, hash: &str) -> bool {
-    if let Ok(parsed_hash) = PasswordHash::new(hash) {
-        let argon2 = Argon2::default();
-        argon2.verify_password(password.as_bytes(), &parsed_hash).is_ok()
-    } else {
-        false
+/// Esta función valida y decodifica el token emitido por Auth0 usando su JWKS.
+pub async fn decode_jwt(token: &str) -> Result<Claims> {
+    let auth0_domain = env::var("VITE_AUTH0_DOMAIN")
+        .expect("VITE_AUTH0_DOMAIN debe estar definido en el .env");
+    let jwks_url = format!("https://{}/.well-known/jwks.json", auth0_domain);
+    
+    let jwks: serde_json::Value = reqwest::get(&jwks_url).await?.json().await?;
+    
+    let header = decode_header(token)?;
+    let kid = header.kid.ok_or_else(|| anyhow::anyhow!("No se encontró 'kid' en el header del token"))?;
+    
+    let jwk = jwks["keys"].as_array()
+        .and_then(|keys| keys.iter().find(|k| k["kid"].as_str() == Some(&kid)))
+        .ok_or_else(|| anyhow::anyhow!("No se encontró la clave (JWK) para el kid: {}", kid))?;
+    
+    let n = jwk["n"].as_str().ok_or_else(|| anyhow::anyhow!("Falta el parámetro 'n' en el JWK"))?;
+    let e = jwk["e"].as_str().ok_or_else(|| anyhow::anyhow!("Falta el parámetro 'e' en el JWK"))?;
+    
+    let decoding_key = DecodingKey::from_rsa_components(n, e)
+        .map_err(|err| anyhow::anyhow!("Error construyendo la clave de decodificación: {}", err))?;
+    
+    let mut validation = Validation::new(jsonwebtoken::Algorithm::RS256);
+    if let Ok(audience) = env::var("VITE_AUTH0_AUDIENCE") {
+        if !audience.is_empty() {
+            validation.set_audience(&[&audience]);
+        }
     }
-}
-
-/// Genera un token JWT con el UUID del usuario
-pub fn generate_jwt(user_uuid: &str) -> Result<String> {
-    let secret = env::var("JWT_SECRET").unwrap_or_else(|_| "secret".to_string());
-    // El token expira en 7 días
-    let expiration = Utc::now() + Duration::days(7);
-    let exp = expiration.timestamp() as usize;
-
-    let claims = Claims {
-        sub: user_uuid.to_string(),
-        exp,
-    };
-    let token = encode(&Header::default(), &claims, &EncodingKey::from_secret(secret.as_bytes()))?;
-    Ok(token)
-}
-
-/// Decodifica y verifica un token JWT
-pub fn decode_jwt(token: &str) -> Result<Claims> {
-    let secret = env::var("JWT_SECRET").unwrap_or_else(|_| "secret".to_string());
-    let token_data = decode::<Claims>(
-        token,
-        &DecodingKey::from_secret(secret.as_bytes()),
-        &Validation::default()
-    )?;
+    let issuer = format!("https://{}/", auth0_domain);
+    validation.set_issuer(&[&issuer]);
+    
+    let token_data = decode::<Claims>(token, &decoding_key, &validation)?;
     Ok(token_data.claims)
 }
 
@@ -2098,14 +2048,8 @@ use axum::{
     Json,
 };
 use sqlx::{Row, Pool, Sqlite};
-use uuid::Uuid;
-
-// Importa los tipos desde models
-use crate::models::{
-    RegisterRequest, AuthRequest, AuthResponse,
-    Product, AddToCartRequest, CartItem,
-};
-use crate::auth::{hash_password, verify_password, generate_jwt, decode_jwt};
+use crate::models::{ Product, AddToCartRequest, CartItem };
+use crate::auth::decode_jwt;
 
 pub type DbPool = Pool<Sqlite>;
 
@@ -2114,70 +2058,7 @@ pub async fn health_check() -> &'static str {
     "OK"
 }
 
-// -------------------- 2) Registrar usuario --------------------
-pub async fn register_user(
-    State(pool): State<DbPool>,
-    Json(payload): Json<RegisterRequest>,
-) -> Result<Json<AuthResponse>, (StatusCode, String)> {
-    let hash = match hash_password(&payload.password) {
-        Ok(h) => h,
-        Err(_) => return Err((StatusCode::INTERNAL_SERVER_ERROR, "Error al hashear password".to_string())),
-    };
-
-    let user_uuid = Uuid::new_v4().to_string();
-
-    let query = r#"
-        INSERT INTO users (uuid, name, email, password_hash)
-        VALUES (?1, ?2, ?3, ?4)
-    "#;
-    let res = sqlx::query(query)
-        .bind(&user_uuid)
-        .bind(&payload.name)
-        .bind(&payload.email)
-        .bind(&hash)
-        .execute(&pool)
-        .await;
-
-    if let Err(e) = res {
-        return Err((StatusCode::BAD_REQUEST, format!("Error al registrar: {}", e)));
-    }
-
-    let token = generate_jwt(&user_uuid)
-        .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Error al generar token".to_string()))?;
-
-    Ok(Json(AuthResponse { token }))
-}
-
-// -------------------- 3) Login --------------------
-pub async fn login_user(
-    State(pool): State<DbPool>,
-    Json(payload): Json<AuthRequest>,
-) -> Result<Json<AuthResponse>, (StatusCode, String)> {
-    let query = r#"SELECT uuid, password_hash FROM users WHERE email = ?1"#;
-    let row = sqlx::query(query)
-        .bind(&payload.email)
-        .fetch_optional(&pool)
-        .await
-        .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Error en la DB".to_string()))?;
-
-    let row = if let Some(r) = row { r } else {
-        return Err((StatusCode::UNAUTHORIZED, "Email no existe".to_string()));
-    };
-
-    let user_uuid: String = row.get("uuid");
-    let password_hash: String = row.get("password_hash");
-
-    if !verify_password(&payload.password, &password_hash) {
-        return Err((StatusCode::UNAUTHORIZED, "Contraseña incorrecta".to_string()));
-    }
-
-    let token = generate_jwt(&user_uuid)
-        .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Error al generar token".to_string()))?;
-
-    Ok(Json(AuthResponse { token }))
-}
-
-// -------------------- 4) Obtener lista de productos --------------------
+// -------------------- 2) Obtener lista de productos --------------------
 pub async fn get_products(
     State(pool): State<DbPool>,
 ) -> Result<Json<Vec<Product>>, (StatusCode, String)> {
@@ -2188,12 +2069,12 @@ pub async fn get_products(
         .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
     Ok(Json(rows))
 }
-// -------------------- 5) Obtener producto por ID --------------------
+
+// -------------------- 3) Obtener producto por ID --------------------
 pub async fn get_product_by_id(
     State(pool): State<DbPool>,
     Path(id): Path<String>,
 ) -> Result<Json<Product>, (StatusCode, String)> {
-    // Incluimos las columnas "photos" y "description" además de las demás
     let query = r#"
         SELECT uuid, name, slug, price, photos, description
         FROM products
@@ -2204,12 +2085,7 @@ pub async fn get_product_by_id(
         .bind(id)
         .fetch_optional(&pool)
         .await
-        .map_err(|e| {
-            (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                format!("Error al buscar producto: {}", e),
-            )
-        })?;
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Error al buscar producto: {}", e)))?;
 
     if let Some(p) = product {
         Ok(Json(p))
@@ -2217,7 +2093,8 @@ pub async fn get_product_by_id(
         Err((StatusCode::NOT_FOUND, "Producto no encontrado".to_string()))
     }
 }
-// -------------------- 6) Agregar items al carrito (requiere token) --------------------
+
+// -------------------- 4) Agregar items al carrito (requiere token) --------------------
 pub async fn add_to_cart(
     State(pool): State<DbPool>,
     TypedHeader(Authorization(bearer)): TypedHeader<Authorization<Bearer>>,
@@ -2225,6 +2102,7 @@ pub async fn add_to_cart(
 ) -> Result<String, (StatusCode, String)> {
     let token = bearer.token();
     let claims = decode_jwt(token)
+        .await
         .map_err(|_| (StatusCode::UNAUTHORIZED, "Token inválido".to_string()))?;
     let user_uuid = claims.sub;
 
@@ -2244,12 +2122,12 @@ pub async fn add_to_cart(
     Ok("Producto agregado al carrito".to_string())
 }
 
-// -------------------- 7) Ver carrito --------------------
+// -------------------- 5) Ver carrito --------------------
 pub async fn get_cart(
     State(pool): State<DbPool>,
     req: Request<axum::body::Body>,
 ) -> Result<Json<Vec<CartItem>>, (StatusCode, String)> {
-    let user_uuid = get_user_uuid_from_header(&req)?;
+    let user_uuid = get_user_uuid_from_header(&req).await?;
 
     let query = r#"SELECT product_uuid, quantity FROM cart_items
                    WHERE user_uuid = ?1"#;
@@ -2262,7 +2140,7 @@ pub async fn get_cart(
     Ok(Json(cart_items))
 }
 
-// -------------------- 8) Eliminar producto del carrito --------------------
+// -------------------- 6) Eliminar producto del carrito --------------------
 pub async fn remove_from_cart(
     State(pool): State<DbPool>,
     Path(product_id): Path<String>,
@@ -2270,6 +2148,7 @@ pub async fn remove_from_cart(
 ) -> Result<String, (StatusCode, String)> {
     let token = bearer.token();
     let claims = decode_jwt(token)
+        .await
         .map_err(|_| (StatusCode::UNAUTHORIZED, "Token inválido".to_string()))?;
     let user_uuid = claims.sub;
 
@@ -2287,12 +2166,12 @@ pub async fn remove_from_cart(
     Ok(format!("Producto '{}' eliminado del carrito", product_id))
 }
 
-// -------------------- 9) Checkout --------------------
+// -------------------- 7) Checkout --------------------
 pub async fn checkout(
     State(pool): State<DbPool>,
     req: Request<axum::body::Body>,
 ) -> Result<String, (StatusCode, String)> {
-    let user_uuid = get_user_uuid_from_header(&req)?;
+    let user_uuid = get_user_uuid_from_header(&req).await?;
 
     let query = r#"DELETE FROM cart_items WHERE user_uuid = ?1"#;
     sqlx::query(query)
@@ -2305,7 +2184,7 @@ pub async fn checkout(
 }
 
 // -------------------- Función auxiliar para extraer el usuario del header --------------------
-fn get_user_uuid_from_header(
+async fn get_user_uuid_from_header(
     req: &Request<axum::body::Body>,
 ) -> Result<String, (StatusCode, String)> {
     let auth_header = req
@@ -2323,10 +2202,43 @@ fn get_user_uuid_from_header(
 
     let token = auth_str.trim_start_matches("Bearer ");
     let claims = decode_jwt(token)
+        .await
         .map_err(|_| (StatusCode::UNAUTHORIZED, "Token inválido".to_string()))?;
 
     Ok(claims.sub)
 }
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/.env
+
+Contenido:
+# Puerto en el que arranca el servidor
+PORT=8080
+
+# URL de la base de datos SQLite (podrías usar "postgres://..." si deseas Postgres)
+PORT=8080
+DATABASE_URL=sqlite:///home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/data.db?mode=rwc
+
+# Clave secreta para firmar JWT (en producción usa algo más seguro y no lo subas a git)
+JWT_SECRET=esta-es-mi-clave-secreta
+
+VITE_API_URL=http://localhost:8080
+VITE_AUTH0_DOMAIN=dev-yfa8skztvtel11w1.us.auth0.com
+VITE_AUTH0_CLIENT_ID=xIt5BFD88ywGfCRl2L6C0LTPh7Qe5RRc
+VITE_AUTH0_AUDIENCE=https://dev-yfa8skztvtel11w1.us.auth0.com/api/v2/
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/.env
+
+Contenido:
+VITE_API_URL=http://localhost:8080
+VITE_AUTH0_DOMAIN=dev-yfa8skztvtel11w1.us.auth0.com
+VITE_AUTH0_CLIENT_ID=xIt5BFD88ywGfCRl2L6C0LTPh7Qe5RRc
+VITE_AUTH0_AUDIENCE=https://dev-yfa8skztvtel11w1.us.auth0.com/api/v2/
+  # si corresponde
 
 
 --------------------------------------------------------------------------------

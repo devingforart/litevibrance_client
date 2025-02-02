@@ -4,11 +4,14 @@ import os
 directories = [
 
 "/home/southatoms/Escritorio/lite_vibrance_web/src",
-"/home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/src"
+"/home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/src",
+"/home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/.env",
+"/home/southatoms/Escritorio/lite_vibrance_web/.env"
 
 ]
 
-file_extensions = ['tsx','js', 'ts', 'rs']
+file_extensions = ['tsx','js', 'ts', 'rs','env']
+
 output_file = 'plurals.txt'
 
 def is_code_file(file):

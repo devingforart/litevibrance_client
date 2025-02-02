@@ -25,13 +25,14 @@ const CartContext = createContext<CartContextProps>({
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const { user } = useAuth();
+  const { user, getAccessTokenSilently } = useAuth();
 
   // Cargar el carrito dependiendo del estado de autenticación
   const loadCart = async () => {
     if (user) {
       try {
-        const items = await getCart(user.token);
+        const token = await getAccessTokenSilently();
+        const items = await getCart(token);
         setCartItems(items);
       } catch (error) {
         console.error('Error al cargar el carrito:', error);
@@ -43,13 +44,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Actualizar el localStorage cuando el usuario no esté logueado
-  useEffect(() => {
-    if (!user) {
-      localStorage.setItem('guestCart', JSON.stringify(cartItems));
-    }
-  }, [cartItems, user]);
-
   // Función para agregar producto al carrito
   const add = async (
     productUuid: string,
@@ -58,7 +52,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   ) => {
     if (user) {
       try {
-        await addToCart(user.token, productUuid, quantity);
+        const token = await getAccessTokenSilently();
+        await addToCart(token, productUuid, quantity);
         await loadCart();
       } catch (error) {
         console.error('Error al agregar al carrito:', error);
@@ -90,7 +85,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const remove = async (productUuid: string) => {
     if (user) {
       try {
-        await removeFromCart(user.token, productUuid);
+        const token = await getAccessTokenSilently();
+        await removeFromCart(token, productUuid);
         await loadCart();
       } catch (error) {
         console.error('Error al eliminar del carrito:', error);
@@ -104,7 +100,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const clear = async () => {
     if (user) {
       try {
-        await checkout(user.token);
+        const token = await getAccessTokenSilently();
+        await checkout(token);
         await loadCart();
       } catch (error) {
         console.error('Error en checkout:', error);

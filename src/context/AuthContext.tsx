@@ -7,8 +7,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <Auth0Provider
       domain={import.meta.env.VITE_AUTH0_DOMAIN!}
       clientId={import.meta.env.VITE_AUTH0_CLIENT_ID!}
-      redirectUri={window.location.origin}
-      audience={import.meta.env.VITE_AUTH0_AUDIENCE} // Opcional
+      authorizationParams={{
+        redirect_uri: window.location.origin,
+        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
+      }}
     >
       {children}
     </Auth0Provider>
@@ -17,13 +19,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 export const useAuth = () => {
   const { isAuthenticated, loginWithRedirect, logout, user, getAccessTokenSilently } = useAuth0();
-  // Opcional: verifica en consola que loginWithRedirect existe
-  // console.log('loginWithRedirect:', loginWithRedirect);
   return {
     isAuthenticated,
-    login: () => loginWithRedirect(),
+    // Al iniciar sesión se solicita el audience mediante authorizationParams
+    login: () =>
+      loginWithRedirect({
+        authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE },
+      }),
     logout: () => logout({ returnTo: window.location.origin }),
     user,
-    getAccessTokenSilently,
+    // Al solicitar el token se agrega authorizationParams para obtener el access token adecuado
+    getAccessTokenSilently: (options?: any) =>
+      getAccessTokenSilently({
+        authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE },
+        ...options,
+      }),
   };
 };
