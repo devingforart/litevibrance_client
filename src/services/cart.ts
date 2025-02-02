@@ -2,11 +2,14 @@
 
 export interface CartItem {
   product_uuid: string;
+  name: string;
+  image: string;
+  price: number;
   quantity: number;
 }
 
 export async function getCart(token: string): Promise<CartItem[]> {
-  const response = await fetch(`${process.env.REACT_APP_API_URL}/api/cart`, {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/cart`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`
@@ -19,7 +22,7 @@ export async function getCart(token: string): Promise<CartItem[]> {
 }
 
 export async function addToCart(token: string, productUuid: string, quantity: number): Promise<string> {
-  const response = await fetch(`${process.env.REACT_APP_API_URL}/api/cart`, {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/cart`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -34,7 +37,7 @@ export async function addToCart(token: string, productUuid: string, quantity: nu
 }
 
 export async function removeFromCart(token: string, productUuid: string): Promise<string> {
-  const response = await fetch(`${process.env.REACT_APP_API_URL}/api/cart/${productUuid}`, {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/cart/${productUuid}`, {
     method: 'DELETE',
     headers: {
       'Authorization': `Bearer ${token}`
@@ -47,7 +50,7 @@ export async function removeFromCart(token: string, productUuid: string): Promis
 }
 
 export async function checkout(token: string): Promise<string> {
-  const response = await fetch(`${process.env.REACT_APP_API_URL}/api/checkout`, {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/checkout`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`

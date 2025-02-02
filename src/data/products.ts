@@ -2,14 +2,14 @@
 import { slugify } from '../utils/slugify';
 
 export interface Product {
-  id: number;
+  uuid: string;
   name: string;
-  slug: string;  // Agregar el slug
+  slug: string;
   price: number;
-  photos: string[];
-  description: string;
+  photos?: string[];
+  description?: string;
 }
-
+/*
 export const products: Product[] = [
   {
     id: 3,
@@ -59,3 +59,5 @@ export const products: Product[] = [
       'Una tablet versátil perfecta para entretenimiento, lectura y productividad.',
   },
 ];
+
+*/

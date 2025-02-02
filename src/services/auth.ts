@@ -1,7 +1,7 @@
 // src/services/auth.ts
 
 export async function loginAPI(email: string, password: string): Promise<{ token: string }> {
-  const response = await fetch(`${process.env.REACT_APP_API_URL}/api/login`, {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -15,7 +15,7 @@ export async function loginAPI(email: string, password: string): Promise<{ token
 }
 
 export async function registerAPI(name: string, email: string, password: string): Promise<{ token: string }> {
-  const response = await fetch(`${process.env.REACT_APP_API_URL}/api/register`, {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

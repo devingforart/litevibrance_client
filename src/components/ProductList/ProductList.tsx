@@ -5,15 +5,9 @@ import { Link, useSearchParams } from 'react-router-dom';
 import ProductCard from '../ProductCard/ProductCard';
 import ProductListItem from '../ProductListItem/ProductListItem';
 import ViewSwitcher, { ViewMode } from '../ViewSwitcher/ViewSwitcher';
+import { Product } from '../../data/products';
 
-export interface Product {
-  uuid: string;
-  name: string;
-  slug: string;
-  price: number;
-  photos?: string[];
-  description?: string;
-}
+
 
 const ProductSkeleton = () => (
   <div className="product-card skeleton">

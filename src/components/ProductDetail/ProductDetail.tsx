@@ -1,6 +1,6 @@
 // src/components/ProductDetail/ProductDetail.tsx
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import './ProductDetail.scss';
 import { useCart } from '../../context/CartContext';
 import { useNotification } from '../../context/NotificationContext';
@@ -15,17 +15,16 @@ export interface Product {
 }
 
 const ProductDetail: React.FC = () => {
-  // Los parámetros de la ruta serán "id" (que corresponde al uuid) y "slug"
-  const { id, slug } = useParams();
+  const { id } = useParams();
   const { add } = useCart();
   const { addNotification } = useNotification();
   const [quantity, setQuantity] = useState(1);
   const [selectedPhoto, setSelectedPhoto] = useState(0);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Usamos import.meta.env para acceder a la variable de entorno en Vite
     fetch(`${import.meta.env.VITE_API_URL}/api/products/${id}`)
       .then(res => res.json())
       .then((data: Product) => {
@@ -54,8 +53,31 @@ const ProductDetail: React.FC = () => {
     : 'https://via.placeholder.com/600x400?text=No+Image';
 
   const handleAddToCart = () => {
-    add(product.uuid, quantity);
+    add(
+      product.uuid,
+      {
+        name: product.name,
+        image: product.photos?.[0] || 'https://via.placeholder.com/600x400?text=No+Image',
+        price: product.price,
+      },
+      quantity
+    );
     addNotification(`${product.name} (x${quantity}) agregado al carrito`, 'success');
+  };
+
+  // Función para "comprar ahora": agrega el producto y redirige a checkout
+  const handleBuyNow = () => {
+    add(
+      product.uuid,
+      {
+        name: product.name,
+        image: product.photos?.[0] || 'https://via.placeholder.com/600x400?text=No+Image',
+        price: product.price,
+      },
+      quantity
+    );
+    addNotification(`${product.name} (x${quantity}) agregado al carrito`, 'success');
+    navigate('/checkout');
   };
 
   return (
@@ -91,6 +113,7 @@ const ProductDetail: React.FC = () => {
           </div>
           <div className="product-detail__actions">
             <button onClick={handleAddToCart} className="btn-primary">Agregar al Carrito</button>
+            <button onClick={handleBuyNow} className="btn-secondary">Comprar Ahora</button>
             <Link to="/products" className="btn-secondary">Volver al Catálogo</Link>
           </div>
         </div>

@@ -1,21 +1,20 @@
-// src/components/Checkout/Checkout.tsx (fragmento modificado)
+// src/components/Checkout/Checkout.tsx
 import React from 'react';
 import './Checkout.scss';
 import { useCart } from '../../context/CartContext';
 import { useNotification } from '../../context/NotificationContext';
 
 const Checkout: React.FC = () => {
-  const { cartItems, clearCart } = useCart();
+  const { cartItems, clear } = useCart();
   const { addNotification } = useNotification();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     addNotification('Compra finalizada con éxito!', 'success');
-    clearCart();
+    clear();
   };
 
   const totalPrice = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-
 
   return (
     <div className="checkout container">
@@ -28,7 +27,7 @@ const Checkout: React.FC = () => {
             <h3>Resumen de tu orden</h3>
             <ul>
               {cartItems.map(item => (
-                <li key={item.id}>
+                <li key={item.product_uuid}>
                   {item.name} x {item.quantity} - ${(item.price * item.quantity).toFixed(2)}
                 </li>
               ))}

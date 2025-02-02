@@ -3,15 +3,12 @@ import os
 # Lista que incluye directorios y archivos individuales
 directories = [
 
-"/home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/src",
-"/home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/Cargo.toml",
-"/home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/.env",
 "/home/southatoms/Escritorio/lite_vibrance_web/src"
 
 
 ]
 
-file_extensions = ['tsx','scss','js', 'rs', 'toml']
+file_extensions = ['tsx','js', 'ts']
 output_file = 'plurals.txt'
 
 def is_code_file(file):
