@@ -8,7 +8,7 @@ import './components/sass/global.scss';
 // Contextos
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext'; // Asegúrate de usar el nuevo AuthProvider
 import { NotificationProvider } from './context/NotificationContext';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

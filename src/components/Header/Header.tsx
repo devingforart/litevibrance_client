@@ -3,8 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaSearch } from 'react-icons/fa'; // Icono de lupa
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';  // Importamos nuestro hook de autenticación
 import './Header.scss';
 
+// Rutas generales de navegación
 const navLinks = [
   { name: 'Inicio', path: '/' },
   { name: 'Productos', path: '/products' },
@@ -18,8 +20,9 @@ const Header: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const { cartItems } = useCart();
+  const { isAuthenticated, login, logout, user } = useAuth(); // Estado y funciones de autenticación
 
-  // Calcula el total de artículos en el carrito sumando las cantidades de cada ítem
+  // Calcula el total de artículos en el carrito
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   useEffect(() => {
@@ -71,17 +74,62 @@ const Header: React.FC = () => {
 
       <nav className={`header__nav ${isOpen ? 'open' : ''}`}>
         <ul className="nav__list">
+          {/* Enlaces generales */}
           {navLinks.map((link) => (
             <li key={link.name} className="nav__item">
-              <Link to={link.path} className="nav__link" onClick={() => setIsOpen(false)}>
+              <Link
+                to={link.path}
+                className="nav__link"
+                onClick={() => setIsOpen(false)}
+              >
                 {link.name}
-                {/* Si es el enlace "Carrito" y hay ítems, se muestra el badge */}
                 {link.name === 'Carrito' && totalItems > 0 && (
                   <span className="cart-badge">{totalItems}</span>
                 )}
               </Link>
             </li>
           ))}
+
+          {/* Enlaces o botones de autenticación según el estado */}
+          {!isAuthenticated ? (
+  <>
+    <li className="nav__item">
+      <Link
+        to="#"
+        className="nav__link"
+        onClick={(e) => {
+          e.preventDefault();
+          login();
+          setIsOpen(false);
+        }}
+      >
+        Iniciar Sesión / Registrarte
+      </Link>
+    </li>
+
+  </>
+) : (
+  <>
+    <li className="nav__item">
+      <span className="nav__link">
+        Hola, {user?.name || user?.email}
+      </span>
+    </li>
+    <li className="nav__item">
+      <Link
+        to="#"
+        className="nav__link"
+        onClick={(e) => {
+          e.preventDefault();
+          logout();
+          setIsOpen(false);
+        }}
+      >
+        Cerrar Sesión
+      </Link>
+    </li>
+  </>
+)}
         </ul>
       </nav>
 
