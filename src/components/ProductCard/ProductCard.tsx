@@ -9,11 +9,9 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  // Usamos la primera imagen del array 'photos'
-  const imageUrl =
-    product.photos && product.photos.length > 0
-      ? product.photos[0]
-      : 'https://via.placeholder.com/600x400?text=No+Image';
+  const imageUrl = product.photos && product.photos.length > 0
+    ? product.photos[0]
+    : 'https://via.placeholder.com/600x400?text=No+Image';
 
   return (
     <div className="product-card">
@@ -22,13 +20,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           src={imageUrl}
           alt={product.name}
           className="product-card__img"
-          loading="lazy"  // Añadido para lazy loading
+          loading="lazy"
         />
       </div>
       <div className="product-card__info">
         <h3 className="product-card__title">{product.name}</h3>
         <p className="product-card__price">${product.price.toFixed(2)}</p>
-        <Link to={`/products/${product.id}/${product.slug}`}className="btn-primary product-card__button">
+        {/* Usamos product.uuid en lugar de product.id */}
+        <Link
+          to={`/products/${product.uuid}/${product.slug}`}
+          className="btn-primary product-card__button"
+        >
           Ver detalle
         </Link>
       </div>

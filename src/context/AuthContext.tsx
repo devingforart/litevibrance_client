@@ -1,8 +1,9 @@
 // src/context/AuthContext.tsx
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext } from 'react';
+import { loginAPI, registerAPI } from '../services/auth';
 
 interface User {
-  name: string;
+  token: string;
   email: string;
 }
 
@@ -22,29 +23,30 @@ const AuthContext = createContext<AuthContextProps>({
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
-    const stored = localStorage.getItem('user');
+    const stored = localStorage.getItem('authUser');
     return stored ? JSON.parse(stored) : null;
   });
 
   const login = async (email: string, password: string) => {
-    // Simulación de llamada a API (reemplaza con tu lógica real)
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    const demoUser = { name: 'Usuario Demo', email };
-    setUser(demoUser);
-    localStorage.setItem('user', JSON.stringify(demoUser));
+    const data = await loginAPI(email, password);
+    // data es { token: '...' }
+    const newUser = { token: data.token, email };
+    setUser(newUser);
+    localStorage.setItem('authUser', JSON.stringify(newUser));
+  };
+
+  const register = async (name: string, email: string, password: string) => {
+    const data = await registerAPI(name, email, password);
+    // data es { token: '...' }
+    const newUser = { token: data.token, email };
+    setUser(newUser);
+    localStorage.setItem('authUser', JSON.stringify(newUser));
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('user');
-  };
-
-  const register = async (name: string, email: string, password: string) => {
-    // Simulación de registro en el backend
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    const newUser = { name, email };
-    setUser(newUser);
-    localStorage.setItem('user', JSON.stringify(newUser));
+    localStorage.removeItem('authUser');
+    // Si tuvieras un logout en tu backend, podrías llamarlo aquí
   };
 
   return (

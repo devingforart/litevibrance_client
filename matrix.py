@@ -2,14 +2,16 @@ import os
 
 # Lista que incluye directorios y archivos individuales
 directories = [
-    
-    "/home/southatoms/Escritorio/lite_vibrance_web/src"
 
+"/home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/src",
+"/home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/Cargo.toml",
+"/home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/.env",
+"/home/southatoms/Escritorio/lite_vibrance_web/src"
 
 
 ]
 
-file_extensions = ['tsx','scss','js']
+file_extensions = ['tsx','scss','js', 'rs', 'toml']
 output_file = 'plurals.txt'
 
 def is_code_file(file):
@@ -20,20 +22,26 @@ def search_and_combine_files(directories, output_file):
         for path in directories:
             if os.path.isfile(path):  # Si es un archivo
                 if is_code_file(path):
-                    with open(path, 'r', encoding='utf-8') as infile:
-                        content = infile.read()
-                        outfile.write(f'{path}\n\n')
-                        outfile.write(f'Contenido:\n{content}\n\n{"-"*80}\n\n')
+                    try:
+                        with open(path, 'r', encoding='utf-8', errors='ignore') as infile:
+                            content = infile.read()
+                            outfile.write(f'{path}\n\n')
+                            outfile.write(f'Contenido:\n{content}\n\n{"-"*80}\n\n')
+                    except Exception as e:
+                        outfile.write(f"Error al leer el archivo {path}: {e}\n\n")
             elif os.path.isdir(path):  # Si es un directorio
                 for root, _, files in os.walk(path):
                     for file in files:
                         if is_code_file(file):
                             file_path = os.path.join(root, file)
-                            with open(file_path, 'r', encoding='utf-8') as infile:
-                                content = infile.read()
-                                outfile.write(f'{file_path}\n\n')
-                                outfile.write(f'Contenido:\n{content}\n\n{"-"*80}\n\n')
+                            try:
+                                with open(file_path, 'r', encoding='utf-8', errors='ignore') as infile:
+                                    content = infile.read()
+                                    outfile.write(f'{file_path}\n\n')
+                                    outfile.write(f'Contenido:\n{content}\n\n{"-"*80}\n\n')
+                            except Exception as e:
+                                outfile.write(f"Error al leer el archivo {file_path}: {e}\n\n")
 
-# Run the function
+# Ejecutar la función
 search_and_combine_files(directories, output_file)
 print(f'Todos los archivos de código se han copiado en {output_file}')

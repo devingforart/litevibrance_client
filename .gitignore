@@ -6,10 +6,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
+server
 node_modules
 dist
 dist-ssr
+matrix.py
 *.local
 
 # Editor directories and files
@@ -22,3 +23,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+matrix.py

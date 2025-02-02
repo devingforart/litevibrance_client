@@ -1,44 +1,62 @@
 // src/components/ProductDetail/ProductDetail.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import './ProductDetail.scss';
 import { useCart } from '../../context/CartContext';
 import { useNotification } from '../../context/NotificationContext';
-import { products } from '../../data/products';
+
+export interface Product {
+  uuid: string;
+  name: string;
+  slug: string;
+  price: number;
+  photos?: string[];
+  description?: string;
+}
 
 const ProductDetail: React.FC = () => {
-  const { id, slug } = useParams();  // Obtenemos tanto el id como el slug desde la URL
-  const { addToCart } = useCart();
+  // Los parámetros de la ruta serán "id" (que corresponde al uuid) y "slug"
+  const { id, slug } = useParams();
+  const { add } = useCart();
   const { addNotification } = useNotification();
   const [quantity, setQuantity] = useState(1);
   const [selectedPhoto, setSelectedPhoto] = useState(0);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const productId = Number(id);
-  const product = products.find((p) => p.id === productId && p.slug === slug);  // Buscamos el producto por id y slug
+  useEffect(() => {
+    // Usamos import.meta.env para acceder a la variable de entorno en Vite
+    fetch(`${import.meta.env.VITE_API_URL}/api/products/${id}`)
+      .then(res => res.json())
+      .then((data: Product) => {
+        setProduct(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error al obtener producto:', err);
+        setLoading(false);
+      });
+  }, [id]);
 
+  if (loading) return <div className="product-detail container">Cargando...</div>;
   if (!product) {
     return (
       <div className="product-detail container">
         <h2>Producto no encontrado</h2>
-        <Link to="/products" className="btn-primary">
-          Volver al Catálogo
-        </Link>
+        <Link to="/products" className="btn-primary">Volver al Catálogo</Link>
       </div>
     );
   }
 
   const photoArray = product.photos && product.photos.length > 0 ? product.photos : [];
-  const mainImage = photoArray.length > 0 ? photoArray[selectedPhoto] : 'https://via.placeholder.com/600x400?text=No+Image';
+  const mainImage = photoArray.length > 0
+    ? photoArray[selectedPhoto]
+    : 'https://via.placeholder.com/600x400?text=No+Image';
 
   const handleAddToCart = () => {
-    for (let i = 0; i < quantity; i++) {
-      addToCart(product);
-    }
+    add(product.uuid, quantity);
     addNotification(`${product.name} (x${quantity}) agregado al carrito`, 'success');
   };
-
-  const increaseQuantity = () => setQuantity(prev => prev + 1);
-  const decreaseQuantity = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 
   return (
     <div className="product-detail container">
@@ -53,7 +71,7 @@ const ProductDetail: React.FC = () => {
                 key={index}
                 src={photo}
                 alt={`${product.name} ${index + 1}`}
-                className={`thumbnail ${selectedPhoto === index ? 'active' : ''}`}
+                className={selectedPhoto === index ? 'active' : ''}
                 onClick={() => setSelectedPhoto(index)}
               />
             ))}
@@ -63,23 +81,17 @@ const ProductDetail: React.FC = () => {
           <h2 className="product-detail__title">{product.name}</h2>
           <p className="product-detail__price">${product.price.toFixed(2)}</p>
           <p className="product-detail__description">{product.description}</p>
-
           <div className="product-detail__quantity">
             <label>Cantidad:</label>
             <div className="quantity-controls">
-              <button onClick={decreaseQuantity} className="quantity-btn">–</button>
+              <button onClick={() => setQuantity(q => (q > 1 ? q - 1 : 1))} className="quantity-btn">–</button>
               <input type="text" readOnly value={quantity} />
-              <button onClick={increaseQuantity} className="quantity-btn">+</button>
+              <button onClick={() => setQuantity(q => q + 1)} className="quantity-btn">+</button>
             </div>
           </div>
-
           <div className="product-detail__actions">
-            <button onClick={handleAddToCart} className="btn-primary">
-              Agregar al Carrito
-            </button>
-            <Link to="/products" className="btn-secondary">
-              Volver al Catálogo
-            </Link>
+            <button onClick={handleAddToCart} className="btn-primary">Agregar al Carrito</button>
+            <Link to="/products" className="btn-secondary">Volver al Catálogo</Link>
           </div>
         </div>
       </div>

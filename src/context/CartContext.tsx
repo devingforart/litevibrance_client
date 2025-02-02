@@ -1,59 +1,78 @@
 // src/context/CartContext.tsx
-import React, { createContext, useState, useContext } from 'react';
-
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-}
-
-interface CartItem extends Product {
-  quantity: number;
-}
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
+import { getCart, addToCart, removeFromCart, checkout, CartItem } from '../services/cart';
 
 interface CartContextProps {
   cartItems: CartItem[];
-  addToCart: (product: Product) => void;
-  removeFromCart: (id: number) => void;
-  clearCart: () => void;
+  loadCart: () => void;
+  add: (productUuid: string, quantity: number) => void;
+  remove: (productUuid: string) => void;
+  clear: () => void;
 }
 
 const CartContext = createContext<CartContextProps>({
   cartItems: [],
-  addToCart: () => {},
-  removeFromCart: () => {},
-  clearCart: () => {},
+  loadCart: () => {},
+  add: () => {},
+  remove: () => {},
+  clear: () => {},
 });
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const { user } = useAuth();
 
-  const addToCart = (product: Product) => {
-    setCartItems((prev) => {
-      const existingItem = prev.find((item) => item.id === product.id);
-      if (existingItem) {
-        return prev.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      } else {
-        return [...prev, { ...product, quantity: 1 }];
-      }
-    });
+  const loadCart = async () => {
+    if (!user) {
+      setCartItems([]);
+      return;
+    }
+    try {
+      const items = await getCart(user.token);
+      setCartItems(items);
+    } catch (error) {
+      console.error('Error al cargar el carrito:', error);
+    }
   };
 
-  const removeFromCart = (id: number) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+  const add = async (productUuid: string, quantity: number) => {
+    if (!user) return;
+    try {
+      await addToCart(user.token, productUuid, quantity);
+      await loadCart();
+    } catch (error) {
+      console.error('Error al agregar al carrito:', error);
+    }
   };
 
-  const clearCart = () => {
-    setCartItems([]);
+  const remove = async (productUuid: string) => {
+    if (!user) return;
+    try {
+      await removeFromCart(user.token, productUuid);
+      await loadCart();
+    } catch (error) {
+      console.error('Error al eliminar del carrito:', error);
+    }
   };
+
+  const clear = async () => {
+    if (!user) return;
+    try {
+      await checkout(user.token);
+      await loadCart();
+    } catch (error) {
+      console.error('Error en checkout:', error);
+    }
+  };
+
+  // Cargar el carrito al iniciar o cuando cambie el usuario
+  useEffect(() => {
+    loadCart();
+  }, [user]);
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, clearCart }}>
+    <CartContext.Provider value={{ cartItems, loadCart, add, remove, clear }}>
       {children}
     </CartContext.Provider>
   );

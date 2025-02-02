@@ -1,39 +1,34 @@
-// src/components/ProductModal/ProductModal.tsx
-
+// src/components/ProductListItem/ProductListItem.tsx
 import React from 'react';
-import './ProductModal.scss';
+import { Link } from 'react-router-dom';
+import { Product } from '../../data/products';
+import './ProductListItem.scss';
 
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-}
-
-interface ProductModalProps {
+interface ProductListItemProps {
   product: Product;
-  onClose: () => void;
 }
 
-const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) => {
+const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
+  const imageUrl = product.photos && product.photos.length > 0
+    ? product.photos[0]
+    : 'https://via.placeholder.com/100?text=No+Image';
+
   return (
-    <div className="product-modal">
-      {/* Fondo oscuro/overlay */}
-      <div className="product-modal__overlay" onClick={onClose}></div>
-      
-      {/* Contenido del modal */}
-      <div className="product-modal__content card">
-        <h2>{product.name}</h2>
-        <img src={product.image} alt={product.name} />
-        <p>Precio: ${product.price.toFixed(2)}</p>
-        <p>Descripción extendida o características del producto...</p>
-        
-        <button className="btn-primary" onClick={onClose}>
-          Cerrar
-        </button>
+    <div className="product-list-item">
+      <img src={imageUrl} alt={product.name} />
+      <div className="product-list-item__details">
+        <h3>{product.name}</h3>
+        <p>${product.price.toFixed(2)}</p>
+        {/* Agregamos también el slug para cumplir con la ruta */}
+        <Link
+          to={`/products/${product.uuid}/${product.slug}`}
+          className="btn-primary"
+        >
+          Ver detalle
+        </Link>
       </div>
     </div>
   );
 };
 
-export default ProductModal;
+export default ProductListItem;
