@@ -2,7 +2,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import heroImage from '../../assets/pictures/Gtransp.png';
 import './Home.scss';
 
 const Home: React.FC = () => {

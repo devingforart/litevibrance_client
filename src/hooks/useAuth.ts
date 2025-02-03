@@ -1,34 +1,20 @@
-// src/context/AuthContext.tsx
-/* eslint-disable react-refresh/only-export-components */
-import React from 'react';
-import { Auth0Provider, useAuth0, GetTokenSilentlyOptions } from '@auth0/auth0-react';
-
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return (
-    <Auth0Provider
-      domain={import.meta.env.VITE_AUTH0_DOMAIN!}
-      clientId={import.meta.env.VITE_AUTH0_CLIENT_ID!}
-      authorizationParams={{
-        redirect_uri: window.location.origin,
-        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-      }}
-    >
-      {children}
-    </Auth0Provider>
-  );
-};
+// src/hooks/useAuth.ts
+import { useAuth0, GetTokenSilentlyOptions } from '@auth0/auth0-react';
 
 export const useAuth = () => {
   const { isAuthenticated, loginWithRedirect, logout, user, getAccessTokenSilently } = useAuth0();
   return {
     isAuthenticated,
+    // Función login que permite pasar opciones adicionales
     login: (options?: any) =>
       loginWithRedirect({
         authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE },
         ...options,
       }),
+    // Función logout utilizando logoutParams
     logout: () => logout({ logoutParams: { returnTo: window.location.origin } }),
     user,
+    // Convertir a unknown y luego a Promise<string> para asegurar que se retorne solo el token
     getAccessTokenSilently: (options?: GetTokenSilentlyOptions) =>
       getAccessTokenSilently({
         detailedResponse: false,

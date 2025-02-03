@@ -1,6 +1,4 @@
 // src/data/products.ts
-import { slugify } from '../utils/slugify';
-
 export interface Product {
   uuid: string;
   name: string;
