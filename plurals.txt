@@ -1,728 +1,104 @@
-/home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/src/db.rs
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Checkout/Checkout.scss
 
 Contenido:
-// /home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/src/db.rs
-use sqlx::{Pool, Sqlite, sqlite::SqlitePoolOptions};
-use std::env;
-use serde_json;
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/Checkout/Checkout.scss */
+/* Quitamos: @use "../sass/_colors.scss" as c; */
+.checkout {
+  margin-top: 2rem;
+  animation: fadeIn 0.6s ease forwards;
 
-pub type DbPool = Pool<Sqlite>;
+  h2 {
+    text-align: center;
+    font-size: 2rem;
+    /* Antes: color: c.$secondary-color; */
+    color: var(--color-secondary);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: slideDown 0.7s ease forwards;
+  }
 
-pub async fn init_db() -> anyhow::Result<DbPool> {
-    let database_url = env::var("DATABASE_URL")
-        .expect("DATABASE_URL no se encuentra en .env");
+  &__form {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeUp 0.6s ease forwards 0.4s;
 
-    // Opción para forzar el borrado de la tabla products si existe, descomentando el bloque indicado abajo:
-    // Esto garantiza que la tabla se cree nuevamente con la columna 'photos'.
-    // Si no deseas recrear la tabla en cada ejecución, gestiona migraciones o elimina manualmente la tabla:
-    //
-    // let pool_temp = SqlitePoolOptions::new()
-    //     .max_connections(1)
-    //     .connect(&database_url)
-    //     .await?;
-    // sqlx::query("DROP TABLE IF EXISTS products")
-    //     .execute(&pool_temp)
-    //     .await?;
+    label {
+      display: flex;
+      flex-direction: column;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      /* c.$text-color -> var(--color-text) */
+      color: var(--color-text);
 
-    let pool = SqlitePoolOptions::new()
-        .max_connections(5)
-        .connect(&database_url)
-        .await?;
+      input,
+      select {
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+        /* c.$gray-300 -> var(--gray-300) */
+        border: 1px solid var(--gray-300);
+        border-radius: 4px;
+        outline: none;
+        background: rgba(255,255,255,0.2);
+        color: var(--color-text);
+        transition: border-color 0.3s, box-shadow 0.3s;
 
-    sqlx::query(
-        r#"
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            uuid TEXT NOT NULL,
-            name TEXT NOT NULL,
-            email TEXT NOT NULL UNIQUE,
-            password_hash TEXT NOT NULL
-        );
-        CREATE TABLE IF NOT EXISTS products (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            uuid TEXT NOT NULL,
-            name TEXT NOT NULL,
-            slug TEXT NOT NULL UNIQUE,
-            price REAL NOT NULL,
-            photos TEXT,
-            description TEXT
-        );
-        CREATE TABLE IF NOT EXISTS cart_items (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_uuid TEXT NOT NULL,
-            product_uuid TEXT NOT NULL,
-            quantity INTEGER NOT NULL
-        );
-        "#
-    )
-    .execute(&pool)
-    .await?;
-
-    Ok(pool)
-}
-
-pub async fn seed_db(pool: &DbPool) -> anyhow::Result<()> {
-    let count: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM products")
-        .fetch_one(pool)
-        .await?;
-    
-    if count.0 == 0 {
-        println!("Sembrando la base de datos con productos iniciales...");
-
-        let products = vec![
-            (
-                "prod-uuid-1",
-                "Cámara Reflex Profesional",
-                "camara-reflex-profesional",
-                799.99,
-                vec![
-                    "https://picsum.photos/seed/camera1/600/400",
-                    "https://picsum.photos/seed/camera2/600/400",
-                    "https://picsum.photos/seed/camera3/600/400",
-                    "https://picsum.photos/seed/camera4/600/400",
-                ],
-                "Esta cámara reflex profesional cuenta con un sensor de alta resolución, rápida velocidad de disparo y ópticas intercambiables para capturar imágenes de alta calidad en cualquier situación. Ideal para fotógrafos profesionales y entusiastas avanzados."
-            ),
-            (
-                "prod-uuid-2",
-                "Laptop Ultrabook",
-                "laptop-ultrabook",
-                999.99,
-                vec![
-                    "https://images.unsplash.com/photo-1481277542470-605612bd2d61?auto=format&fit=crop&w=600&q=80",
-                ],
-                "Una laptop elegante y potente que combina portabilidad y rendimiento para profesionales en movimiento."
-            ),
-            (
-                "prod-uuid-3",
-                "Smartphone Pro",
-                "smartphone-pro",
-                899.99,
-                vec![
-                    "https://images.unsplash.com/photo-1495433324511-bf8e92934d90?auto=format&fit=crop&w=600&q=80",
-                ],
-                "El Smartphone Pro ofrece una experiencia premium con una pantalla de alta resolución y cámaras avanzadas."
-            ),
-            (
-                "prod-uuid-4",
-                "Tablet 10\"",
-                "tablet-10",
-                349.99,
-                vec![
-                    "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80",
-                ],
-                "Una tablet versátil perfecta para entretenimiento, lectura y productividad."
-            ),
-        ];
-
-        for (uuid, name, slug, price, photos, description) in products {
-            let photos_json = serde_json::to_string(&photos).unwrap();
-            sqlx::query(
-                "INSERT INTO products (uuid, name, slug, price, photos, description) VALUES (?1, ?2, ?3, ?4, ?5, ?6)"
-            )
-            .bind(uuid)
-            .bind(name)
-            .bind(slug)
-            .bind(price)
-            .bind(photos_json)
-            .bind(description)
-            .execute(pool)
-            .await?;
+        &:focus {
+          /* c.$accent-color -> var(--color-accent) */
+          border-color: var(--color-accent);
+          box-shadow: 0 0 6px rgba(16,185,129, 0.3);
         }
-    }
-    Ok(())
-}
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/src/models.rs
-
-Contenido:
-// /home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/src/models.rs
-use serde::{Serialize, Deserialize};
-use sqlx::{Row, Error as SqlxError};
-use sqlx::sqlite::SqliteRow;
-use serde_json;
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct User {
-    pub uuid: String,
-    pub name: String,
-    pub email: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Product {
-    pub uuid: String,
-    pub name: String,
-    pub slug: String,
-    pub price: f64,
-    pub photos: Vec<String>,
-    pub description: String,
-}
-
-impl<'r> sqlx::FromRow<'r, SqliteRow> for Product {
-    fn from_row(row: &SqliteRow) -> Result<Self, SqlxError> {
-        let uuid: String = row.try_get("uuid")?;
-        let name: String = row.try_get("name")?;
-        let slug: String = row.try_get("slug")?;
-        let price: f64 = row.try_get("price")?;
-        let photos_text: Option<String> = row.try_get("photos")?;
-        let description: Option<String> = row.try_get("description")?;
-
-        let parsed_photos = match photos_text {
-            Some(txt) => serde_json::from_str::<Vec<String>>(&txt).unwrap_or_default(),
-            None => vec![],
-        };
-
-        Ok(Product {
-            uuid,
-            name,
-            slug,
-            price,
-            photos: parsed_photos,
-            description: description.unwrap_or_else(|| "".to_string()),
-        })
-    }
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct CartItem {
-    pub product_uuid: String,
-    pub name: String,
-    pub image: String,
-    pub price: f64,
-    pub quantity: i32,
-}
-
-impl<'r> sqlx::FromRow<'r, SqliteRow> for CartItem {
-    fn from_row(row: &SqliteRow) -> Result<Self, SqlxError> {
-        let product_uuid: String = row.try_get("product_uuid")?;
-        let name: String = row.try_get("name")?;
-        let price: f64 = row.try_get("price")?;
-        let image: String = row.try_get("image")?;
-        let quantity: i32 = row.try_get("quantity")?;
-        Ok(CartItem { product_uuid, name, price, image, quantity })
-    }
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct AuthRequest {
-    pub email: String,
-    pub password: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct RegisterRequest {
-    pub name: String,
-    pub email: String,
-    pub password: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct AuthResponse {
-    pub token: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct AddToCartRequest {
-    pub product_uuid: String,
-    pub quantity: i32,
-}
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/src/main.rs
-
-Contenido:
-use axum::{
-    Router,
-    routing::{get, post, delete},
-};
-use dotenv::dotenv;
-use std::net::SocketAddr;
-
-// Importa el middleware de CORS
-use tower_http::cors::{CorsLayer, Any};
-use axum::http::HeaderValue;
-
-mod db;
-mod auth;
-mod models;
-mod routes;
-
-use routes::{
-    health_check,
-    get_products, get_product_by_id,
-    add_to_cart, get_cart,
-    remove_from_cart, checkout,
-};
-
-#[tokio::main]
-async fn main() -> anyhow::Result<()> {
-    dotenv().ok();
-
-    let pool = db::init_db().await?;
-    // Sembrar la base de datos (insertar productos de ejemplo)
-    db::seed_db(&pool).await?;
-
-    // Configura CORS para permitir peticiones desde el frontend (http://localhost:5173)
-    let cors = CorsLayer::new()
-        .allow_origin("http://localhost:5173".parse::<HeaderValue>().unwrap())
-        .allow_methods(Any)
-        .allow_headers(Any);
-
-    let app = Router::new()
-        .route("/api/health", get(health_check))
-        .route("/api/products", get(get_products))
-        .route("/api/products/:id", get(get_product_by_id))
-        .route("/api/cart", post(add_to_cart))
-        .route("/api/cart", get(get_cart))
-        .route("/api/cart/:product_id", delete(remove_from_cart))
-        .route("/api/checkout", post(checkout))
-        .with_state(pool)
-        .layer(cors); // Agrega el middleware de CORS
-
-    let port = std::env::var("PORT").unwrap_or_else(|_| "8080".to_string());
-    let addr = SocketAddr::from(([0, 0, 0, 0], port.parse::<u16>()?));
-
-    println!("Servidor corriendo en http://{}", addr);
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
-        .await?;
-
-    Ok(())
-}
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/src/auth.rs
-
-Contenido:
-// server/backend_vibrance/src/auth.rs
-use anyhow::Result;
-use jsonwebtoken::{decode, DecodingKey, Validation, decode_header};
-use serde::{Serialize, Deserialize};
-use std::env;
-use reqwest;
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Claims {
-    pub sub: String, // UUID del usuario
-    pub exp: usize,  // Expiración del token (si es necesario)
-}
-
-/// Esta función valida y decodifica el token emitido por Auth0 usando su JWKS.
-pub async fn decode_jwt(token: &str) -> Result<Claims> {
-    let auth0_domain = env::var("VITE_AUTH0_DOMAIN")
-        .expect("VITE_AUTH0_DOMAIN debe estar definido en el .env");
-    let jwks_url = format!("https://{}/.well-known/jwks.json", auth0_domain);
-    
-    let jwks: serde_json::Value = reqwest::get(&jwks_url).await?.json().await?;
-    
-    let header = decode_header(token)?;
-    let kid = header.kid.ok_or_else(|| anyhow::anyhow!("No se encontró 'kid' en el header del token"))?;
-    
-    let jwk = jwks["keys"].as_array()
-        .and_then(|keys| keys.iter().find(|k| k["kid"].as_str() == Some(&kid)))
-        .ok_or_else(|| anyhow::anyhow!("No se encontró la clave (JWK) para el kid: {}", kid))?;
-    
-    let n = jwk["n"].as_str().ok_or_else(|| anyhow::anyhow!("Falta el parámetro 'n' en el JWK"))?;
-    let e = jwk["e"].as_str().ok_or_else(|| anyhow::anyhow!("Falta el parámetro 'e' en el JWK"))?;
-    
-    let decoding_key = DecodingKey::from_rsa_components(n, e)
-        .map_err(|err| anyhow::anyhow!("Error construyendo la clave de decodificación: {}", err))?;
-    
-    let mut validation = Validation::new(jsonwebtoken::Algorithm::RS256);
-    if let Ok(audience) = env::var("VITE_AUTH0_AUDIENCE") {
-        if !audience.is_empty() {
-            validation.set_audience(&[&audience]);
-        }
-    }
-    let issuer = format!("https://{}/", auth0_domain);
-    validation.set_issuer(&[&issuer]);
-    
-    let token_data = decode::<Claims>(token, &decoding_key, &validation)?;
-    Ok(token_data.claims)
-}
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/src/routes.rs
-
-Contenido:
-// ... (el resto del archivo permanece igual)
-
-use axum::{
-    extract::{State, Path, TypedHeader},
-    http::{StatusCode, Request},
-    headers::{Authorization, authorization::Bearer},
-    Json,
-};
-use sqlx::{Row, Pool, Sqlite};
-use crate::models::{ Product, AddToCartRequest, CartItem };
-use crate::auth::decode_jwt;
-
-pub type DbPool = Pool<Sqlite>;
-
-// -------------------- 1) Endpoint de salud --------------------
-pub async fn health_check() -> &'static str {
-    "OK"
-}
-
-// -------------------- 2) Obtener lista de productos --------------------
-pub async fn get_products(
-    State(pool): State<DbPool>,
-) -> Result<Json<Vec<Product>>, (StatusCode, String)> {
-    let query = r#"SELECT uuid, name, slug, price, photos, description FROM products"#;
-    let rows = sqlx::query_as::<_, Product>(query)
-        .fetch_all(&pool)
-        .await
-        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
-    Ok(Json(rows))
-}
-
-// -------------------- 3) Obtener producto por ID --------------------
-pub async fn get_product_by_id(
-    State(pool): State<DbPool>,
-    Path(id): Path<String>,
-) -> Result<Json<Product>, (StatusCode, String)> {
-    let query = r#"
-        SELECT uuid, name, slug, price, photos, description
-        FROM products
-        WHERE slug = ?1 OR uuid = ?1
-    "#;
-
-    let product = sqlx::query_as::<_, Product>(query)
-        .bind(id)
-        .fetch_optional(&pool)
-        .await
-        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Error al buscar producto: {}", e)))?;
-
-    if let Some(p) = product {
-        Ok(Json(p))
-    } else {
-        Err((StatusCode::NOT_FOUND, "Producto no encontrado".to_string()))
-    }
-}
-
-// -------------------- 4) Agregar items al carrito (requiere token) --------------------
-pub async fn add_to_cart(
-    State(pool): State<DbPool>,
-    TypedHeader(Authorization(bearer)): TypedHeader<Authorization<Bearer>>,
-    Json(payload): Json<AddToCartRequest>,
-) -> Result<String, (StatusCode, String)> {
-    let token = bearer.token();
-    let claims = decode_jwt(token)
-        .await
-        .map_err(|_| (StatusCode::UNAUTHORIZED, "Token inválido".to_string()))?;
-    let user_uuid = claims.sub;
-
-    let query = r#"
-        INSERT INTO cart_items (user_uuid, product_uuid, quantity)
-        VALUES (?1, ?2, ?3)
-        ON CONFLICT DO NOTHING;
-    "#;
-    sqlx::query(query)
-        .bind(user_uuid)
-        .bind(payload.product_uuid)
-        .bind(payload.quantity)
-        .execute(&pool)
-        .await
-        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
-    
-    Ok("Producto agregado al carrito".to_string())
-}
-
-// -------------------- 5) Ver carrito --------------------
-pub async fn get_cart(
-    State(pool): State<DbPool>,
-    req: Request<axum::body::Body>,
-) -> Result<Json<Vec<CartItem>>, (StatusCode, String)> {
-    let user_uuid = get_user_uuid_from_header(&req).await?;
-
-    let query = r#"
-        SELECT 
-            ci.product_uuid, 
-            p.name, 
-            p.price, 
-            json_extract(p.photos, '$[0]') as image,
-            ci.quantity 
-        FROM cart_items ci
-        JOIN products p ON ci.product_uuid = p.uuid
-        WHERE ci.user_uuid = ?1
-    "#;
-    let cart_items = sqlx::query_as::<_, CartItem>(query)
-        .bind(user_uuid)
-        .fetch_all(&pool)
-        .await
-        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
-
-    Ok(Json(cart_items))
-}
-
-// -------------------- 6) Eliminar producto del carrito --------------------
-pub async fn remove_from_cart(
-    State(pool): State<DbPool>,
-    Path(product_id): Path<String>,
-    TypedHeader(Authorization(bearer)): TypedHeader<Authorization<Bearer>>,
-) -> Result<String, (StatusCode, String)> {
-    let token = bearer.token();
-    let claims = decode_jwt(token)
-        .await
-        .map_err(|_| (StatusCode::UNAUTHORIZED, "Token inválido".to_string()))?;
-    let user_uuid = claims.sub;
-
-    let query = r#"
-        DELETE FROM cart_items
-        WHERE user_uuid = ?1 AND product_uuid = ?2
-    "#;
-    sqlx::query(query)
-        .bind(user_uuid)
-        .bind(product_id.clone())
-        .execute(&pool)
-        .await
-        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
-
-    Ok(format!("Producto '{}' eliminado del carrito", product_id))
-}
-
-// -------------------- 7) Checkout --------------------
-pub async fn checkout(
-    State(pool): State<DbPool>,
-    req: Request<axum::body::Body>,
-) -> Result<String, (StatusCode, String)> {
-    let user_uuid = get_user_uuid_from_header(&req).await?;
-
-    let query = r#"DELETE FROM cart_items WHERE user_uuid = ?1"#;
-    sqlx::query(query)
-        .bind(user_uuid)
-        .execute(&pool)
-        .await
-        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
-
-    Ok("Compra finalizada con éxito!".to_string())
-}
-
-// -------------------- Función auxiliar para extraer el usuario del header --------------------
-async fn get_user_uuid_from_header(
-    req: &Request<axum::body::Body>,
-) -> Result<String, (StatusCode, String)> {
-    let auth_header = req
-        .headers()
-        .get("Authorization")
-        .ok_or((StatusCode::UNAUTHORIZED, "Falta header Authorization".to_string()))?;
-
-    let auth_str = auth_header
-        .to_str()
-        .map_err(|_| (StatusCode::BAD_REQUEST, "Header inválido".to_string()))?;
-
-    if !auth_str.starts_with("Bearer ") {
-        return Err((StatusCode::BAD_REQUEST, "Token debe ser Bearer".to_string()));
+      }
     }
 
-    let token = auth_str.trim_start_matches("Bearer ");
-    let claims = decode_jwt(token)
-        .await
-        .map_err(|_| (StatusCode::UNAUTHORIZED, "Token inválido".to_string()))?;
-
-    Ok(claims.sub)
+    .btn-primary {
+      margin-top: 1rem;
+      align-self: center;
+    }
+  }
 }
 
+/* Animaciones keyframes */
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
 
---------------------------------------------------------------------------------
+@keyframes slideDown {
+  0% {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
 
-/home/southatoms/Escritorio/lite_vibrance_web/src/vite-env.d.ts
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-Contenido:
-/// <reference types="vite/client" />
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/main.tsx
-
-Contenido:
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App';
-import './components/sass/global.scss';
-import './components/i18n'; 
-import { CartProvider } from './context/CartContext';
-import { ThemeProvider } from './context/ThemeContext';
-import { AuthProvider } from './context/AuthContext'; 
-import { NotificationProvider } from './context/NotificationContext';
-
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <ThemeProvider>
-        <AuthProvider>
-          <CartProvider>
-            <NotificationProvider>
-              <App />
-            </NotificationProvider>
-          </CartProvider>
-        </AuthProvider>
-      </ThemeProvider>
-    </BrowserRouter>
-  </React.StrictMode>
-);
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/App.tsx
-
-Contenido:
-// src/App.tsx
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import Home from './components/Home/Home';
-import ProductList from './components/ProductList/ProductList';
-import ProductDetail from './components/ProductDetail/ProductDetail';
-import Cart from './components/Cart/Cart';
-import Checkout from './components/Checkout/Checkout';
-import AdminDashboard from './components/AdminDashboard/AdminDashboard';
-import Login from './components/Login/Login';
-import Register from './components/Register/Register';
-import Header from './components/Header/Header';
-import Footer from './components/Footer/Footer';
-import NotFound from './components/NotFound/NotFound';
-import FloatingThemeSwitch from './components/ThemeSwitch/FloatingThemeSwitch';
-import Notification from './components/Notification/Notification'; // Importamos el componente de notificaciones
-import './components/sass/global.scss';
-import Contact from './components/Contact/Contact';
-
-const App: React.FC = () => {
-  return (
-    <div className="app-container">
-      <Header />
-      <FloatingThemeSwitch />
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<ProductList />} />
-          {/* Cambiamos la ruta del producto para incluir el slug */}
-          <Route path="/products/:id/:slug" element={<ProductDetail />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/contact" element={<Contact />} /> 
-
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-
-      </main>
-      <Footer />
-      <Notification /> {/* Aquí se renderizan las notificaciones */}
-    </div>
-  );
-};
-
-export default App;
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/hooks/useAuth.ts
-
-Contenido:
-// src/hooks/useAuth.ts
-import { useAuth0, GetTokenSilentlyOptions } from '@auth0/auth0-react';
-
-export const useAuth = () => {
-  const { isAuthenticated, loginWithRedirect, logout, user, getAccessTokenSilently } = useAuth0();
-  return {
-    isAuthenticated,
-    // Función login que permite pasar opciones adicionales
-    login: (options?: any) =>
-      loginWithRedirect({
-        authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE },
-        ...options,
-      }),
-    // Función logout utilizando logoutParams
-    logout: () => logout({ logoutParams: { returnTo: window.location.origin } }),
-    user,
-    // Convertir a unknown y luego a Promise<string> para asegurar que se retorne solo el token
-    getAccessTokenSilently: (options?: GetTokenSilentlyOptions) =>
-      getAccessTokenSilently({
-        detailedResponse: false,
-        authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE },
-        ...options,
-      }) as unknown as Promise<string>,
-  };
-};
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/utils/utils.ts
-
-Contenido:
-export const normalizeString = (str: string) =>
-    str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-  
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/utils/slugify.ts
-
-Contenido:
-// src/utils/slugify.ts
-export const slugify = (text: string) => {
-  return text
-    .toString()
-    .toLowerCase()
-    .replace(/\s+/g, '-')           // Reemplaza los espacios por guiones
-    .replace(/[^\w\-]+/g, '')       // Elimina caracteres no alfanuméricos
-    .replace(/\-\-+/g, '-')         // Reemplaza múltiples guiones por uno solo
-    .replace(/^-+/, '')             // Elimina guiones al inicio
-    .replace(/-+$/, '');            // Elimina guiones al final
-};
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/i18n.ts
-
-Contenido:
-// src/components/i18n.ts
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-
-// Importa los archivos JSON con las traducciones
-import translationEN from '../locales/en/translation.json';
-import translationES from '../locales/es/translation.json';
-
-const resources = {
-  en: {
-    translation: translationEN,
-  },
-  es: {
-    translation: translationES,
-  },
-};
-
-i18n
-  .use(initReactI18next)
-  .init({
-    resources,
-    lng: 'en', // Idioma por defecto
-    fallbackLng: 'en',
-    interpolation: {
-      escapeValue: false, // React ya se encarga de escapar
-    },
-  });
-
-export default i18n;
+/* Responsividad */
+@media (max-width: 768px) {
+  .checkout__form {
+    padding: 1.5rem;
+  }
+}
 
 
 --------------------------------------------------------------------------------
@@ -790,6 +166,110 @@ export default Checkout;
 
 --------------------------------------------------------------------------------
 
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/AdminDashboard/AdminDashboard.scss
+
+Contenido:
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/AdminDashboard/AdminDashboard.scss */
+.admin-dashboard {
+  margin-top: 2rem;
+  text-align: center;
+  animation: fadeIn 0.5s ease forwards;
+
+  h2 {
+    font-size: 2.2rem;
+    /* c.$primary-color -> var(--color-primary) */
+    color: var(--color-primary);
+    margin-bottom: 2rem;
+    text-shadow: 0 0 6px var(--color-primary);
+    opacity: 0;
+    animation: slideDown 0.6s ease forwards;
+  }
+
+  &__sections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+  }
+
+  &__card {
+    width: 280px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+
+    &:nth-child(1) { animation-delay: 0.4s; }
+    &:nth-child(2) { animation-delay: 0.6s; }
+    &:nth-child(3) { animation-delay: 0.8s; }
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+
+    h3 {
+      margin-bottom: 0.5rem;
+      /* c.$text-color -> var(--color-text) */
+      color: var(--color-text);
+    }
+    p {
+      margin-bottom: 1rem;
+      color: var(--color-text);
+      opacity: 0.8;
+    }
+
+    .btn-primary {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+/* Keyframes */
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translateY(-15px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeUp {
+  0% {
+    transform: translateY(15px);
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .admin-dashboard__card {
+    width: 100%;
+    max-width: 400px;
+  }
+}
+
+
+--------------------------------------------------------------------------------
+
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/AdminDashboard/AdminDashboard.tsx
 
 Contenido:
@@ -825,6 +305,31 @@ const AdminDashboard: React.FC = () => {
 };
 
 export default AdminDashboard;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/NotFound/NotFound.scss
+
+Contenido:
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/NotFound/NotFound.scss */
+.notfound {
+  margin-top: 2rem;
+  text-align: center;
+
+  h2 {
+    font-size: 2rem;
+    /* c.$primary-color -> var(--color-primary) */
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+  }
+
+  p {
+    /* c.$text-color -> var(--color-text) */
+    color: var(--color-text);
+    font-size: 1.1rem;
+  }
+}
 
 
 --------------------------------------------------------------------------------
@@ -994,6 +499,497 @@ const Header: React.FC = () => {
 };
 
 export default Header;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Header/Header.scss
+
+Contenido:
+/* src/components/Header/Header.scss */
+
+/* Evitar scroll cuando menú está abierto (móvil) */
+.no-scroll {
+  overflow: hidden;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 65px;
+  background: var(--header-bg);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  z-index: 1000;
+  box-shadow: var(--header-box-shadow);
+  transition: all 0.3s ease-in-out;
+  background-color: var(--header-box-shadow);
+}
+
+.header__brand {
+  .brand__logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--header-text);
+    text-decoration: none;
+  }
+}
+
+.header__toggle {
+  display: none;
+  font-size: 1.6rem;
+  color: var(--header-text);
+  cursor: pointer;
+  z-index: 1100;
+
+  @media (max-width: 768px) {
+    display: block;
+  }
+}
+
+/* Reestructuramos para evitar "mixed declarations" */
+.header__nav {
+  /* Declaraciones principales primero */
+  position: fixed;
+  top: 65px;
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 65px);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  overflow-y: auto;
+
+  /* Luego la regla @media */
+  @media (min-width: 769px) {
+    ul {
+      display: flex;
+      gap: 2rem;
+    }
+  }
+
+  &.open {
+    transform: translateX(0);
+  }
+
+  .nav__list {
+    list-style: none;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nav__item {
+    margin: 1rem 0;
+    .nav__link {
+      font-size: 1.2rem;
+      color: var(--header-text);
+      text-decoration: none;
+      transition: color 0.2s ease;
+      &:hover {
+        color: var(--color-primary);
+      }
+    }
+  }
+
+  /* Ajustes para pantallas grandes */
+  @media (min-width: 769px) {
+    position: static;
+    transform: none;
+    background: transparent;
+    backdrop-filter: none;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+
+    .nav__list {
+      flex-direction: row;
+      padding: 0;
+      .nav__item {
+        margin: 0;
+        .nav__link {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}
+
+/* Onda decorativa */
+.header__wave {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  z-index: -1;
+  overflow: hidden;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--wave-color);
+    transition: fill 0.3s;
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+
+
+/* ... estilos previos ... */
+
+.header__center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.header__search {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  top: 60px;
+
+  input {
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    outline: none;
+    width: 600px;
+  }
+
+  button {
+    background-color: var(--color-primary);
+    border: none;
+    padding: 0.5rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+  }
+
+  button:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  svg {
+    font-size: 1.2rem;
+  }
+}
+.cart-badge {
+  background-color: var(--color-primary);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.4rem;
+  margin-left: 0.5rem;
+  display: inline-block;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Ocultar la marca en mobile para evitar conflictos con el buscador */
+@media (max-width: 768px) {
+  .header__brand {
+    display: none;
+  }
+}
+
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductList/ProductList.scss
+
+Contenido:
+.product-list {
+  margin-top: 3rem;
+  padding: 0 1rem;
+  background-color: var(--color-bg);
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    h2 {
+      font-size: 2rem;
+      color: var(--color-text);
+      margin: 0;
+    }
+  }
+
+  /* Las definiciones anteriores para grid, list y detailed se mantienen */
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &__detailed {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .product-list__detailed-item {
+    display: flex;
+    background-color: var(--color-card-bg);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: box-shadow 0.3s ease;
+
+    &:hover {
+      box-shadow: var(--card-shadow-hover);
+    }
+
+    img {
+      width: 200px;
+      height: auto;
+      object-fit: cover;
+    }
+
+    .detailed-info {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      h3 {
+        margin: 0;
+        color: var(--color-text);
+      }
+      p {
+        margin: 0.5rem 0;
+      }
+      .description {
+        font-size: 0.9rem;
+        color: var(--color-text);
+        opacity: 0.8;
+      }
+      a.btn-primary {
+        align-self: flex-start;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+// SKELETON PRODUCTS
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-card-bg, #f0f0f0);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  animation: fadeIn 0.4s ease forwards;
+  opacity: 0;
+
+  .skeleton-img {
+    width: 100%;
+    height: 200px;
+    background-color: #ddd;
+    animation: pulse 1.5s infinite ease-in-out;
+  }
+
+  .skeleton-text {
+    background-color: #ddd;
+    height: 20px;
+    margin-top: 10px;
+    animation: pulse 1.5s infinite ease-in-out;
+  }
+
+  .skeleton-title {
+    width: 60%;
+  }
+
+  .skeleton-price {
+    width: 40%;
+    margin-top: 5px;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #ddd;
+  }
+  50% {
+    background-color: #eee;
+  }
+  100% {
+    background-color: #ddd;
+  }
+}
+
+
+.product-list__detailed {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.product-detail {
+  background-color: var(--color-card-bg);
+  border-radius: 12px;
+  padding: 25px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  position: relative;
+
+ 
+}
+
+.product-detail img {
+  width: 100%;
+  height: 300px; /* Imágenes más grandes en desktop */
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.product-detail h3 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+.product-detail p {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.product-detail .price {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 25px;
+}
+
+.product-detail .btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-accent);
+  padding: 15px 25px;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  min-width: 200px;
+
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+    transform: scale(1.05);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.product-detail .btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .product-list__detailed {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .product-detail img {
+    height: 250px;
+  }
+
+  .product-detail h3 {
+    font-size: 1.3rem;
+  }
+
+  .product-detail .price {
+    font-size: 1.2rem;
+  }
+
+  .product-detail .btn-primary {
+    padding: 12px 20px;
+    font-size: 1rem;
+    min-width: auto;
+    color:var(--color-bg)
+  }
+}
 
 
 --------------------------------------------------------------------------------
@@ -1250,6 +1246,285 @@ export default ProductDetail;
 
 --------------------------------------------------------------------------------
 
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductDetail/ProductDetail.scss
+
+Contenido:
+/* src/components/ProductDetail/ProductDetail.scss */
+.product-detail {
+  margin-top: 2rem;
+  animation: fadeIn 0.5s ease forwards;
+
+  &__content {
+    display: flex;
+    gap: 3rem;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 3rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    animation: fadeUp 0.6s ease forwards;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      gap: 2rem;
+    }
+  }
+
+  /* Estilos para la galería */
+  &__gallery {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    &__main-image {
+      width: 100%;
+      height: 400px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      border-radius: 12px;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+    }
+
+    &__thumbnails {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding: 0.5rem 0;
+
+      .thumbnail {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.3s, transform 0.3s;
+        
+        &:hover {
+          opacity: 1;
+          transform: scale(1.05);
+        }
+      }
+      
+      .active {
+        border: 2px solid var(--color-primary);
+        opacity: 1;
+      }
+    }
+  }
+
+  &__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    &__title {
+      font-size: 2.5rem;
+      color: var(--color-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    &__price {
+      font-size: 2rem;
+      color: var(--color-accent);
+      font-weight: bold;
+    }
+
+    &__description {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: var(--color-text);
+    }
+  }
+
+  &__quantity {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    label {
+      font-size: 1.1rem;
+      color: var(--color-text);
+    }
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      input {
+        width: 50px;
+        text-align: center;
+        font-size: 1.1rem;
+        border: 1px solid var(--gray-300);
+        border-radius: 4px;
+        padding: 0.4rem;
+        background: transparent;
+        color: var(--color-text);
+      }
+      .quantity-btn {
+        background: var(--color-primary);
+        color: #fff;
+        border: none;
+        padding: 0.5rem 0.8rem;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        &:hover {
+          background: var(--color-primary-hover);
+        }
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    .btn-primary,
+    .btn-secondary {
+      
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      transition: transform 0.3s, background-color 0.3s;
+    }
+    .btn-primary {
+      background-color: var(--color-primary);
+      color: #fff;
+      border: none;
+      &:hover {
+        background-color: var(--color-primary-hover);
+        transform: translateY(-3px);
+      }
+    }
+    .btn-secondary {
+      background-color: var(--color-accent);
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+      &:hover {
+        background-color: var(--color-primary);
+        color: #fff;
+        transform: translateY(-3px);
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Register/Register.scss
+
+Contenido:
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/Register/Register.scss */
+.register {
+  margin-top: 2rem;
+  animation: fadeIn 0.5s ease forwards;
+
+  h2 {
+    text-align: center;
+    font-size: 2rem;
+    /* c.$secondary-color -> var(--color-secondary) */
+    color: var(--color-secondary);
+    margin-bottom: 2rem;
+    text-shadow: 0 0 5px var(--color-secondary);
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  &__form {
+    max-width: 400px;
+    margin: 0 auto;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeUp 0.6s ease forwards 0.3s;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      font-weight: 500;
+      /* c.$text-color -> var(--color-text) */
+      color: var(--color-text);
+
+      input {
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+        /* c.$gray-300 -> var(--gray-300) */
+        border: 1px solid var(--gray-300);
+        border-radius: 4px;
+        background: rgba(255,255,255,0.2);
+        color: var(--color-text);
+        transition: border-color 0.3s, box-shadow 0.3s;
+
+        &:focus {
+          /* c.$accent-color -> var(--color-accent) */
+          border-color: var(--color-accent);
+          box-shadow: 0 0 6px rgba(16,185,129, 0.3);
+        }
+      }
+    }
+
+    .btn-primary {
+      margin-top: 1rem;
+      align-self: center;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+--------------------------------------------------------------------------------
+
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Register/Register.tsx
 
 Contenido:
@@ -1353,6 +1628,139 @@ export default Cart;
 
 --------------------------------------------------------------------------------
 
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Cart/Cart.scss
+
+Contenido:
+/* src/components/Cart/Cart.scss */
+.cart {
+  padding: 2rem 0;
+  &.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  &__title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  &__empty {
+    text-align: center;
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .btn-primary {
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    @media (min-width: 768px) {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+  }
+
+  &__items {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  &__item {
+    display: flex;
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+
+    &-image {
+      flex: 0 0 100px;
+      img {
+        width: 100%;
+        height: auto;
+        border-radius: 4px;
+      }
+    }
+
+    &-details {
+      flex: 1;
+      h3 {
+        font-size: 1.2rem;
+        margin: 0 0 0.5rem;
+      }
+      p {
+        margin: 0.3rem 0;
+        font-size: 0.95rem;
+      }
+      .cart__item-remove {
+        margin-top: 0.5rem;
+      }
+    }
+  }
+
+  &__summary {
+    flex: 1;
+    background-color: #f9f9f9;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    &-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      .btn-primary,
+      .btn-secondary {
+        width: 100%;
+        text-align: center;
+        padding: 0.8rem;
+        font-size: 1rem;
+        text-decoration: none;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+    }
+  }
+}
+
+/* Botones genéricos */
+.btn-primary {
+  background-color: #007bff;
+  color: #fff;
+  &:hover {
+    background-color: #0056b3;
+  }
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: #fff;
+  &:hover {
+    background-color: #545b62;
+  }
+}
+
+
+--------------------------------------------------------------------------------
+
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Login/Login.tsx
 
 Contenido:
@@ -1376,6 +1784,179 @@ const Login: React.FC = () => {
 };
 
 export default Login;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Login/Login.scss
+
+Contenido:
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/Login/Login.scss */
+.login {
+  margin-top: 2rem;
+  animation: fadeIn 0.5s ease forwards;
+
+  h2 {
+    text-align: center;
+    font-size: 2rem;
+    /* c.$secondary-color -> var(--color-secondary) */
+    color: var(--color-secondary);
+    margin-bottom: 2rem;
+    text-shadow: 0 0 5px var(--color-secondary);
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  &__form {
+    max-width: 400px;
+    margin: 0 auto;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeUp 0.6s ease forwards 0.3s;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      font-weight: 500;
+      /* c.$text-color -> var(--color-text) */
+      color: var(--color-text);
+
+      input {
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+        /* c.$gray-300 -> var(--gray-300) */
+        border: 1px solid var(--gray-300);
+        border-radius: 4px;
+        background: rgba(255,255,255,0.2);
+        color: var(--color-text);
+        transition: border-color 0.3s, box-shadow 0.3s;
+
+        &:focus {
+          /* c.$accent-color -> var(--color-accent) */
+          border-color: var(--color-accent);
+          box-shadow: 0 0 6px rgba(16,185,129, 0.3);
+        }
+      }
+    }
+
+    .btn-primary {
+      margin-top: 1rem;
+      align-self: center;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/ViewSwitcher/ViewSwitcher.scss
+
+Contenido:
+/* src/components/ViewSwitcher/ViewSwitcher.scss */
+.view-switcher {
+  position: relative;
+  z-index: 2000;
+
+  &__toggle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+    animation: pulse 2s infinite;
+    z-index: 2100;
+  }
+
+  &__toggle:hover {
+    transform: translateY(-3px);
+  }
+
+  &__menu {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background: #fff; /* Fondo claro por defecto */
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 2100;
+  }
+
+  &__menu button {
+    background: transparent;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1rem;
+    color: var(--color-text);
+    transition: background-color 0.2s;
+    width: 100%;
+    text-align: left;
+  }
+
+  &__menu button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  /* Estilos para el modo oscuro */
+  &.dark-mode .view-switcher__menu {
+    background: #333;  /* Fondo oscuro */
+  }
+
+  &.dark-mode .view-switcher__menu button {
+    color: #fff;  /* Texto blanco */
+  }
+
+  &.dark-mode .view-switcher__menu button:hover {
+    background-color: rgba(255, 255, 255, 0.1);  /* Hover más sutil en modo oscuro */
+  }
+}
+
+/* Efecto de pulso para hacerlo más "glotante" */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 
 
 --------------------------------------------------------------------------------
@@ -1498,6 +2079,64 @@ export default ProductListItem;
 
 --------------------------------------------------------------------------------
 
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductListItem/ProductListItem.scss
+
+Contenido:
+/* src/components/ProductListItem/ProductListItem.scss */
+.product-list-item {
+    display: flex;
+    align-items: center;
+    background-color: var(--color-card-bg);
+    border-radius: 6px;
+    padding: 0.5rem;
+    box-shadow: var(--card-shadow);
+    transition: box-shadow 0.3s ease;
+  
+    &:hover {
+      box-shadow: var(--card-shadow-hover);
+    }
+  
+    img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-right: 1rem;
+    }
+  
+    &__details {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+  
+      h3 {
+        font-size: 1rem;
+        margin: 0;
+        color: var(--color-text);
+      }
+      p {
+        font-weight: bold;
+        color: var(--color-accent);
+        margin: 0.5rem 0;
+      }
+      a.btn-primary {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.5rem;
+        text-decoration: none;
+        background-color: var(--color-primary);
+        color: #fff;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+      }
+      a.btn-primary:hover {
+        background-color: var(--color-primary-hover);
+      }
+    }
+  }
+  
+
+--------------------------------------------------------------------------------
+
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Notification/Notification.tsx
 
 Contenido:
@@ -1526,6 +2165,126 @@ const Notification: React.FC = () => {
 
 export default Notification;
 
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Notification/Notification.scss
+
+Contenido:
+/* src/components/Notification/Notification.scss */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .notification {
+    padding: 15px 20px;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    opacity: 0;
+    animation: slideIn 0.5s forwards;
+  }
+  
+  .notification--success {
+    background-color: #48bb78; /* Verde */
+  }
+  
+  .notification--error {
+    background-color: #f56565; /* Rojo */
+  }
+  
+  .notification--info {
+    background-color: #4299e1; /* Azul */
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/LanguageSwitcher/LanguageSwitcher.scss
+
+Contenido:
+// src/components/LanguageSwitcher/LanguageSwitcher.scss
+.language-switcher {
+    position: relative;
+    display: inline-block;
+    font-family: sans-serif;
+  
+    &__toggle {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+  
+      &:hover {
+        background: #f9f9f9;
+      }
+    }
+  
+    &__menu {
+      position: absolute;
+      top: calc(100% + 5px);
+      right: 0;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+      overflow: hidden;
+    }
+  
+    &__option {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: #fff;
+      border: none;
+      text-align: left;
+      padding: 8px 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+  
+      &:hover {
+        background: #f0f0f0;
+      }
+    }
+  
+    &__flag {
+      font-size: 1.2em;
+    }
+  
+    &__label {
+      font-size: 0.9em;
+    }
+  
+    &__icon {
+      margin-left: auto;
+      font-size: 0.8em;
+    }
+  }
+  
 
 --------------------------------------------------------------------------------
 
@@ -1637,6 +2396,86 @@ export default Home;
 
 --------------------------------------------------------------------------------
 
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Home/Home.scss
+
+Contenido:
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/Home/Home.scss */
+.home {
+  margin-top: 65px; /* Dejar espacio si tienes un header fijo */
+
+  &__hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    min-height: calc(100vh - 120px);
+    gap: 2rem;
+    position: relative;
+    border-radius: 8px;
+    padding: 2rem;
+
+    .hero__image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 12px;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+        &:hover {
+          transform: scale(1.02);
+        }
+      }
+    }
+
+    .hero__content {
+      text-align: center;
+      max-width: 600px; 
+      
+      h1 {
+        font-size: 2.6rem;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+        /* color: var(--color-text); // ya heredaría, pero OK para seguridad */
+        color: var(--color-text);
+      }
+
+      p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        color: var(--color-text);
+        opacity: 0.8;
+      }
+
+      .btn-hero {
+        font-size: 1.2rem;
+        padding: 1rem 2rem;
+      }
+    }
+  }
+ 
+  @media (max-width: 768px) {
+    &__hero {
+      min-height: auto;
+      padding: 1rem;
+    }
+  }
+}
+
+.home__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: calc(100vh - 250px); /* Hace que la sección Hero ocupe el espacio restante */
+  gap: 2rem;
+  position: relative;
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+--------------------------------------------------------------------------------
+
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductModal/ProductModal.tsx
 
 Contenido:
@@ -1674,6 +2513,398 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
 };
 
 export default ProductListItem;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductModal/ProductModal.scss
+
+Contenido:
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductModal/ProductModal.scss */
+.product-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+  }
+
+  &__content {
+    position: relative;
+    width: 90%;
+    max-width: 600px;
+    padding: 2rem;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    text-align: center;
+    z-index: 2;
+    animation: fadeInUp 0.3s ease forwards;
+    transform: translateY(20px);
+    opacity: 0;
+
+    h2 {
+      margin-bottom: 1rem;
+      /* c.$primary-color -> var(--color-primary) */
+      color: var(--color-primary);
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      /* color: var(--color-text); // si quieres forzar, sino heredado */
+      color: var(--color-text);
+    }
+  }
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/sass/global.scss
+
+Contenido:
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/sass/global.scss */
+/* ------------------------------------------------------
+   global.scss (Unificación de variables y estilos base)
+   ------------------------------------------------------ */
+
+/* 1. Tipografía (Google Fonts) */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Montserrat:wght@400;700&display=swap');
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+/* Contenedor principal de la app */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.home {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Asegura que el footer se alinee al fondo */
+
+
+}
+/* El main debe ocupar el espacio disponible para empujar el footer hacia abajo */
+main {
+  padding-top: 80px; /* O el valor que compense la altura del header */
+  flex: 1;
+}
+/* 2. Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 3. VARIABLES: Modo Claro (por defecto) */
+:root {
+  /* Fondo y texto */
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --card-shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.4);
+
+  --color-bg:              #f9fafb;      /* Gris muy claro */
+  --color-text:            #1f2933;      /* Gris muy oscuro */
+
+  /* Fondo para tarjetas (por ejemplo, ProductCard) */
+  --color-card-bg:         #ffffff;      /* Blanco para modo claro */
+
+  /* Paleta principal */
+  --color-primary:         #3b82f6;      /* Azul medio */
+  --color-primary-hover:   #2563eb;      /* Azul un poco más oscuro */
+  --color-secondary:       #6366f1;      /* Índigo clarito */
+  --color-accent:          #f4f4f4;      /* Azul oscuro o acento */
+  --color-accent-hover:    #059669;
+
+  /* Un gris intermedio para bordes, inputs, etc. */
+  --gray-300:             #d1d5db;       /* Gris clarito */
+
+  /* Efecto “glass” suave */
+  --glass-bg:             rgba(255, 255, 255, 0.3);
+  --glass-border:         rgba(255, 255, 255, 0.4);
+  --glass-blur:           6px;
+
+  /* Header */
+  --header-bg:            rgba(255, 255, 255, 0.7);
+  --header-text:          #1f2933;
+  --header-box-shadow:    0 2px 10px rgba(0, 0, 0, 0.1);
+
+  /* Onda */
+  --wave-color:           #fff;
+
+  /* Switch */
+  --switch-bg-off:        #bbb;
+  --switch-bg-on:         #666;
+  --switch-knob:          #fff;
+
+  /* Transición */
+  --transition-speed:     0.3s;
+}
+
+/* 4. VARIABLES: Modo Oscuro */
+:root[data-theme='dark'] {
+  --card-shadow: 0 4px 12px rgba(46, 87, 110, 0.8);
+  --card-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.9);
+  
+  /* Fondo y texto */
+  --color-bg:             #1f1f1f;       /* Gris oscuro */
+  --color-text:           #f2f2f2;       /* Texto claro */
+
+  /* Fondo para tarjetas (por ejemplo, ProductCard) */
+  --color-card-bg:        #1e1e1e;       /* Fondo oscuro para tarjetas */
+
+  /* Paleta principal */
+  --color-primary:        #4f46e5;       /* Índigo */
+  --color-primary-hover:  #4338ca;       /* Índigo más oscuro */
+  --color-secondary:      #8b8efc;       /* Índigo clarito para dark */
+  --color-accent:         #d5eceb;       /* Verde (ajusta si deseas) */
+  --color-accent-hover:   #059669;
+
+  /* Gris para bordes/inputs en dark */
+  --gray-300:            #888;          /* Más claro que el fondo */
+
+  /* Efecto “glass” un poco más oscuro */
+  --glass-bg:            rgba(255, 255, 255, 0.08);
+  --glass-border:        rgba(255, 255, 255, 0.15);
+  --glass-blur:          8px;
+
+  /* Header */
+  --header-bg:           rgba(0, 0, 0, 0.5);
+  --header-text:         #f2f2f2;
+  --header-box-shadow:   0 2px 10px rgba(0, 0, 0, 0.3);
+
+  /* Onda */
+  --wave-color:          #333;
+
+  /* Switch */
+  --switch-bg-off:       #777;
+  --switch-bg-on:        #bbb;
+  --switch-knob:         #111;
+
+
+  .view-switcher__menu{
+    background-color: var(--wave-color);
+    box-shadow:   0 2px 10px rgba(231, 213, 213, 0.3);
+
+  }
+}
+
+/* 5. Estilos base para tipografías */
+html,
+body {
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Encabezados usan Montserrat */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+}
+
+/* Container base */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 0;
+}
+
+/* Links */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-speed);
+  &:hover {
+    color: var(--color-primary-hover);
+  }
+}
+
+/* Botones */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color var(--transition-speed), transform 0.2s;
+  &:hover {
+    background-color: var(--color-primary-hover);
+    transform: translateY(-2px);
+  }
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  padding: 0.6rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition:
+    background-color var(--transition-speed),
+    color var(--transition-speed),
+    transform 0.2s;
+  &:hover {
+    background-color: var(--color-primary);
+    color: #fff;
+    transform: translateY(-2px);
+  }
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Cartas (glass) */
+.card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition:
+    background-color var(--transition-speed),
+    box-shadow var(--transition-speed);
+}
+
+/* Animación fadeIn */
+.fade-in {
+  animation: fadeIn var(--transition-speed) forwards;
+}
+
+@keyframes fadeIn {
+  0%   { opacity: 0; transform: translateY(15px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductCard/ProductCard.scss
+
+Contenido:
+.product-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-card-bg, #fff);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);  // Usamos la variable para la sombra
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: fadeIn 0.4s ease forwards;
+  opacity: 0;
+  .product-card__price{
+    color: var(--card-shadow);
+    font-weight:560;
+  }
+  &:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: var(--card-shadow-hover); // Sombra al hacer hover
+  }
+
+  // Contenedor para la imagen con altura fija
+  &__image-wrapper {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+  }
+
+  // Contenedor de la información del producto
+  &__info {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    flex-grow: 1;
+
+    h3 {
+      font-size: 1.2rem;
+      color: var(--color-text, #333);
+      margin: 0 0 0.5rem;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: var(--color-accent, #e74c3c);
+      font-weight: 600;
+      margin: 0 0 1rem;
+    }
+
+    a.btn-primary {
+      align-self: flex-start;
+      font-size: 0.9rem;
+      text-decoration: none;
+      color: #fff;
+      background-color: var(--color-primary, #3498db);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+      margin-top: auto;
+
+      &:hover {
+        background-color: #2d86c8;
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
 
 
 --------------------------------------------------------------------------------
@@ -1722,6 +2953,37 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 };
 
 export default ProductCard;
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Footer/Footer.scss
+
+Contenido:
+/* src/components/Footer/Footer.scss */
+
+.footer {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border-top: 1px solid var(--glass-border);
+  text-align: center;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  color: var(--color-text);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.5s ease forwards;
+  position: relative; /* Asegúrate de que no se posicione fuera del flujo */
+  bottom: 0;
+  width: 100%; /* Asegura que el footer ocupe todo el ancho */
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 
 --------------------------------------------------------------------------------
@@ -1849,6 +3111,135 @@ export default Contact;
 
 --------------------------------------------------------------------------------
 
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Contact/Contact.scss
+
+Contenido:
+// src/components/Contact/Contact.scss
+.contact {
+    margin-top: 2rem;
+    text-align: center;
+    animation: fadeIn 0.6s ease forwards;
+  
+    h2 {
+      font-size: 2.2rem;
+      color: var(--color-primary);
+      margin-bottom: 1rem;
+    }
+  
+    p {
+      font-size: 1.1rem;
+      color: var(--color-text);
+      margin-bottom: 2rem;
+    }
+  
+    &__form {
+      max-width: 600px;
+      margin: 0 auto 2rem auto;
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      text-align: left;
+    }
+  
+    &__form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+  
+      label {
+        font-weight: 500;
+        color: var(--color-text);
+      }
+  
+      input,
+      textarea {
+        padding: 0.75rem;
+        border: 1px solid var(--gray-300);
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.2);
+        color: var(--color-text);
+        transition: border-color 0.3s, box-shadow 0.3s;
+  
+        &:focus {
+          border-color: var(--color-accent);
+          box-shadow: 0 0 6px rgba(16, 185, 129, 0.3);
+        }
+      }
+  
+      textarea {
+        resize: vertical;
+        min-height: 120px;
+      }
+    }
+  
+    &__info {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 2rem;
+  
+      &-item {
+        background: var(--glass-bg);
+        backdrop-filter: blur(var(--glass-blur));
+        border: 1px solid var(--glass-border);
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+        min-width: 250px;
+  
+        h3 {
+          margin-bottom: 0.5rem;
+          color: var(--color-primary);
+        }
+  
+        p {
+          margin: 0;
+          color: var(--color-text);
+        }
+      }
+    }
+  }
+  
+  /* Animación de entrada */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* src/components/Contact/Contact.scss */
+.contact__form {
+  max-width: 600px;
+  margin: 0 auto 2rem auto;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  text-align: left;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    padding: 1rem;
+  }
+}
+
+
+--------------------------------------------------------------------------------
+
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/ThemeSwitch/FloatingThemeSwitch.tsx
 
 Contenido:
@@ -1875,547 +3266,98 @@ export default FloatingThemeSwitch;
 
 --------------------------------------------------------------------------------
 
-/home/southatoms/Escritorio/lite_vibrance_web/src/data/products.ts
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/ThemeSwitch/FloatingThemeSwitch.scss
 
 Contenido:
-// src/data/products.ts
-export interface Product {
-  uuid: string;
-  name: string;
-  slug: string;
-  price: number;
-  photos?: string[];
-  description?: string;
-}
-/*
-export const products: Product[] = [
-  {
-    id: 3,
-    name: 'Cámara Reflex Profesional',
-    slug: slugify('Cámara Reflex Profesional'),  // Generamos el slug
-    price: 799.99,
-    photos: [
-      'https://picsum.photos/seed/camera1/600/400',
-      'https://picsum.photos/seed/camera2/600/400',
-      'https://picsum.photos/seed/camera3/600/400',
-      'https://picsum.photos/seed/camera4/600/400'
-    ],
-    description:
-      'Esta cámara reflex profesional cuenta con un sensor de alta resolución, rápida velocidad de disparo y ópticas intercambiables para capturar imágenes de alta calidad en cualquier situación. Ideal para fotógrafos profesionales y entusiastas avanzados.'
-  },
-  {
-    id: 4,
-    name: 'Laptop Ultrabook',
-    slug: slugify('Laptop Ultrabook'),  // Generamos el slug
-    price: 999.99,
-    photos: [
-      'https://images.unsplash.com/photo-1481277542470-605612bd2d61?auto=format&fit=crop&w=600&q=80'
-    ],
-    description:
-      'Una laptop elegante y potente que combina portabilidad y rendimiento para profesionales en movimiento.',
-  },
-  {
-    id: 5,
-    name: 'Smartphone Pro',
-    slug: slugify('Smartphone Pro'),  // Generamos el slug
-    price: 899.99,
-    photos: [
-      'https://images.unsplash.com/photo-1495433324511-bf8e92934d90?auto=format&fit=crop&w=600&q=80'
-    ],
-    description:
-      'El Smartphone Pro ofrece una experiencia premium con una pantalla de alta resolución y cámaras avanzadas.',
-  },
-  {
-    id: 6,
-    name: 'Tablet 10"',
-    slug: slugify('Tablet 10"'),  // Generamos el slug
-    price: 349.99,
-    photos: [
-      'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80'
-    ],
-    description:
-      'Una tablet versátil perfecta para entretenimiento, lectura y productividad.',
-  },
-];
-
-*/
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/context/NotificationContext.tsx
-
-Contenido:
-// src/context/NotificationContext.tsx
-import React, { createContext, useContext, useState } from 'react';
-
-export type NotificationType = 'success' | 'error' | 'info';
-
-export interface Notification {
-  id: number;
-  message: string;
-  type: NotificationType;
-}
-
-interface NotificationContextProps {
-  notifications: Notification[];
-  addNotification: (message: string, type?: NotificationType) => void;
-  removeNotification: (id: number) => void;
-}
-
-const NotificationContext = createContext<NotificationContextProps>({
-  notifications: [],
-  addNotification: () => {},
-  removeNotification: () => {},
-});
-
-export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-
-  const addNotification = (message: string, type: NotificationType = 'info') => {
-    const id = Date.now();
-    setNotifications(prev => [...prev, { id, message, type }]);
-    // Remover la notificación automáticamente después de 3 segundos
-    setTimeout(() => {
-      setNotifications(prev => prev.filter(n => n.id !== id));
-    }, 3000);
-  };
-
-  const removeNotification = (id: number) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
-  };
-
-  return (
-    <NotificationContext.Provider value={{ notifications, addNotification, removeNotification }}>
-      {children}
-    </NotificationContext.Provider>
-  );
-};
-
-export const useNotification = () => useContext(NotificationContext);
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/context/AuthContext.tsx
-
-Contenido:
-// src/context/AuthContext.tsx
-/* eslint-disable react-refresh/only-export-components */
-import React from 'react';
-import { Auth0Provider, useAuth0, GetTokenSilentlyOptions } from '@auth0/auth0-react';
-
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return (
-    <Auth0Provider
-      domain={import.meta.env.VITE_AUTH0_DOMAIN!}
-      clientId={import.meta.env.VITE_AUTH0_CLIENT_ID!}
-      authorizationParams={{
-        redirect_uri: window.location.origin,
-        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-      }}
-    >
-      {children}
-    </Auth0Provider>
-  );
-};
-
-export const useAuth = () => {
-  const { isAuthenticated, loginWithRedirect, logout, user, getAccessTokenSilently } = useAuth0();
-  return {
-    isAuthenticated,
-    login: (options?: any) =>
-      loginWithRedirect({
-        authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE },
-        ...options,
-      }),
-    logout: () => logout({ logoutParams: { returnTo: window.location.origin } }),
-    user,
-    getAccessTokenSilently: (options?: GetTokenSilentlyOptions) =>
-      getAccessTokenSilently({
-        detailedResponse: false,
-        authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE },
-        ...options,
-      }) as unknown as Promise<string>,
-  };
-};
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/context/AuthProvider.tsx
-
-Contenido:
-// src/context/AuthProvider.tsx
-import React from 'react';
-import { Auth0Provider } from '@auth0/auth0-react';
-
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return (
-    <Auth0Provider
-      domain={import.meta.env.VITE_AUTH0_DOMAIN!}
-      clientId={import.meta.env.VITE_AUTH0_CLIENT_ID!}
-      authorizationParams={{
-        redirect_uri: window.location.origin,
-        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-      }}
-    >
-      {children}
-    </Auth0Provider>
-  );
-};
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/context/ThemeContext.tsx
-
-Contenido:
-// src/context/ThemeContext.tsx
-import React, { createContext, useState, useContext, useEffect } from 'react';
-
-interface ThemeContextProps {
-  theme: 'light' | 'dark';
-  toggleTheme: () => void;
-}
-
-const ThemeContext = createContext<ThemeContextProps>({
-  theme: 'light',
-  toggleTheme: () => {},
-});
-
-export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Lee del localStorage si existe el tema guardado, o por defecto 'light'
-  const [theme, setTheme] = useState<'light' | 'dark'>(
-    () => (localStorage.getItem('theme') as 'light' | 'dark') || 'light'
-  );
-
-  useEffect(() => {
-    // Aplica la clase del tema al <body> y guarda en localStorage
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
-  };
-
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
-};
-
-// Hook de conveniencia
-export const useTheme = () => useContext(ThemeContext);
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/context/CartContext.tsx
-
-Contenido:
-// src/context/CartContext.tsx
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useAuth } from './AuthContext';
-import { getCart, addToCart, removeFromCart, checkout, CartItem } from '../services/cart';
-
-interface CartContextProps {
-  cartItems: CartItem[];
-  loadCart: () => void;
-  add: (
-    productUuid: string,
-    productDetails: { name: string; image: string; price: number },
-    quantity: number
-  ) => void;
-  remove: (productUuid: string) => void;
-  clear: () => void;
-}
-
-const CartContext = createContext<CartContextProps>({
-  cartItems: [],
-  loadCart: () => {},
-  add: () => {},
-  remove: () => {},
-  clear: () => {},
-});
-
-export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const { user, getAccessTokenSilently } = useAuth();
-
-  // Cargar el carrito dependiendo del estado de autenticación
-  const loadCart = async () => {
-    if (user) {
-      try {
-        const token = await getAccessTokenSilently();
-        const items = await getCart(token);
-        setCartItems(items);
-      } catch (error) {
-        console.error('Error al cargar el carrito:', error);
-      }
-    } else {
-      // Cargar carrito del localStorage para usuario invitado
-      const storedCart = localStorage.getItem('guestCart');
-      setCartItems(storedCart ? JSON.parse(storedCart) : []);
-    }
-  };
-
-  // Función para agregar producto al carrito
-  const add = async (
-    productUuid: string,
-    productDetails: { name: string; image: string; price: number },
-    quantity: number
-  ) => {
-    if (user) {
-      try {
-        const token = await getAccessTokenSilently();
-        await addToCart(token, productUuid, quantity);
-        await loadCart();
-      } catch (error) {
-        console.error('Error al agregar al carrito:', error);
-      }
-    } else {
-      setCartItems(prev => {
-        const existing = prev.find(item => item.product_uuid === productUuid);
-        if (existing) {
-          return prev.map(item =>
-            item.product_uuid === productUuid
-              ? { ...item, quantity: item.quantity + quantity }
-              : item
-          );
-        } else {
-          const newItem: CartItem = {
-            product_uuid: productUuid,
-            name: productDetails.name,
-            image: productDetails.image,
-            price: productDetails.price,
-            quantity,
-          };
-          return [...prev, newItem];
-        }
-      });
-    }
-  };
-
-  // Función para eliminar un producto del carrito
-  const remove = async (productUuid: string) => {
-    if (user) {
-      try {
-        const token = await getAccessTokenSilently();
-        await removeFromCart(token, productUuid);
-        await loadCart();
-      } catch (error) {
-        console.error('Error al eliminar del carrito:', error);
-      }
-    } else {
-      setCartItems(prev => prev.filter(item => item.product_uuid !== productUuid));
-    }
-  };
-
-  // Función para vaciar el carrito (ej. al hacer checkout)
-  const clear = async () => {
-    if (user) {
-      try {
-        const token = await getAccessTokenSilently();
-        await checkout(token);
-        await loadCart();
-      } catch (error) {
-        console.error('Error en checkout:', error);
-      }
-    } else {
-      setCartItems([]);
-      localStorage.removeItem('guestCart');
-    }
-  };
-
-  useEffect(() => {
-    loadCart();
-  }, [user]);
-
-  return (
-    <CartContext.Provider value={{ cartItems, loadCart, add, remove, clear }}>
-      {children}
-    </CartContext.Provider>
-  );
-};
-
-export const useCart = () => useContext(CartContext);
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/services/cart.ts
-
-Contenido:
-// src/services/cart.ts
-
-export interface CartItem {
-  product_uuid: string;
-  name: string;
-  image: string;
-  price: number;
-  quantity: number;
-}
-
-export async function getCart(token: string): Promise<CartItem[]> {
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/cart`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`
-    }
-  });
-  if (!response.ok) {
-    throw new Error('Error al obtener el carrito');
-  }
-  return response.json();
-}
-
-export async function addToCart(token: string, productUuid: string, quantity: number): Promise<string> {
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/cart`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify({ product_uuid: productUuid, quantity })
-  });
-  if (!response.ok) {
-    throw new Error('Error al agregar el producto al carrito');
-  }
-  return response.text();
-}
-
-export async function removeFromCart(token: string, productUuid: string): Promise<string> {
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/cart/${productUuid}`, {
-    method: 'DELETE',
-    headers: {
-      'Authorization': `Bearer ${token}`
-    }
-  });
-  if (!response.ok) {
-    throw new Error('Error al eliminar el producto del carrito');
-  }
-  return response.text();
-}
-
-export async function checkout(token: string): Promise<string> {
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/checkout`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`
-    }
-  });
-  if (!response.ok) {
-    throw new Error('Error al finalizar la compra');
-  }
-  return response.text();
-}
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/services/auth.ts
-
-Contenido:
-// src/services/auth.ts
-
-export async function loginAPI(email: string, password: string): Promise<{ token: string }> {
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/login`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ email, password })
-  });
-  if (!response.ok) {
-    throw new Error('Error al iniciar sesión');
-  }
-  return response.json();
-}
-
-export async function registerAPI(name: string, email: string, password: string): Promise<{ token: string }> {
-  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/register`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ name, email, password })
-  });
-  if (!response.ok) {
-    throw new Error('Error al registrarse');
-  }
-  return response.json();
-}
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/services/api.ts
-
-Contenido:
-// src/services/api.ts
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
-// ↑ Podrías usar process.env en vez de import.meta.env, según tu bundler.
-
-interface RequestOptions {
-  method?: string;
-  token?: string;
-  body?: unknown;        // si deseas enviar JSON
-  [key: string]: any;    // para opciones adicionales
-}
-
-/**
- * request: helper para llamadas fetch a nuestra API.
- * @param endpoint: ruta (ej. "/api/login")
- * @param options: { method, body, token, ... }
- */
-export async function request(endpoint: string, options: RequestOptions = {}) {
-  const { method = 'GET', token, body, ...rest } = options;
-
-  // Preparar cabeceras
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-  };
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+/* src/components/ThemeSwitch/FloatingThemeSwitch.scss */
+
+/* Botón de interruptor flotante para cambiar de tema */
+.floating-theme-switch {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1500;
+  width: 60px;  /* Tamaño más grande para mayor visibilidad */
+  height: 60px;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--color-primary); /* Color base */
+  color: #fff;
+  font-size: 1.8rem; /* Mayor tamaño para mejor visibilidad */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Sombra intensa para un look más impactante */
+  transition: all 0.3s ease; /* Transición más suave */
+  transform: scale(1); /* Animación de escala */
+
+  /* Efecto cuando pasa el mouse sobre el botón */
+  &:hover {
+    background-color: var(--color-accent);
+    transform: translateY(-5px) scale(1.1); /* Efecto de "flotación" y ampliación */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); /* Sombra más grande */
   }
 
-  // Hacer fetch
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    method,
-    headers,
-    body: body ? JSON.stringify(body) : undefined,
-    ...rest,
-  });
-
-  // Manejo de errores (básico). Podrías mejorarlo
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(
-      `Error ${response.status}: ${errorText || 'Error en la petición'}`
-    );
+  /* Efecto al hacer clic */
+  &:active {
+    transform: scale(0.95);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Sombra más suave */
   }
 
-  // Intentar parsear JSON (o devolver vacío si no hay contenido)
-  try {
-    return await response.json();
-  } catch {
-    return null;
+  /* Animación de aparición */
+  animation: slideUp 0.5s ease forwards;
+  transform: translateY(100px);
+  opacity: 0;
+}
+
+/* Animación para que aparezca desde abajo */
+@keyframes slideUp {
+  100% {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 
+/* Modo oscuro */
+:root[data-theme='dark'] {
+  .floating-theme-switch {
+    background-color: var(--color-accent); /* Fondo más oscuro */
+    color: #000;
+    font-size: 2rem; /* Aumentamos el tamaño para hacerlo más prominente */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7); /* Sombra más intensa */
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  }
 
---------------------------------------------------------------------------------
+  .floating-theme-switch:hover {
+    background-color: var(--color-primary-hover);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+  }
 
-/home/southatoms/Escritorio/lite_vibrance_web/.env
+  .floating-theme-switch:active {
+    transform: scale(1.05); /* Efecto de expansión en lugar de reducción */
+  }
+}
 
-Contenido:
-VITE_API_URL=http://localhost:8080
-VITE_AUTH0_DOMAIN=dev-yfa8skztvtel11w1.us.auth0.com
-VITE_AUTH0_CLIENT_ID=xIt5BFD88ywGfCRl2L6C0LTPh7Qe5RRc
-VITE_AUTH0_AUDIENCE=https://dev-yfa8skztvtel11w1.us.auth0.com/api/v2/
-  # si corresponde
+/* Modo claro */
+:root[data-theme='light'] {
+  .floating-theme-switch {
+    background-color: var(--color-primary); /* Color brillante para el modo claro */
+    color: #fff;
+    font-size: 1.8rem; /* Mantener tamaño visible */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Sombra sutil */
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  }
+
+  .floating-theme-switch:hover {
+    background-color: var(--color-accent);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .floating-theme-switch:active {
+    transform: scale(1.1); /* Efecto de "click" expandido */
+  }
+}
 
 
 --------------------------------------------------------------------------------

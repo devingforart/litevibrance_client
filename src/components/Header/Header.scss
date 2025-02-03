@@ -144,6 +144,9 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  top: 65px; /* Ajustado para evitar solapamiento */
+  width: 100%;
+  max-width: 500px;
 }
 
 .header__search {
@@ -154,7 +157,6 @@
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   position: relative;
-  top: 60px;
 
   input {
     border: none;
