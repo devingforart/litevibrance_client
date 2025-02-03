@@ -19,6 +19,7 @@
   z-index: 1000;
   box-shadow: var(--header-box-shadow);
   transition: all 0.3s ease-in-out;
+  background-color: var(--header-box-shadow);
 }
 
 .header__brand {
@@ -152,13 +153,15 @@
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  top: 60px;
 
   input {
     border: none;
     padding: 0.5rem 1rem;
     font-size: 1rem;
     outline: none;
-    width: 200px;
+    width: 600px;
   }
 
   button {
