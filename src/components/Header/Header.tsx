@@ -68,6 +68,11 @@ const Header: React.FC = () => {
 
       <nav className={`header__nav ${isOpen ? 'open' : ''}`}>
         <ul className="nav__list">
+          {/* El LanguageSwitcher se muestra siempre */}
+          <li className="nav__item">
+            <LanguageSwitcher />
+          </li>
+
           {navLinks.map((link) => (
             <li key={link.name} className="nav__item">
               <Link
@@ -103,9 +108,6 @@ const Header: React.FC = () => {
                 <span className="nav__link">
                   {t('hello')} {user?.name || user?.email}
                 </span>
-              </li>
-              <li className="nav__item">
-                <LanguageSwitcher />
               </li>
               <li className="nav__item">
                 <Link
