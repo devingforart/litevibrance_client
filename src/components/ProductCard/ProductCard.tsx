@@ -1,8 +1,8 @@
-// src/components/ProductCard/ProductCard.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './ProductCard.scss';
 import { Product } from '../../data/products';
+import { useTranslation } from 'react-i18next';
 
 interface ProductCardProps {
   product: Product;
@@ -12,6 +12,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const imageUrl = product.photos && product.photos.length > 0
     ? product.photos[0]
     : 'https://via.placeholder.com/600x400?text=No+Image';
+  const { t } = useTranslation();
 
   return (
     <div className="product-card">
@@ -26,12 +27,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <div className="product-card__info">
         <h3 className="product-card__title">{product.name}</h3>
         <p className="product-card__price">${product.price.toFixed(2)}</p>
-        {/* Usamos product.uuid en lugar de product.id */}
         <Link
           to={`/products/${product.uuid}/${product.slug}`}
           className="btn-primary product-card__button"
         >
-          Ver detalle
+          {t('view_detail')}
         </Link>
       </div>
     </div>

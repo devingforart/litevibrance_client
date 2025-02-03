@@ -1,18 +1,17 @@
-// src/components/Header/Header.tsx
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaSearch } from 'react-icons/fa'; // Icono de lupa
+import { FaSearch } from 'react-icons/fa';
 import { useCart } from '../../context/CartContext';
-import { useAuth } from '../../context/AuthContext';  // Importamos nuestro hook de autenticación
+import { useAuth } from '../../context/AuthContext';
 import './Header.scss';
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
-// Rutas generales de navegación
 const navLinks = [
-  { name: 'Inicio', path: '/' },
-  { name: 'Productos', path: '/products' },
-  { name: 'Carrito', path: '/cart' },
-  { name: 'Ofertas', path: '/products?filter=ofertas' },
-  { name: 'Contacto', path: '/contact' },
+  { name: 'home', path: '/' },
+  { name: 'products', path: '/products' },
+  { name: 'cart', path: '/cart' },
+  { name: 'contact', path: '/contact' }
 ];
 
 const Header: React.FC = () => {
@@ -20,9 +19,9 @@ const Header: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const { cartItems } = useCart();
-  const { isAuthenticated, login, logout, user } = useAuth(); // Estado y funciones de autenticación
+  const { isAuthenticated, login, logout, user } = useAuth();
+  const { t } = useTranslation();
 
-  // Calcula el total de artículos en el carrito
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   useEffect(() => {
@@ -35,13 +34,9 @@ const Header: React.FC = () => {
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
-  const normalizeString = (str: string) =>
-    str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    const normalizedTerm = normalizeString(searchTerm.trim());
-    navigate(`/products?search=${encodeURIComponent(normalizedTerm)}`);
+    navigate(`/products?search=${encodeURIComponent(searchTerm.trim())}`);
     setSearchTerm('');
   };
 
@@ -49,16 +44,15 @@ const Header: React.FC = () => {
     <header className="header">
       <div className="header__brand">
         <Link to="/" onClick={() => setIsOpen(false)}>
-          <span className="brand__logo">liteVibrance</span>
+          <span className="brand__logo">{t('liteVibrance')}</span>
         </Link>
       </div>
 
-      {/* Buscador centrado */}
       <div className="header__center">
         <form className="header__search" onSubmit={handleSearch}>
           <input
             type="text"
-            placeholder="Buscar productos..."
+            placeholder={t('search_placeholder')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -74,7 +68,6 @@ const Header: React.FC = () => {
 
       <nav className={`header__nav ${isOpen ? 'open' : ''}`}>
         <ul className="nav__list">
-          {/* Enlaces generales */}
           {navLinks.map((link) => (
             <li key={link.name} className="nav__item">
               <Link
@@ -82,58 +75,56 @@ const Header: React.FC = () => {
                 className="nav__link"
                 onClick={() => setIsOpen(false)}
               >
-                {link.name}
-                {link.name === 'Carrito' && totalItems > 0 && (
+                {t(link.name)}
+                {link.name === 'cart' && totalItems > 0 && (
                   <span className="cart-badge">{totalItems}</span>
                 )}
               </Link>
             </li>
           ))}
 
-          {/* Enlaces o botones de autenticación según el estado */}
           {!isAuthenticated ? (
-  <>
-    <li className="nav__item">
-      <Link
-        to="#"
-        className="nav__link"
-        onClick={(e) => {
-          e.preventDefault();
-          login();
-          setIsOpen(false);
-        }}
-      >
-        Iniciar Sesión / Registrarte
-      </Link>
-    </li>
-
-  </>
-) : (
-  <>
-    <li className="nav__item">
-      <span className="nav__link">
-        Hola, {user?.name || user?.email}
-      </span>
-    </li>
-    <li className="nav__item">
-      <Link
-        to="#"
-        className="nav__link"
-        onClick={(e) => {
-          e.preventDefault();
-          logout();
-          setIsOpen(false);
-        }}
-      >
-        Cerrar Sesión
-      </Link>
-    </li>
-  </>
-)}
+            <li className="nav__item">
+              <Link
+                to="#"
+                className="nav__link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  login();
+                  setIsOpen(false);
+                }}
+              >
+                {t('iniciar_sesion')}
+              </Link>
+            </li>
+          ) : (
+            <>
+              <li className="nav__item">
+                <span className="nav__link">
+                  {t('hello')} {user?.name || user?.email}
+                </span>
+              </li>
+              <li className="nav__item">
+                <LanguageSwitcher />
+              </li>
+              <li className="nav__item">
+                <Link
+                  to="#"
+                  className="nav__link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    logout();
+                    setIsOpen(false);
+                  }}
+                >
+                  {t('logout')}
+                </Link>
+              </li>
+            </>
+          )}
         </ul>
       </nav>
 
-      {/* Onda decorativa */}
       <div className="header__wave">
         <svg viewBox="0 0 500 80" preserveAspectRatio="none">
           <path d="M0,30 C150,90 350,0 500,30 L500,00 L0,0 Z" />

@@ -1,26 +1,28 @@
-// src/components/AdminDashboard/AdminDashboard.tsx
 import React from 'react';
 import './AdminDashboard.scss';
+import { useTranslation } from 'react-i18next';
 
 const AdminDashboard: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="admin-dashboard container">
-      <h2>Panel de Administración</h2>
+      <h2>{t('admin_panel')}</h2>
       <div className="admin-dashboard__sections">
         <div className="admin-dashboard__card">
-          <h3>Productos</h3>
-          <p>Gestiona el catálogo, precios, stock, etc.</p>
-          <button className="btn-primary">Ir a Productos</button>
+          <h3>{t('admin_products')}</h3>
+          <p>{t('manage_products')}</p>
+          <button className="btn-primary">{t('go_to_products')}</button>
         </div>
         <div className="admin-dashboard__card">
-          <h3>Pedidos</h3>
-          <p>Revisa y gestiona los pedidos de los clientes.</p>
-          <button className="btn-primary">Ir a Pedidos</button>
+          <h3>{t('admin_orders')}</h3>
+          <p>{t('manage_orders')}</p>
+          <button className="btn-primary">{t('go_to_orders')}</button>
         </div>
         <div className="admin-dashboard__card">
-          <h3>Usuarios</h3>
-          <p>Administra roles, permisos y perfiles de usuarios.</p>
-          <button className="btn-primary">Ir a Usuarios</button>
+          <h3>{t('admin_users')}</h3>
+          <p>{t('manage_users')}</p>
+          <button className="btn-primary">{t('go_to_users')}</button>
         </div>
       </div>
     </div>

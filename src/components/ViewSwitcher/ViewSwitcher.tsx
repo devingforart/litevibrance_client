@@ -1,19 +1,20 @@
-// src/components/ViewSwitcher/ViewSwitcher.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import { FaTh, FaList, FaRegSquare } from 'react-icons/fa';
 import './ViewSwitcher.scss';
+import { useTranslation } from 'react-i18next';
 
 export type ViewMode = 'grid' | 'list' | 'detailed';
 
 interface ViewSwitcherProps {
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
-  isDarkMode: boolean;  // Prop para manejar el modo oscuro
+  isDarkMode: boolean;
 }
 
 const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ viewMode, setViewMode, isDarkMode }) => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
 
   const toggleMenu = () => setOpen(!open);
 
@@ -54,13 +55,13 @@ const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ viewMode, setViewMode, isDa
       {open && (
         <div className="view-switcher__menu">
           <button onClick={() => handleOptionClick('grid')}>
-            <FaTh /> <span>Grilla</span>
+            <FaTh /> <span>{t('grid_view')}</span>
           </button>
           <button onClick={() => handleOptionClick('list')}>
-            <FaList /> <span>Lista</span>
+            <FaList /> <span>{t('list_view')}</span>
           </button>
           <button onClick={() => handleOptionClick('detailed')}>
-            <FaRegSquare /> <span>Detallada</span>
+            <FaRegSquare /> <span>{t('detailed_view')}</span>
           </button>
         </div>
       )}

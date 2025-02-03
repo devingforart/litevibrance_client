@@ -4,8 +4,6 @@ import os
 directories = [
 
 "/home/southatoms/Escritorio/lite_vibrance_web/src",
-"/home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/src",
-"/home/southatoms/Escritorio/lite_vibrance_web/server/backend_vibrance/.env",
 "/home/southatoms/Escritorio/lite_vibrance_web/.env"
 
 ]

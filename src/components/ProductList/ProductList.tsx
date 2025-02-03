@@ -1,4 +1,3 @@
-// src/components/ProductList/ProductList.tsx
 import React, { useState, useEffect } from 'react';
 import './ProductList.scss';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -6,8 +5,7 @@ import ProductCard from '../ProductCard/ProductCard';
 import ProductListItem from '../ProductListItem/ProductListItem';
 import ViewSwitcher, { ViewMode } from '../ViewSwitcher/ViewSwitcher';
 import { Product } from '../../data/products';
-
-
+import { useTranslation } from 'react-i18next';
 
 const ProductSkeleton = () => (
   <div className="product-card skeleton">
@@ -25,6 +23,7 @@ const ProductList: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
+  const { t } = useTranslation();
 
   useEffect(() => {
     setLoading(true);
@@ -45,7 +44,6 @@ const ProductList: React.FC = () => {
       });
   }, []);
   
-
   const normalizeString = (str: string) =>
     str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
@@ -56,11 +54,11 @@ const ProductList: React.FC = () => {
   return (
     <div className="product-list container">
       <div className="product-list__header">
-        <h2>Catálogo de Productos</h2>
+        <h2>{t('products_catalog')}</h2>
         <ViewSwitcher viewMode={viewMode} setViewMode={setViewMode} isDarkMode={false} />
       </div>
       {searchQuery && filteredProducts.length === 0 ? (
-        <p>No se encontraron productos para "{searchQuery}"</p>
+        <p>{t('no_products_found')} "{searchQuery}"</p>
       ) : (
         <>
           {loading ? (
@@ -97,7 +95,7 @@ const ProductList: React.FC = () => {
                       <p>{product.description}</p>
                       <p>${product.price.toFixed(2)}</p>
                       <Link to={`/products/${product.uuid}/${product.slug}`} className="btn-primary">
-                        Ver detalle
+                        {t('view_detail')}
                       </Link>
                     </div>
                   ))}

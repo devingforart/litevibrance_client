@@ -1,16 +1,17 @@
-// src/components/Login/Login.tsx
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import './Login.scss';
+import { useTranslation } from 'react-i18next';
 
 const Login: React.FC = () => {
   const { login } = useAuth();
+  const { t } = useTranslation();
 
   return (
     <div className="nav__item">
-      <h2>Iniciar Sesión</h2>
+      <h2>{t('session_login')}</h2>
       <button onClick={login} className="nav__link">
-        Acceder
+        {t('access')}
       </button>
     </div>
   );

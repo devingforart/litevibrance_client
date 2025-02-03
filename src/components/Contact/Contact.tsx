@@ -1,10 +1,12 @@
-// src/components/Contact/Contact.tsx
 import React, { useState } from 'react';
 import { useNotification } from '../../context/NotificationContext';
 import './Contact.scss';
+import { useTranslation } from 'react-i18next';
 
 const Contact: React.FC = () => {
   const { addNotification } = useNotification();
+  const { t } = useTranslation();
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
@@ -12,10 +14,7 @@ const Contact: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí iría la lógica para enviar el formulario a tu backend o servicio
-    addNotification('Mensaje enviado con éxito!', 'success');
-
-    // Limpiar el formulario
+    addNotification(t('purchase_success'), 'success');
     setName('');
     setEmail('');
     setSubject('');
@@ -24,68 +23,68 @@ const Contact: React.FC = () => {
 
   return (
     <div className="contact container">
-      <h2>Contáctanos</h2>
-      <p>Si tienes alguna duda o comentario, ¡no dudes en escribirnos!</p>
+      <h2>{t('contact_us')}</h2>
+      <p>{t('contact_us_message')}</p>
 
       <form className="contact__form" onSubmit={handleSubmit}>
         <div className="contact__form-group">
-          <label htmlFor="name">Nombre</label>
+          <label htmlFor="name">{t('name')}</label>
           <input
             type="text"
             id="name"
-            placeholder="Tu nombre"
+            placeholder={t('your_name')}
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
           />
         </div>
         <div className="contact__form-group">
-          <label htmlFor="email">Correo electrónico</label>
+          <label htmlFor="email">{t('email')}</label>
           <input
             type="email"
             id="email"
-            placeholder="Tu correo"
+            placeholder={t('your_email')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
         <div className="contact__form-group">
-          <label htmlFor="subject">Asunto</label>
+          <label htmlFor="subject">{t('subject')}</label>
           <input
             type="text"
             id="subject"
-            placeholder="Asunto del mensaje"
+            placeholder={t('message_subject')}
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             required
           />
         </div>
         <div className="contact__form-group">
-          <label htmlFor="message">Mensaje</label>
+          <label htmlFor="message">{t('message')}</label>
           <textarea
             id="message"
-            placeholder="Escribe tu mensaje aquí"
+            placeholder={t('your_message')}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             required
           />
         </div>
-        <button type="submit" className="btn-primary">Enviar Mensaje</button>
+        <button type="submit" className="btn-primary">{t('send_message')}</button>
       </form>
 
       <div className="contact__info">
         <div className="contact__info-item">
-          <h3>Dirección</h3>
-          <p>Calle Falsa 123, Ciudad, País</p>
+          <h3>{t('address')}</h3>
+          <p>{t('dummy_address')}</p>
         </div>
         <div className="contact__info-item">
-          <h3>Teléfono</h3>
-          <p>+1 234 567 890</p>
+          <h3>{t('phone')}</h3>
+          <p>{t('dummy_phone')}</p>
         </div>
         <div className="contact__info-item">
-          <h3>Email</h3>
-          <p>info@litevibrance.com</p>
+          <h3>{t('email')}</h3>
+          <p>{t('dummy_email')}</p>
         </div>
       </div>
     </div>

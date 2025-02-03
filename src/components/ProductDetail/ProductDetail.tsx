@@ -1,9 +1,9 @@
-// src/components/ProductDetail/ProductDetail.tsx
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import './ProductDetail.scss';
 import { useCart } from '../../context/CartContext';
 import { useNotification } from '../../context/NotificationContext';
+import { useTranslation } from 'react-i18next';
 
 export interface Product {
   uuid: string;
@@ -16,7 +16,6 @@ export interface Product {
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams();
-  // Extraemos tanto "add" como "clear" para usar ambos flujos
   const { add, clear } = useCart();
   const { addNotification } = useNotification();
   const [quantity, setQuantity] = useState(1);
@@ -24,6 +23,7 @@ const ProductDetail: React.FC = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/products/${id}`)
@@ -38,12 +38,12 @@ const ProductDetail: React.FC = () => {
       });
   }, [id]);
 
-  if (loading) return <div className="product-detail container">Cargando...</div>;
+  if (loading) return <div className="product-detail container">{t('loading')}</div>;
   if (!product) {
     return (
       <div className="product-detail container">
-        <h2>Producto no encontrado</h2>
-        <Link to="/products" className="btn-primary">Volver al Catálogo</Link>
+        <h2>{t('product_not_found')}</h2>
+        <Link to="/products" className="btn-primary">{t('back_to_catalog')}</Link>
       </div>
     );
   }
@@ -53,21 +53,19 @@ const ProductDetail: React.FC = () => {
     ? photoArray[selectedPhoto]
     : 'https://via.placeholder.com/600x400?text=No+Image';
 
-  // Flujo "Agregar al Carrito": agrega el producto sin afectar el resto de los artículos
   const handleAddToCart = () => {
     add(
       product.uuid,
       {
         name: product.name,
         image: product.photos?.[0] || 'https://via.placeholder.com/600x400?text=No+Image',
-        price: product.price,
+        price: product.price
       },
       quantity
     );
-    addNotification(`${product.name} (x${quantity}) agregado al carrito`, 'success');
+    addNotification(`${product.name} (x${quantity}) ${t('add_to_cart')}`, 'success');
   };
 
-  // Flujo "Comprar Ahora": limpia el carrito, agrega solo este producto y redirige al checkout
   const handleBuyNow = async () => {
     await clear();
     await add(
@@ -75,11 +73,11 @@ const ProductDetail: React.FC = () => {
       {
         name: product.name,
         image: product.photos?.[0] || 'https://via.placeholder.com/600x400?text=No+Image',
-        price: product.price,
+        price: product.price
       },
       quantity
     );
-    addNotification(`${product.name} (x${quantity}) agregado para compra inmediata`, 'success');
+    addNotification(`${product.name} (x${quantity}) ${t('buy_now')}`, 'success');
     navigate('/checkout');
   };
 
@@ -107,7 +105,7 @@ const ProductDetail: React.FC = () => {
           <p className="product-detail__price">${product.price.toFixed(2)}</p>
           <p className="product-detail__description">{product.description}</p>
           <div className="product-detail__quantity">
-            <label>Cantidad:</label>
+            <label>{t('quantity')}</label>
             <div className="quantity-controls">
               <button onClick={() => setQuantity(q => (q > 1 ? q - 1 : 1))} className="quantity-btn">–</button>
               <input type="text" readOnly value={quantity} />
@@ -115,9 +113,9 @@ const ProductDetail: React.FC = () => {
             </div>
           </div>
           <div className="product-detail__actions">
-            <button onClick={handleAddToCart} className="btn-primary">Agregar al Carrito</button>
-            <button onClick={handleBuyNow} className="btn-secondary">Comprar Ahora</button>
-            <Link to="/products" className="btn-secondary">Volver al Catálogo</Link>
+            <button onClick={handleAddToCart} className="btn-primary">{t('add_to_cart')}</button>
+            <button onClick={handleBuyNow} className="btn-secondary">{t('buy_now')}</button>
+            <Link to="/products" className="btn-secondary">{t('back_to_catalog')}</Link>
           </div>
         </div>
       </div>
