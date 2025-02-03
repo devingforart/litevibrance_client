@@ -16,7 +16,8 @@ export interface Product {
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams();
-  const { add } = useCart();
+  // Extraemos tanto "add" como "clear" para usar ambos flujos
+  const { add, clear } = useCart();
   const { addNotification } = useNotification();
   const [quantity, setQuantity] = useState(1);
   const [selectedPhoto, setSelectedPhoto] = useState(0);
@@ -52,6 +53,7 @@ const ProductDetail: React.FC = () => {
     ? photoArray[selectedPhoto]
     : 'https://via.placeholder.com/600x400?text=No+Image';
 
+  // Flujo "Agregar al Carrito": agrega el producto sin afectar el resto de los artículos
   const handleAddToCart = () => {
     add(
       product.uuid,
@@ -65,8 +67,9 @@ const ProductDetail: React.FC = () => {
     addNotification(`${product.name} (x${quantity}) agregado al carrito`, 'success');
   };
 
-  // Función para "comprar ahora": agrega el producto y redirige a checkout
+  // Flujo "Comprar Ahora": limpia el carrito, agrega solo este producto y redirige al checkout
   const handleBuyNow = async () => {
+    await clear();
     await add(
       product.uuid,
       {
@@ -76,10 +79,9 @@ const ProductDetail: React.FC = () => {
       },
       quantity
     );
-    addNotification(`${product.name} (x${quantity}) agregado al carrito`, 'success');
+    addNotification(`${product.name} (x${quantity}) agregado para compra inmediata`, 'success');
     navigate('/checkout');
   };
-  
 
   return (
     <div className="product-detail container">
