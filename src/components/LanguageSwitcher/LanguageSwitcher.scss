@@ -1,0 +1,65 @@
+// src/components/LanguageSwitcher/LanguageSwitcher.scss
+.language-switcher {
+    position: relative;
+    display: inline-block;
+    font-family: sans-serif;
+  
+    &__toggle {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+  
+      &:hover {
+        background: #f9f9f9;
+      }
+    }
+  
+    &__menu {
+      position: absolute;
+      top: calc(100% + 5px);
+      right: 0;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+      overflow: hidden;
+    }
+  
+    &__option {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: #fff;
+      border: none;
+      text-align: left;
+      padding: 8px 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+  
+      &:hover {
+        background: #f0f0f0;
+      }
+    }
+  
+    &__flag {
+      font-size: 1.2em;
+    }
+  
+    &__label {
+      font-size: 0.9em;
+    }
+  
+    &__icon {
+      margin-left: auto;
+      font-size: 0.8em;
+    }
+  }
+  
