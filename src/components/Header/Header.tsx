@@ -21,15 +21,11 @@ const Header: React.FC = () => {
   const { cartItems } = useCart();
   const { isAuthenticated, login, logout, user } = useAuth();
   const { t } = useTranslation();
-
+  
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.classList.add('no-scroll');
-    } else {
-      document.body.classList.remove('no-scroll');
-    }
+    document.body.classList.toggle('no-scroll', isOpen);
   }, [isOpen]);
 
   const toggleMenu = () => setIsOpen(!isOpen);
@@ -47,12 +43,11 @@ const Header: React.FC = () => {
           <span className="brand__logo">{t('liteVibrance')}</span>
         </Link>
       </div>
-
       <div className="header__center">
         <form className="header__search" onSubmit={handleSearch}>
-          <input
-            type="text"
-            placeholder={t('search_placeholder')}
+          <input 
+            type="text" 
+            placeholder={t('search_placeholder')} 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -61,25 +56,17 @@ const Header: React.FC = () => {
           </button>
         </form>
       </div>
-
       <div className="header__toggle" onClick={toggleMenu}>
         {isOpen ? '✕' : '☰'}
       </div>
-
       <nav className={`header__nav ${isOpen ? 'open' : ''}`}>
         <ul className="nav__list">
-          {/* El LanguageSwitcher se muestra siempre */}
           <li className="nav__item">
             <LanguageSwitcher />
           </li>
-
-          {navLinks.map((link) => (
+          {navLinks.map(link => (
             <li key={link.name} className="nav__item">
-              <Link
-                to={link.path}
-                className="nav__link"
-                onClick={() => setIsOpen(false)}
-              >
+              <Link to={link.path} className="nav__link" onClick={() => setIsOpen(false)}>
                 {t(link.name)}
                 {link.name === 'cart' && totalItems > 0 && (
                   <span className="cart-badge">{totalItems}</span>
@@ -87,38 +74,27 @@ const Header: React.FC = () => {
               </Link>
             </li>
           ))}
-
           {!isAuthenticated ? (
             <li className="nav__item">
-              <Link
-                to="#"
-                className="nav__link"
-                onClick={(e) => {
-                  e.preventDefault();
-                  login();
-                  setIsOpen(false);
-                }}
-              >
+              <Link to="#" className="nav__link" onClick={(e) => {
+                e.preventDefault();
+                login();
+                setIsOpen(false);
+              }}>
                 {t('iniciar_sesion')}
               </Link>
             </li>
           ) : (
             <>
               <li className="nav__item">
-                <span className="nav__link">
-                  {t('hello')} {user?.name || user?.email}
-                </span>
+                <span className="nav__link">{t('hello')} {user?.name || user?.email}</span>
               </li>
               <li className="nav__item">
-                <Link
-                  to="#"
-                  className="nav__link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    logout();
-                    setIsOpen(false);
-                  }}
-                >
+                <Link to="#" className="nav__link" onClick={(e) => {
+                  e.preventDefault();
+                  logout();
+                  setIsOpen(false);
+                }}>
                   {t('logout')}
                 </Link>
               </li>
@@ -126,10 +102,9 @@ const Header: React.FC = () => {
           )}
         </ul>
       </nav>
-
       <div className="header__wave">
         <svg viewBox="0 0 500 80" preserveAspectRatio="none">
-          <path d="M0,30 C150,90 350,0 500,30 L500,00 L0,0 Z" />
+          <path d="M0,30 C150,90 350,0 500,30 L500,0 L0,0 Z" />
         </svg>
       </div>
     </header>

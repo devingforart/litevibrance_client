@@ -1,6 +1,4 @@
-/* src/components/Header/Header.scss */
-
-/* Evitar scroll cuando menú está abierto (móvil) */
+/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/Header/Header.scss */
 .no-scroll {
   overflow: hidden;
 }
@@ -9,199 +7,167 @@
   position: fixed;
   top: 0;
   width: 100%;
-  height: 65px;
   background: var(--header-bg);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 1.5rem;
+  height: 70px;
   z-index: 1000;
   box-shadow: var(--header-box-shadow);
-  transition: all 0.3s ease-in-out;
-  background-color: var(--header-box-shadow);
-}
+  transition: all 0.3s ease;
 
-.header__brand {
-  .brand__logo {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--header-text);
-    text-decoration: none;
-  }
-}
 
-.header__toggle {
-  display: none;
-  font-size: 1.6rem;
-  color: var(--header-text);
-  cursor: pointer;
-  z-index: 1100;
-
-  @media (max-width: 768px) {
-    display: block;
-  }
-}
-
-/* Reestructuramos para evitar "mixed declarations" */
-.header__nav {
-  /* Declaraciones principales primero */
-  position: fixed;
-  top: 65px;
-  left: 0;
-  width: 100%;
-  height: calc(100vh - 65px);
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
-  transform: translateX(-100%);
-  transition: transform 0.3s ease-in-out;
-  overflow-y: auto;
-
-  /* Luego la regla @media */
-  @media (min-width: 769px) {
-    ul {
-      display: flex;
-      gap: 2rem;
-    }
-  }
-
-  &.open {
-    transform: translateX(0);
-  }
-
-  .nav__list {
-    list-style: none;
-    padding: 2rem;
+  .header__nav {
     display: flex;
-    flex-direction: column;
+    justify-content: end;
+    width: auto;
   }
-
-  .nav__item {
-    margin: 1rem 0;
-    .nav__link {
-      font-size: 1.2rem;
+  
+  &__brand {
+    .brand__logo {
+      font-size: 1.8rem;
+      font-weight: bold;
       color: var(--header-text);
       text-decoration: none;
-      transition: color 0.2s ease;
-      &:hover {
-        color: var(--color-primary);
-      }
     }
   }
 
-  /* Ajustes para pantallas grandes */
-  @media (min-width: 769px) {
-    position: static;
-    transform: none;
-    background: transparent;
-    backdrop-filter: none;
-    width: auto;
-    height: auto;
-    overflow: visible;
-    display: flex;
-    align-items: center;
+  &__toggle {
+    display: none;
+    font-size: 1.6rem;
+    color: var(--header-text);
+    cursor: pointer;
+    @media (max-width: 768px) {
+      display: block;
+    }
+  }
+
+  &__nav {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 70px);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    overflow-y: auto;
+
+    &.open {
+      transform: translateX(0);
+    }
 
     .nav__list {
-      flex-direction: row;
-      padding: 0;
+      list-style: none;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .nav__item {
+      .nav__link {
+        font-size: 1.2rem;
+        color: var(--header-text);
+        text-decoration: none;
+        transition: color 0.2s ease;
+        position: relative;
+        &:hover {
+          color: var(--color-primary);
+        }
+        .cart-badge {
+          background-color: var(--color-primary);
+          color: #fff;
+          border-radius: 50%;
+          font-size: 0.7rem;
+          padding: 0.2rem 0.4rem;
+          position: absolute;
+          top: -5px;
+          right: -10px;
+        }
+      }
+    }
+
+    @media (min-width: 1024px) {
+      position: static;
+      transform: none;
+      background: transparent;
+      backdrop-filter: none;
+      height: auto;
+      overflow: visible;
+      .nav__list {
+        flex-direction: row;
+        padding: 0;
+        gap: 2rem;
+      }
       .nav__item {
-        margin: 0;
         .nav__link {
           font-size: 1rem;
         }
       }
     }
   }
-}
 
-/* Onda decorativa */
-.header__wave {
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 100%;
-  height: 80px;
-  z-index: -1;
-  overflow: hidden;
-
-  svg {
-    width: 100%;
-    height: 100%;
-    fill: var(--wave-color);
-    transition: fill 0.3s;
-  }
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-}
-
-
-
-/* ... estilos previos ... */
-
-.header__center {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 85px; /* Ajustado para evitar solapamiento */
-  width: 100%;
-  max-width: 500px;
-}
-
-.header__search {
-  display: flex;
-  align-items: center;
-  background-color: #fff;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: relative;
-
-  input {
-    border: none;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    outline: none;
-    width: 600px;
-  }
-
-  button {
-    background-color: var(--color-primary);
-    border: none;
-    padding: 0.5rem;
-    color: #fff;
+  &__center {
+    flex: 1;
     display: flex;
-    align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: background-color var(--transition-speed);
+    @media (max-width: 768px) {
+      display: none;
+    }
+    .header__search {
+      width: 100%;
+      min-width: 200px;  // Ancho mínimo de 300px en pantallas estrechas
+      display: flex;
+      background: #fff;
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      margin: 32px;
+
+      input {
+        flex: 1;
+        padding: 0.75rem 1rem;
+        border: none;
+        font-size: 1rem;
+        outline: none;
+      }
+
+      button {
+        background: var(--color-primary);
+        border: none;
+        padding: 0.75rem 1rem;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &:hover {
+          background: var(--color-primary-hover);
+        }
+      }
+    }
   }
 
-  button:hover {
-    background-color: var(--color-primary-hover);
-  }
-
-  svg {
-    font-size: 1.2rem;
-  }
-}
-.cart-badge {
-  background-color: var(--color-primary);
-  color: #fff;
-  border-radius: 50%;
-  font-size: 0.7rem;
-  padding: 0.2rem 0.4rem;
-  margin-left: 0.5rem;
-  display: inline-block;
-  min-width: 20px;
-  text-align: center;
-}
-
-/* Ocultar la marca en mobile para evitar conflictos con el buscador */
-@media (max-width: 768px) {
-  .header__brand {
+  &__wave {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    z-index: -1;
     display: none;
+    @media (min-width: 1024px) {
+      display: block;
+      svg {
+        width: 100%;
+        height: 100%;
+        fill: var(--wave-color);
+      }
+    }
   }
 }
-
