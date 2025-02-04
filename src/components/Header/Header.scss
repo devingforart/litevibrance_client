@@ -119,15 +119,14 @@
       display: none;
     }
     .header__search {
-      width: 100%;
+      width: 70%;
       min-width: 200px;  // Ancho mínimo de 300px en pantallas estrechas
       display: flex;
       background: #fff;
-      border-radius: 30px;
+      height: 50px;
+      border-radius: 10px;
       overflow: hidden;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      margin: 32px;
-
       input {
         flex: 1;
         padding: 0.75rem 1rem;
