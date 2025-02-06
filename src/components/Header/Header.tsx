@@ -1,6 +1,6 @@
+// src/components/Header/Header.tsx
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaSearch } from 'react-icons/fa';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import './Header.scss';
@@ -16,12 +16,11 @@ const navLinks = [
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const { cartItems } = useCart();
   const { isAuthenticated, login, logout, user } = useAuth();
   const { t } = useTranslation();
-  
+
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   useEffect(() => {
@@ -30,31 +29,12 @@ const Header: React.FC = () => {
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    navigate(`/products?search=${encodeURIComponent(searchTerm.trim())}`);
-    setSearchTerm('');
-  };
-
   return (
     <header className="header">
       <div className="header__brand">
         <Link to="/" onClick={() => setIsOpen(false)}>
           <span className="brand__logo">{t('liteVibrance')}</span>
         </Link>
-      </div>
-      <div className="header__center">
-        <form className="header__search" onSubmit={handleSearch}>
-          <input 
-            type="text" 
-            placeholder={t('search_placeholder')} 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button type="submit">
-            <FaSearch />
-          </button>
-        </form>
       </div>
       <div className="header__toggle" onClick={toggleMenu}>
         {isOpen ? '✕' : '☰'}
@@ -66,7 +46,11 @@ const Header: React.FC = () => {
           </li>
           {navLinks.map(link => (
             <li key={link.name} className="nav__item">
-              <Link to={link.path} className="nav__link" onClick={() => setIsOpen(false)}>
+              <Link
+                to={link.path}
+                className="nav__link"
+                onClick={() => setIsOpen(false)}
+              >
                 {t(link.name)}
                 {link.name === 'cart' && totalItems > 0 && (
                   <span className="cart-badge">{totalItems}</span>
@@ -76,25 +60,35 @@ const Header: React.FC = () => {
           ))}
           {!isAuthenticated ? (
             <li className="nav__item">
-              <Link to="#" className="nav__link" onClick={(e) => {
-                e.preventDefault();
-                login();
-                setIsOpen(false);
-              }}>
+              <Link
+                to="#"
+                className="nav__link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  login();
+                  setIsOpen(false);
+                }}
+              >
                 {t('iniciar_sesion')}
               </Link>
             </li>
           ) : (
             <>
               <li className="nav__item">
-                <span className="nav__link">{t('hello')} {user?.name || user?.email}</span>
+                <span className="nav__link">
+                  {t('hello')} {user?.name || user?.email}
+                </span>
               </li>
               <li className="nav__item">
-                <Link to="#" className="nav__link" onClick={(e) => {
-                  e.preventDefault();
-                  logout();
-                  setIsOpen(false);
-                }}>
+                <Link
+                  to="#"
+                  className="nav__link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    logout();
+                    setIsOpen(false);
+                  }}
+                >
                   {t('logout')}
                 </Link>
               </li>

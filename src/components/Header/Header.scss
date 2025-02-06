@@ -1,4 +1,4 @@
-/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/Header/Header.scss */
+/* src/components/Header/Header.scss */
 .no-scroll {
   overflow: hidden;
 }
@@ -11,46 +11,48 @@
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 0 1.5rem;
   height: 70px;
   z-index: 1000;
   box-shadow: var(--header-box-shadow);
   transition: all 0.3s ease;
 
-
-  .header__nav {
-    display: flex;
-    justify-content: end;
-    width: auto;
-  }
-  
+  /* El logo en el lado izquierdo */
   &__brand {
     .brand__logo {
+      position: relative;
+      top: 10px;
       font-size: 1.8rem;
       font-weight: bold;
-      color: var(--header-text);
-      text-decoration: none;
+      color: var(--color-primary); /* Rojo intenso */
+      letter-spacing: 2px;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+      /* Se mantiene sin cambio brusco en hover */
+      &:hover {
+        opacity: 0.9;
+      }
     }
   }
 
+  /* Toggle para móviles */
   &__toggle {
     display: none;
-    font-size: 1.6rem;
-    color: var(--header-text);
+    font-size: 2rem;
+    color: var(--color-primary);
     cursor: pointer;
     @media (max-width: 768px) {
       display: block;
     }
   }
 
+  /* Navegación */
   &__nav {
     position: fixed;
     top: 70px;
     left: 0;
     width: 100%;
     height: calc(100vh - 70px);
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--header-bg);
     backdrop-filter: blur(8px);
     transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
@@ -66,27 +68,36 @@
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
-    }
+      margin-top: 20px;
 
-    .nav__item {
-      .nav__link {
-        font-size: 1.2rem;
-        color: var(--header-text);
-        text-decoration: none;
-        transition: color 0.2s ease;
-        position: relative;
-        &:hover {
-          color: var(--color-primary);
-        }
-        .cart-badge {
-          background-color: var(--color-primary);
-          color: #fff;
-          border-radius: 50%;
-          font-size: 0.7rem;
-          padding: 0.2rem 0.4rem;
-          position: absolute;
-          top: -5px;
-          right: -10px;
+      /* Para dispositivos de escritorio se reorganiza a la derecha */
+      @media (min-width: 1024px) {
+        flex-direction: row;
+        justify-content: flex-end;
+        padding: 0;
+        gap: 3rem;
+      }
+
+      .nav__item {
+        .nav__link {
+          font-size: 1.2rem;
+          color: var(--color-secondary);
+          text-decoration: none;
+          transition: color 0.2s ease;
+          position: relative;
+          &:hover {
+            color: var(--color-primary);
+          }
+          .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background: var(--color-primary);
+            color: #fff;
+            border-radius: 50%;
+            padding: 0.2rem 0.4rem;
+            font-size: 0.75rem;
+          }
         }
       }
     }
@@ -98,57 +109,8 @@
       backdrop-filter: none;
       height: auto;
       overflow: visible;
-      .nav__list {
-        flex-direction: row;
-        padding: 0;
-        gap: 2rem;
-      }
-      .nav__item {
-        .nav__link {
-          font-size: 1rem;
-        }
-      }
-    }
-  }
-
-  &__center {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    @media (max-width: 768px) {
-      display: none;
-    }
-    .header__search {
-      width: 70%;
-      min-width: 200px;  // Ancho mínimo de 300px en pantallas estrechas
-      display: flex;
-      background: #fff;
-      height: 50px;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      input {
-        flex: 1;
-        padding: 0.75rem 1rem;
-        border: none;
-        font-size: 1rem;
-        outline: none;
-      }
-
-      button {
-        background: var(--color-primary);
-        border: none;
-        padding: 0.75rem 1rem;
-        color: #fff;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        &:hover {
-          background: var(--color-primary-hover);
-        }
-      }
+      /* Se coloca a la derecha con margin-left automático */
+      margin-left: auto;
     }
   }
 
