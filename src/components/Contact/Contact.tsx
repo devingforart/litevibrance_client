@@ -81,7 +81,7 @@ const Contact: React.FC = () => {
         {/* Bloque del mapa */}
         <div className="contact__map">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.092911429665!2d-122.40641738468165!3d37.78583497975714!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085808c0a3d1a7b%3A0x2dd33f8d0b0e1f9f!2sYour%20Office%20Address!5e0!3m2!1sen!2s!4v1610000000000!5m2!1sen!2s"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3288.401752031533!2d-58.5531061!3d-34.4926978!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb07612f13e43%3A0x8229b915a44d67b0!2sABB%2C%20Blanco%20Encalada%20197%2C%20B1642%20San%20Isidro%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1sen!2sar!4v1738956843811!5m2!1sen!2sar"
             width="600"
             height="450"
             style={{ border: 0 }}

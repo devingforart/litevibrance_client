@@ -26,7 +26,7 @@ const Footer: React.FC = () => {
         {/* Redes Sociales */}
         <div className="footer__social">
           <a
-            href="https://facebook.com/tuempresa"
+            href="https://facebook.com/CalmInternacionDomiciliaria"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -47,7 +47,7 @@ const Footer: React.FC = () => {
             <FaInstagram className="footer__icon" />
           </a>
           <a
-            href="https://wa.me/1234567890"  // Reemplaza con tu número en formato internacional sin espacios ni símbolos.
+            href="https://wa.me/541130950404"  // Reemplaza con tu número en formato internacional sin espacios ni símbolos.
             target="_blank"
             rel="noopener noreferrer"
           >
