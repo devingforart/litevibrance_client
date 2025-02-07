@@ -21,7 +21,6 @@ const ProductModal: React.FC<ProductModalProps> = ({ product }) => {
       <img src={imageUrl} alt={product.name} />
       <div className="product-modal__details">
         <h3>{product.name}</h3>
-        <p>${product.price.toFixed(2)}</p>
         <Link to={`/products/${product.uuid}/${product.slug}`} className="btn-primary">
           {t('view_detail', { defaultValue: 'Ver detalle' })}
         </Link>
