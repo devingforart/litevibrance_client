@@ -10,7 +10,6 @@ import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import Login from './components/Login/Login';
 import Register from './components/Register/Register';
 import Header from './components/Header/Header';
-import Footer from './components/Footer/Footer';
 import NotFound from './components/NotFound/NotFound';
 import FloatingThemeSwitch from './components/ThemeSwitch/FloatingThemeSwitch';
 import Notification from './components/Notification/Notification'; // Importamos el componente de notificaciones
