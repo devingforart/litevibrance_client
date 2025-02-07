@@ -25,13 +25,14 @@
   "admin_users": "Usuarios",
   "manage_users": "Gestiona los usuarios",
   "go_to_users": "Ir a Usuarios",
-  
+  "services": "Servicios",
+
   "not_found_title": "Página No Encontrada",
   "not_found_message": "La página que buscas no existe.",
   
   "liteVibrance": "Calm",
   "home": "Inicio",
-  "products": "Productos",
+  "products": "Nuestro Equipo",
   "contact": "Contacto",
   "iniciar_sesion": "Iniciar Sesión",
   "hello": "Hola",

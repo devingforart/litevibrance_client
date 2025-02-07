@@ -31,12 +31,13 @@
   
   "liteVibrance": "Calm",
   "home": "Home",
-  "products": "Products",
+  "products": "Our Team",
   "contact": "Contact",
   "iniciar_sesion": "Login",
   "hello": "Hello",
   "logout": "Logout",
-  
+  "services": "Services",
+
   "products_catalog": "Products Catalog",
   "no_products_found": "No products found for",
   "view_detail": "View Detail",
