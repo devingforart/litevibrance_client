@@ -43,7 +43,7 @@ const ProductList: React.FC = () => {
         setLoading(false);
       });
   }, []);
-  
+
   const normalizeString = (str: string) =>
     str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
@@ -58,14 +58,18 @@ const ProductList: React.FC = () => {
         <ViewSwitcher viewMode={viewMode} setViewMode={setViewMode} isDarkMode={false} />
       </div>
       {searchQuery && filteredProducts.length === 0 ? (
-        <p>{t('no_products_found')} "{searchQuery}"</p>
+        <p>
+          {t('no_products_found')} "{searchQuery}"
+        </p>
       ) : (
         <>
           {loading ? (
             <div className="product-list__grid">
-              {Array(8).fill(0).map((_, index) => (
-                <ProductSkeleton key={index} />
-              ))}
+              {Array(8)
+                .fill(0)
+                .map((_, index) => (
+                  <ProductSkeleton key={index} />
+                ))}
             </div>
           ) : (
             <>
@@ -87,16 +91,26 @@ const ProductList: React.FC = () => {
                 <div className="product-list__detailed">
                   {(searchQuery ? filteredProducts : products).map((product) => (
                     <div key={product.uuid} className="product-detail">
-                      <h3>{product.name}</h3>
-                      <img
-                        src={product.photos?.[0] || 'https://via.placeholder.com/600x400?text=No+Image'}
-                        alt={product.name}
-                      />
-                      <p>{product.description}</p>
-                      <p>${product.price.toFixed(2)}</p>
-                      <Link to={`/products/${product.uuid}/${product.slug}`} className="btn-primary">
-                        {t('view_detail')}
-                      </Link>
+                      <div className="image-wrapper">
+                        <img
+                          src={
+                            product.photos?.[0] ||
+                            'https://via.placeholder.com/600x400?text=No+Image'
+                          }
+                          alt={product.name}
+                        />
+                      </div>
+                      <div className="info">
+                        <h3>{product.name}</h3>
+                        <p>{product.description}</p>
+                        <p className="price">${product.price.toFixed(2)}</p>
+                        <Link
+                          to={`/products/${product.uuid}/${product.slug}`}
+                          className="btn-primary"
+                        >
+                          {t('view_detail')}
+                        </Link>
+                      </div>
                     </div>
                   ))}
                 </div>

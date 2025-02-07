@@ -1,3 +1,4 @@
+// src/components/Footer/Footer.tsx
 import React from 'react';
 import './Footer.scss';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +8,9 @@ const Footer: React.FC = () => {
 
   return (
     <footer className="footer">
-      <p>&copy; {new Date().getFullYear()} liteVibrance. {t('footer_rights', { defaultValue: "All rights reserved." })}</p>
+      <p>
+        &copy; {new Date().getFullYear()} liteVibrance. {t('footer_rights', { defaultValue: 'Todos los derechos reservados.' })}
+      </p>
     </footer>
   );
 };
