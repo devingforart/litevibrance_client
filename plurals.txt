@@ -2822,7 +2822,6 @@ Contenido:
 
 Contenido:
 import { useTranslation } from 'react-i18next';
-import { FaStethoscope, FaMedkit, FaWheelchair, FaHeart } from 'react-icons/fa';
 import './Services.scss';
 
 const Services: React.FC = () => {
@@ -2836,7 +2835,7 @@ const Services: React.FC = () => {
     },
     {
       title: t('domicilio_adecuacion', { defaultValue: 'Adecuación de Domicilio' }),
-      description: t('adecuacion_domicilio', { defaultValue: 'Servicios para mejorar la accesibilidad del hogar, facilitando la movilidad y seguridad.' }),
+      description: t('adecuacion_domicilio_description', { defaultValue: 'Servicios para mejorar la accesibilidad del hogar, facilitando la movilidad y seguridad.' }),
     },
     {
       title: t('emotional_support', {
@@ -3369,11 +3368,37 @@ Contenido:
   color: var(--color-text);
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.5s ease forwards;
-}
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
+  .footer__info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    .footer__location,
+    .footer__social,
+    .footer__whatsapp {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer__social a,
+    .footer__whatsapp a {
+      color: var(--color-primary);
+      margin: 0 0.5rem;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer__social a:hover,
+    .footer__whatsapp a:hover {
+      color: var(--color-primary-hover);
+    }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 }
 
 
@@ -3386,13 +3411,64 @@ Contenido:
 import React from 'react';
 import './Footer.scss';
 import { useTranslation } from 'react-i18next';
+import { 
+  FaMapMarkerAlt, 
+  FaFacebookF, 
+  FaTwitter, 
+  FaInstagram, 
+  FaWhatsapp 
+} from 'react-icons/fa';
 
 const Footer: React.FC = () => {
   const { t } = useTranslation();
 
   return (
     <footer className="footer">
-      <p>
+      <div className="footer__info">
+        {/* Ubicación */}
+        <div className="footer__location">
+          <FaMapMarkerAlt className="footer__icon" />
+          <p>
+            {t('company_address', { defaultValue: 'Av. Principal 123, Ciudad, País' })}
+          </p>
+        </div>
+        {/* Redes Sociales */}
+        <div className="footer__social">
+          <a
+            href="https://facebook.com/tuempresa"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaFacebookF className="footer__icon" />
+          </a>
+          <a
+            href="https://twitter.com/tuempresa"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaTwitter className="footer__icon" />
+          </a>
+          <a
+            href="https://instagram.com/tuempresa"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaInstagram className="footer__icon" />
+          </a>
+        </div>
+        {/* WhatsApp */}
+        <div className="footer__whatsapp">
+          <a
+            href="https://wa.me/1234567890"  // Reemplaza con tu número en formato internacional sin espacios ni símbolos.
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaWhatsapp className="footer__icon" />
+            <span>WhatsApp</span>
+          </a>
+        </div>
+      </div>
+      <p className="footer__copy">
         &copy; {new Date().getFullYear()} Calm. {t('footer_rights', { defaultValue: 'Todos los derechos reservados.' })}
       </p>
     </footer>
@@ -3969,7 +4045,7 @@ Contenido:
   "caregiver_support_description": "Our trained caregivers provide physical and emotional support to seniors, ensuring their well-being. This includes assistance with mobility, personal hygiene, and companionship.",
   "personalized_medical_care": "Medical Care",
   "personalized_medical_care_description": "Our specialized doctors offer comprehensive medical care at home. This includes monitoring vital signs, prescribing medications, and following up on treatments.",
-  
+  "services_description":"Services description",
   "footer_rights": "All rights reserved.",
   
   "contact_us": "Contact Us",
@@ -4002,7 +4078,7 @@ Contenido:
   "fonoaudiologia_a_distancia": "Teletherapy",
   "fonoaudiologia_a_distancia_description": "We provide teletherapy services to improve communication and skills of the patient, facilitating access to professional treatments from the comfort of their home.",
   "adecuacion_domicilio": "Home Adaptation",
-  "adecuacion_domicilio_description": "CALM offers a comprehensive service of specialized medical advice to adapt homes to the needs of elderly and disabled individuals. This includes personalized assessments and renovations to improve home safety and comfort.",
+  "adecuacion_domicilio_description": "CALM provides a full-service, specialized medical consultancy designed to modify homes according to the unique needs of elderly and disabled individuals. This service includes tailored assessments and targeted renovations to enhance both the safety and comfort of the home.",
   "contact_email": "info@calmhc.com"
 }
 
@@ -4123,12 +4199,13 @@ Contenido:
   "vision_val":"Ser el grupo humano de profesionales que elija para usted o su familia y brindar un servicio de alta calidad mediante mejora continua de técnicas y conocimientos en en el área de salud. Ser una empresa boutique, donde solo importe la calidad de servicios y cuidados aportados.",
   "our_mission_vision": "Nuestra Misión, Visión y Valores",
   "mission_vision_intro": "Estamos comprometidos a brindar atención excepcional a través de nuestros principios fundamentales.",
+  "services_description":"Descripción de nuestros servicios",
 
 
   "fonoaudiologia_a_distancia": "Fonoaudiología a Distancia",
   "fonoaudiologia_a_distancia_description": "Brindamos servicios de fonoaudiología a distancia para mejorar la comunicación y habilidades del paciente, facilitando el acceso a tratamientos profesionales desde la comodidad de su hogar.",
-  "adecuacion_domicilio": "Transformación del hogar para garantizar seguridad y accesibilidad a personas mayores y con discapacidad, mediante adaptaciones como rampas, barras de seguridad y adecuación de espacios.",
-  "adecuacion_domicilio_description": "CALM ofrece un servicio integral de asesoramiento médico especializado para adaptar viviendas a las necesidades de personas mayores y con discapacidad. Esto incluye evaluaciones personalizadas y reformas para mejorar la seguridad y comodidad del hogar.",
+  "adecuacion_domicilio": "Adecuación del hogar para garantizar seguridad y accesibilidad a personas mayores y con discapacidad, mediante la implementación de adaptaciones como rampas, pasamanos y modificaciones en baños y entradas, promoviendo la independencia y el bienestar.",
+  "adecuacion_domicilio_description": "CALM ofrece un servicio integral de asesoramiento médico especializado para adaptar los hogares a las necesidades de personas mayores y discapacitadas. Esto incluye evaluaciones personalizadas y reformas para mejorar la seguridad y comodidad del hogar.",
   "contact_email": "info@calmhc.com"
 
 }

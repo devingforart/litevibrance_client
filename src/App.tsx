@@ -17,6 +17,7 @@ import './components/sass/global.scss';
 import Contact from './components/Contact/Contact';
 import Services from './components/Services/Services';
 import MissionVision from './components/MissionVision/MissionVision';
+import Footer from './components/Footer/Footer';
 
 const App: React.FC = () => {
   return (
@@ -42,8 +43,8 @@ const App: React.FC = () => {
         </Routes>
 
       </main>
-{/*       <Footer />
- */}      <Notification /> {/* Aquí se renderizan las notificaciones */}
+       <Footer />
+    <Notification /> {/* Aquí se renderizan las notificaciones */}
     </div>
   );
 };
