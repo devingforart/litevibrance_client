@@ -1,4 +1,3 @@
-
 .home {
   margin-top: 100px; // Considera el espacio para el header fijo
   font-family: 'Roboto', sans-serif;
@@ -16,8 +15,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    /* Para light mode se utiliza un degradado sutil con las variables --hero-condition y --color-card-bg */
+    height: 90vh;
     background: linear-gradient(135deg, var(--hero-condition), var(--color-card-bg));
     color: var(--color-text);
     text-align: center;
@@ -25,7 +23,7 @@
     overflow: hidden;
     padding: 2rem;
 
-    /* Efecto animado de fondo (opcional) */
+    // Efecto animado de fondo (opcional)
     &::before {
       content: "";
       position: absolute;
@@ -47,13 +45,38 @@
       font-size: 3.5rem;
       margin-bottom: 1rem;
       font-weight: 700;
-      /* Ajuste opcional: en light mode se puede usar un sutil text-shadow si lo deseas */
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
     .hero__subtitle {
       font-size: 1.5rem;
       margin-bottom: 2rem;
+    }
+
+    // Ajustes responsivos para pantallas medianas (máx 768px)
+    @media (max-width: 768px) {
+      flex-direction: column;
+      height: auto;
+      padding: 1.5rem;
+
+      .hero__title {
+        font-size: 2.5rem;
+      }
+      .hero__subtitle {
+        font-size: 1.2rem;
+      }
+    }
+
+    // Ajustes adicionales para pantallas pequeñas (máx 480px)
+    @media (max-width: 480px) {
+      padding: 1rem;
+
+      .hero__title {
+        font-size: 2rem;
+      }
+      .hero__subtitle {
+        font-size: 1rem;
+      }
     }
   }
 
@@ -76,7 +99,29 @@
       margin-bottom: 2rem;
       color: var(--color-text);
     }
+
+    // Ajustes responsivos para pantallas medianas (máx 768px)
+    @media (max-width: 768px) {
+      padding: 3rem 1rem;
+      
+      .about__title {
+        font-size: 2rem;
+      }
+      .about__description {
+        font-size: 1rem;
+      }
+    }
+
+    // Ajustes adicionales para pantallas pequeñas (máx 480px)
+    @media (max-width: 480px) {
+      padding: 2rem 0.5rem;
+      
+      .about__title {
+        font-size: 1.8rem;
+      }
+      .about__description {
+        font-size: 0.9rem;
+      }
+    }
   }
-
 }
-

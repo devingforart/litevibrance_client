@@ -1,6 +1,6 @@
 // src/components/Header/Header.tsx
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import './Header.scss';
@@ -10,13 +10,12 @@ import { useTranslation } from 'react-i18next';
 const navLinks = [
   { name: 'home', path: '/' },
   { name: 'products', path: '/products' },
-/*   { name: 'cart', path: '/cart' },
- */  { name: 'contact', path: '/contact' }
+  // { name: 'cart', path: '/cart' },
+  { name: 'contact', path: '/contact' }
 ];
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
   const { cartItems } = useCart();
   const { isAuthenticated, login, logout, user } = useAuth();
   const { t } = useTranslation();
@@ -24,10 +23,13 @@ const Header: React.FC = () => {
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   useEffect(() => {
+    // Evitamos que se haga scroll en el body cuando el menú móvil está abierto
     document.body.classList.toggle('no-scroll', isOpen);
   }, [isOpen]);
 
-  const toggleMenu = () => setIsOpen(!isOpen);
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
 
   return (
     <header className="header">

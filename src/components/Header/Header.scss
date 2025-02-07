@@ -11,6 +11,7 @@
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
+  justify-content: space-between; /* Para que el logo quede a la izquierda y el toggle a la derecha */
   padding: 0 1.5rem;
   height: 70px;
   z-index: 1000;
@@ -49,12 +50,12 @@
   &__nav {
     position: fixed;
     top: 70px;
-    left: 0;
+    right: 0; /* Se posiciona a la derecha */
     width: 100%;
     height: calc(100vh - 70px);
     background: var(--header-bg);
     backdrop-filter: blur(8px);
-    transform: translateX(-100%);
+    transform: translateX(100%); /* Se oculta deslizando hacia la derecha */
     transition: transform 0.3s ease-in-out;
     overflow-y: auto;
 
@@ -68,7 +69,6 @@
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
-      margin-top: 20px;
 
       /* Para dispositivos de escritorio se reorganiza a la derecha */
       @media (min-width: 1024px) {
