@@ -489,7 +489,7 @@ export default NotFound;
 Contenido:
 // src/components/Header/Header.tsx
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import './Header.scss';
@@ -498,14 +498,16 @@ import { useTranslation } from 'react-i18next';
 
 const navLinks = [
   { name: 'home', path: '/' },
+  { name: 'services', path: '/Services' },
+
   { name: 'products', path: '/products' },
-/*   { name: 'cart', path: '/cart' },
- */  { name: 'contact', path: '/contact' }
+  // { name: 'cart', path: '/cart' },
+  { name: 'contact', path: '/contact' },
+
 ];
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
   const { cartItems } = useCart();
   const { isAuthenticated, login, logout, user } = useAuth();
   const { t } = useTranslation();
@@ -513,10 +515,13 @@ const Header: React.FC = () => {
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   useEffect(() => {
+    // Evitamos que se haga scroll en el body cuando el menú móvil está abierto
     document.body.classList.toggle('no-scroll', isOpen);
   }, [isOpen]);
 
-  const toggleMenu = () => setIsOpen(!isOpen);
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
 
   return (
     <header className="header">
@@ -615,6 +620,7 @@ Contenido:
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
+  justify-content: space-between; /* Para que el logo quede a la izquierda y el toggle a la derecha */
   padding: 0 1.5rem;
   height: 70px;
   z-index: 1000;
@@ -653,12 +659,12 @@ Contenido:
   &__nav {
     position: fixed;
     top: 70px;
-    left: 0;
+    right: 0; /* Se posiciona a la derecha */
     width: 100%;
     height: calc(100vh - 70px);
     background: var(--header-bg);
     backdrop-filter: blur(8px);
-    transform: translateX(-100%);
+    transform: translateX(100%); /* Se oculta deslizando hacia la derecha */
     transition: transform 0.3s ease-in-out;
     overflow-y: auto;
 
@@ -672,7 +678,6 @@ Contenido:
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
-      margin-top: 20px;
 
       /* Para dispositivos de escritorio se reorganiza a la derecha */
       @media (min-width: 1024px) {
@@ -723,7 +728,7 @@ Contenido:
     bottom: -1px;
     left: 0;
     width: 100%;
-    height: 80px;
+    height: 98px;
     z-index: -1;
     display: none;
     @media (min-width: 1024px) {
@@ -1058,7 +1063,6 @@ const ProductList: React.FC = () => {
                         <p>{product.description}</p>
                         <Link
                           to={`/products/${product.uuid}/${product.slug}`}
-                          className="btn-primary"
                         >
                           {t('view_detail')}
                         </Link>
@@ -2022,7 +2026,6 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
       <img src={imageUrl} alt={product.name} />
       <div className="product-list-item__details">
         <h3>{product.name}</h3>
-        <p>${product.price.toFixed(2)}</p>
         <Link to={`/products/${product.uuid}/${product.slug}`} className="btn-primary">
           {t('view_detail')}
         </Link>
@@ -2361,7 +2364,6 @@ export default Home;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Home/Home.scss
 
 Contenido:
-
 .home {
   margin-top: 100px; // Considera el espacio para el header fijo
   font-family: 'Roboto', sans-serif;
@@ -2379,8 +2381,7 @@ Contenido:
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    /* Para light mode se utiliza un degradado sutil con las variables --hero-condition y --color-card-bg */
+    height: 90vh;
     background: linear-gradient(135deg, var(--hero-condition), var(--color-card-bg));
     color: var(--color-text);
     text-align: center;
@@ -2388,7 +2389,7 @@ Contenido:
     overflow: hidden;
     padding: 2rem;
 
-    /* Efecto animado de fondo (opcional) */
+    // Efecto animado de fondo (opcional)
     &::before {
       content: "";
       position: absolute;
@@ -2410,13 +2411,38 @@ Contenido:
       font-size: 3.5rem;
       margin-bottom: 1rem;
       font-weight: 700;
-      /* Ajuste opcional: en light mode se puede usar un sutil text-shadow si lo deseas */
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
     .hero__subtitle {
       font-size: 1.5rem;
       margin-bottom: 2rem;
+    }
+
+    // Ajustes responsivos para pantallas medianas (máx 768px)
+    @media (max-width: 768px) {
+      flex-direction: column;
+      height: auto;
+      padding: 1.5rem;
+
+      .hero__title {
+        font-size: 2.5rem;
+      }
+      .hero__subtitle {
+        font-size: 1.2rem;
+      }
+    }
+
+    // Ajustes adicionales para pantallas pequeñas (máx 480px)
+    @media (max-width: 480px) {
+      padding: 1rem;
+
+      .hero__title {
+        font-size: 2rem;
+      }
+      .hero__subtitle {
+        font-size: 1rem;
+      }
     }
   }
 
@@ -2439,10 +2465,32 @@ Contenido:
       margin-bottom: 2rem;
       color: var(--color-text);
     }
+
+    // Ajustes responsivos para pantallas medianas (máx 768px)
+    @media (max-width: 768px) {
+      padding: 3rem 1rem;
+      
+      .about__title {
+        font-size: 2rem;
+      }
+      .about__description {
+        font-size: 1rem;
+      }
+    }
+
+    // Ajustes adicionales para pantallas pequeñas (máx 480px)
+    @media (max-width: 480px) {
+      padding: 2rem 0.5rem;
+      
+      .about__title {
+        font-size: 1.8rem;
+      }
+      .about__description {
+        font-size: 0.9rem;
+      }
+    }
   }
-
 }
-
 
 
 --------------------------------------------------------------------------------
@@ -2451,124 +2499,139 @@ Contenido:
 
 Contenido:
 .services {
-  padding: 2rem;
-  background: var(--color-bg);
-  border-radius: 12px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  padding: 4rem 2rem;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Montserrat', sans-serif;
+  transition: background-color var(--transition-speed), color var(--transition-speed);
 
   &__header {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
+    text-align: center;
 
-    h1 {
-      font-size: 2.5rem;
+    .services__title {
+      font-size: 3rem;
       color: var(--color-primary);
       font-weight: 700;
-      letter-spacing: 1px;
       text-transform: uppercase;
-      margin-bottom: 0.5rem;
-      transition: color 0.3s ease;
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeInDown 0.8s ease forwards;
     }
 
     .services__toggle {
-      padding: 1rem 2rem;
+      padding: 0.8rem 1.8rem;
       background-color: var(--color-primary);
-      color: white;
+      color: #fff;
       border: none;
       border-radius: 8px;
-      font-size: 1.2rem;
+      font-size: 1rem;
       cursor: pointer;
-      transition: background-color 0.3s, transform 0.3s ease;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
       &:hover {
         background-color: var(--color-primary-hover);
         transform: translateY(-3px);
       }
-
-      &:focus {
-        outline: none;
-      }
     }
   }
 
-  &__content {
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+
+  &__card {
     background: var(--glass-bg);
     backdrop-filter: blur(var(--glass-blur));
-    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
     padding: 2rem;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 0.8s ease forwards;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
 
-    .services__section {
-      margin-bottom: 3rem;
-      transition: transform 0.3s ease;
-
-      h2 {
-        font-size: 2rem;
-        color: var(--color-primary);
-        margin-bottom: 1rem;
-        font-weight: 600;
-        text-align: center;
-      }
-
-      p {
-        font-size: 1.2rem;
-        color: var(--color-text);
-        line-height: 1.6;
-        text-align: justify;
-      }
-
-      &:hover {
-        transform: translateY(-3px);
-      }
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     }
-  }
 
-  @keyframes fadeIn {
-    0% {
+    // Efecto creativo: sutil fondo radial al hacer hover
+    &::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
       opacity: 0;
-      transform: translateY(30px);
+      transition: opacity 0.3s ease;
     }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
+
+    &:hover::before {
+      opacity: 0.1;
+    }
+
+    &-title {
+      font-size: 1.8rem;
+      color: var(--color-primary);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    &-description {
+      font-size: 1rem;
+      line-height: 1.6;
+      text-align: justify;
     }
   }
 }
 
-// Responsive styles for smaller screens
+/* Animación para el título */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Ajustes responsivos */
 @media (max-width: 768px) {
   .services {
-    padding: 1.5rem;
-    
+    padding: 3rem 1rem;
+
     &__header {
-      flex-direction: column;
-      align-items: flex-start;
+      .services__title {
+        font-size: 2.4rem;
+      }
+      .services__toggle {
+        padding: 0.7rem 1.4rem;
+        font-size: 0.9rem;
+      }
     }
 
-    &__content {
+    &__card {
       padding: 1.5rem;
-    }
-
-    .services__toggle {
-      width: 100%;
-      padding: 0.8rem;
-      font-size: 1.1rem;
-    }
-
-    .services__section {
-      margin-bottom: 1.5rem;
-    }
-
-    h2 {
-      font-size: 1.6rem;
-    }
-
-    p {
-      font-size: 1rem;
+      &-title {
+        font-size: 1.6rem;
+      }
+      &-description {
+        font-size: 0.9rem;
+      }
     }
   }
 }
@@ -2579,96 +2642,81 @@ Contenido:
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Services/Services.tsx
 
 Contenido:
-// src/components/Services/Services.tsx
-import React, { useState } from 'react';
-import './Services.scss';
 import { useTranslation } from 'react-i18next';
+import './Services.scss';
 
 const Services: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(true);
   const { t } = useTranslation();
 
-  const toggleServices = () => {
-    setIsVisible(!isVisible);
-  };
+  const servicesData = [
+    {
+      title: t('emotional_support', {
+        defaultValue: 'Emotional and Psychological Support',
+      }),
+      description: t('emotional_support_description', {
+        defaultValue:
+          'We offer emotional and psychological support to both patients and their families to face the challenges of home hospitalization. Individual and group therapies are provided at home.',
+      }),
+    },
+    {
+      title: t('physical_rehabilitation', {
+        defaultValue: 'Physical and Occupational Rehabilitation',
+      }),
+      description: t('physical_rehabilitation_description', {
+        defaultValue:
+          'We offer physical and occupational rehabilitation programs for individuals recovering from surgery or accidents. Our therapists provide personalized sessions at home.',
+      }),
+    },
+    {
+      title: t('nursing_services', {
+        defaultValue: 'Specialized Nursing Services',
+      }),
+      description: t('nursing_services_description', {
+        defaultValue:
+          'Our specialized nursing services include medication administration, wound care, and post-operative follow-up, ensuring the patient receives quality care without needing to travel.',
+      }),
+    },
+    {
+      title: t('caregiver_support', {
+        defaultValue: 'Caregiver Support',
+      }),
+      description: t('caregiver_support_description', {
+        defaultValue:
+          'Our trained caregivers provide both physical and emotional support for elderly individuals, ensuring their well-being at all times. This includes assistance with mobility, personal hygiene, and companionship.',
+      }),
+    },
+    {
+      title: t('personalized_medical_care', {
+        defaultValue: 'Personalized Medical Care',
+      }),
+      description: t('personalized_medical_care_description', {
+        defaultValue:
+          'Our specialized doctors offer comprehensive medical care in the comfort of the home. This includes monitoring vital signs, prescribing medications, and following up on treatments.',
+      }),
+    },
+  ];
+
+  // Lógica para mostrar todos los servicios o solo algunos
+
+  const servicesToDisplay =  servicesData
 
   return (
-    <div className="services">
+    <section className="services">
       <div className="services__header">
-        <h1>
-          {t('premium_home_care_services', { defaultValue: 'Our Premium Home Care Services' })}
-        </h1>
-        <button className="services__toggle" onClick={toggleServices}>
-          {isVisible 
-            ? t('hide_services', { defaultValue: 'Hide Services' })
-            : t('explore_services', { defaultValue: 'Explore Services' })}
-        </button>
+        <h2 className="services__title">
+          {t('our_services', { defaultValue: '' })}
+        </h2>
+
       </div>
-
-      {isVisible && (
-        <div className="services__content">
-          <div className="services__section">
-            <h2>
-              {t('emotional_support', { defaultValue: 'Emotional and Psychological Support' })}
-            </h2>
-            <p>
-              {t('emotional_support_description', {
-                defaultValue:
-                  'We offer emotional and psychological support to both patients and their families to face the challenges of home hospitalization. Individual and group therapies are provided at home.',
-              })}
-            </p>
+      <div className="services__grid">
+        {servicesToDisplay.map((service, index) => (
+          <div key={index} className="services__card">
+            <h3 className="services__card-title">{service.title}</h3>
+            <p className="services__card-description">{service.description}</p>
           </div>
-
-          <div className="services__section">
-            <h2>
-              {t('physical_rehabilitation', { defaultValue: 'Physical and Occupational Rehabilitation' })}
-            </h2>
-            <p>
-              {t('physical_rehabilitation_description', {
-                defaultValue:
-                  'We offer physical and occupational rehabilitation programs for individuals recovering from surgery or accidents. Our therapists provide personalized sessions at home.',
-              })}
-            </p>
-          </div>
-
-          <div className="services__section">
-            <h2>
-              {t('nursing_services', { defaultValue: 'Specialized Nursing Services' })}
-            </h2>
-            <p>
-              {t('nursing_services_description', {
-                defaultValue:
-                  'Our specialized nursing services include medication administration, wound care, and post-operative follow-up, ensuring the patient receives quality care without needing to travel.',
-              })}
-            </p>
-          </div>
-
-          <div className="services__section">
-            <h2>
-              {t('caregiver_support', { defaultValue: 'Caregiver Support' })}
-            </h2>
-            <p>
-              {t('caregiver_support_description', {
-                defaultValue:
-                  'Our trained caregivers provide both physical and emotional support for elderly individuals, ensuring their well-being at all times. This includes assistance with mobility, personal hygiene, and companionship.',
-              })}
-            </p>
-          </div>
-
-          <div className="services__section">
-            <h2>
-              {t('personalized_medical_care', { defaultValue: 'Personalized Medical Care' })}
-            </h2>
-            <p>
-              {t('personalized_medical_care_description', {
-                defaultValue:
-                  'Our specialized doctors offer comprehensive medical care in the comfort of the home. This includes monitoring vital signs, prescribing medications, and following up on treatments.',
-              })}
-            </p>
-          </div>
-        </div>
-      )}
-    </div>
+        ))}
+      </div>
+    </section>
   );
 };
 
@@ -2703,7 +2751,6 @@ const ProductModal: React.FC<ProductModalProps> = ({ product }) => {
       <img src={imageUrl} alt={product.name} />
       <div className="product-modal__details">
         <h3>{product.name}</h3>
-        <p>${product.price.toFixed(2)}</p>
         <Link to={`/products/${product.uuid}/${product.slug}`} className="btn-primary">
           {t('view_detail', { defaultValue: 'Ver detalle' })}
         </Link>
@@ -2794,6 +2841,7 @@ Contenido:
 /* src/components/sass/global.scss */
 /* ------------------------------------------------------
    global.scss – Variables y estilos base para un hospital y medicina
+   Versión Creativa: Paleta fresca y contemporánea
    ------------------------------------------------------ */
 
 /* Importación de Google Fonts */
@@ -2809,76 +2857,77 @@ html, body {
   height: 100%;
   margin: 0;
 }
-body{
-  height: auto;
 
+body {
+  height: auto;
 }
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* VARIABLES PARA MODO CLARO – Inspirado en ambientes hospitalarios */
+/* VARIABLES PARA MODO CLARO – Versión Creativa */
 :root {
   /* Fondos y textos */
-  --color-bg: #f0f8ff;           /* AliceBlue: un blanco azulado que evoca limpieza y calma */
-  --color-text: #212121;         /* Gris oscuro para asegurar excelente legibilidad */
-  --color-card-bg: #ffffff;      /* Blanco puro, enfatizando un ambiente estéril y profesional */
-  --hero-condition: rgb(240, 248, 255); /* Sutil variación de AliceBlue para áreas destacadas */
+  --color-bg: #FFFAF2;           /* Un off-white cálido para un ambiente luminoso y acogedor */
+  --color-text: #333333;         /* Gris oscuro para una excelente legibilidad */
+  --color-card-bg: #FFFFFF;      /* Blanco puro para resaltar el contenido */
+  --hero-condition: #FFFAF2;      /* Mismo tono que el fondo para una integración sutil */
 
   /* Colores Institucionales */
-  --color-primary: #0077c8;      /* Azul institucional que inspira confianza y profesionalismo */
-  --color-primary-hover: #005fa3;/* Variante más oscura para interacciones (hover) */
-  --color-secondary: #4B7B9D;    /* Azul grisáceo sobrio, ideal para elementos secundarios */
-  --color-accent: #28a745;       /* Verde fresco que evoca salud y bienestar */
+  --color-primary: #6C5CE7;      /* Púrpura vibrante, moderno y sofisticado */
+  --color-primary-hover: #5941C2;/* Variante más intensa para interacciones (hover) */
+  --color-secondary: #2b8888;    /* Verde esmeralda, aporta frescura y dinamismo */
+  --color-accent: #FF7675;       /* Coral suave para destacar acciones y detalles */
 
-  --gray-300: #ced4da;           /* Gris claro para separadores y detalles sutiles */
+  --gray-300: #D1D1D1;           /* Gris claro para separadores y acentos sutiles */
 
   /* Efecto Glass */
-  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-bg: rgba(255, 255, 255, 0.9);
   --glass-border: rgba(255, 255, 255, 0.95);
   --glass-blur: 8px;
 
   /* Header */
-  --header-bg: rgba(255, 255, 255, 0.97);
-  --header-text: #212121;
+  --header-bg: rgba(255, 255, 255, 0.95);
+  --header-text: #333333;
   --header-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
   /* Decoración (onda) */
-  --wave-color: #0077c8;
+  --wave-color: #6C5CE7;
 
   --transition-speed: 0.3s;
 }
 
-/* VARIABLES PARA MODO OSCURO – Inspirado en ambientes hospitalarios */
+/* VARIABLES PARA MODO OSCURO – Versión Creativa */
 :root[data-theme='dark'] {
   /* Fondos y textos */
-  --color-bg: #1A202C;         /* Fondo oscuro, casi negro, que ayuda a reducir la fatiga visual */
-  --color-text: #E6E6E6;        /* Blanco suave para texto, garantizando buen contraste */
-  --color-card-bg: #2D3748;     /* Fondo ligeramente más claro para las tarjetas, para diferenciar el contenido */
-  --hero-condition: rgb(26, 32, 44); /* Fondo muy oscuro para la sección principal */
+  --color-bg: #2C2E33;         /* Un fondo oscuro con matices modernos */
+  --color-text: #EDEDED;        /* Texto casi blanco para buen contraste */
+  --color-card-bg: #3A3D45;     /* Fondo para tarjetas, con profundidad y sutileza */
+  --hero-condition: #2C2E33;     /* Integración con el fondo principal */
 
   /* Colores Institucionales */
-  --color-primary: #4FD1C5;      /* Verde agua brillante que transmite salud y frescura */
-  --color-primary-hover: #38B2AC;/* Variación más profunda para hover, mantiene consistencia */
-  --color-secondary: #9AE3D4;    /* Azul verde claro para elementos secundarios y más suaves */
-  --color-accent: #F6AD55;       /* Naranja cálido para acentos, destacando botones y acciones */
+  --color-primary: #A29BFE;      /* Púrpura pastel que ilumina el entorno oscuro */
+  --color-primary-hover: #8F8EDC;/* Variante para hover, manteniendo la armonía */
+  --color-secondary: #41d28c;    /* Verde neón para acentos modernos y vibrantes */
+  --color-accent: #fcf7e8;       /* Naranja suave para resaltar elementos importantes */
 
-  --gray-300: #718096;           /* Gris medio que funciona bien para separadores y detalles secundarios */
+  --gray-300: #606266;           /* Gris medio para detalles y separadores */
 
   /* Efecto Glass */
-  --glass-bg: rgba(0, 0, 0, 0.4);   /* Fondo oscuro y translúcido para crear un efecto glass moderado */
-  --glass-border: rgba(255, 255, 255, 0.1); /* Borde sutil en el glass para contraste */
-  --glass-blur: 10px;           /* Desenfoque más suave para los efectos de glass */
+  --glass-bg: rgba(0, 0, 0, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-blur: 10px;
 
   /* Header */
-  --header-bg: rgba(26, 32, 44, 0.85); /* Fondo oscuro pero ligeramente translúcido para el header */
-  --header-text: #E6E6E6;        /* Texto claro para una mejor visibilidad */
-  --header-box-shadow: 0 2px 12px rgba(0, 0, 0, 0.7); /* Sombra suave para darle profundidad al header */
+  --header-bg: rgba(44, 46, 51, 0.85);
+  --header-text: #EDEDED;
+  --header-box-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
 
   /* Decoración (onda) */
-  --wave-color: #F6AD55;        /* Naranja brillante para las ondas decorativas */
+  --wave-color: #6cfcb6;
 
   --transition-speed: 0.3s;
 }
@@ -2908,6 +2957,7 @@ a {
   text-decoration: none;
   transition: color var(--transition-speed);
 }
+
 a:hover {
   color: var(--color-primary-hover);
 }
@@ -2922,6 +2972,7 @@ a:hover {
   font-size: 1rem;
   transition: background-color var(--transition-speed), transform 0.2s;
 }
+
 .btn-primary:hover {
   background-color: var(--color-primary-hover);
   transform: translateY(-2px);
@@ -2937,6 +2988,7 @@ a:hover {
   font-size: 1rem;
   transition: background-color var(--transition-speed), color var(--transition-speed), transform 0.2s;
 }
+
 .btn-secondary:hover {
   background-color: var(--color-primary);
   color: #fff;
@@ -2959,6 +3011,7 @@ a:hover {
 .fade-in {
   animation: fadeIn var(--transition-speed) forwards;
 }
+
 @keyframes fadeIn {
   0%   { opacity: 0; transform: translateY(15px); }
   100% { opacity: 1; transform: translateY(0); }
@@ -3536,14 +3589,15 @@ Contenido:
   "not_found_title": "Page Not Found",
   "not_found_message": "The page you are looking for does not exist.",
   
-  "liteVibrance": "liteVibrance",
+  "liteVibrance": "Calm",
   "home": "Home",
-  "products": "Products",
+  "products": "Our Team",
   "contact": "Contact",
   "iniciar_sesion": "Login",
   "hello": "Hello",
   "logout": "Logout",
-  
+  "services": "Services",
+
   "products_catalog": "Products Catalog",
   "no_products_found": "No products found for",
   "view_detail": "View Detail",
@@ -3569,8 +3623,8 @@ Contenido:
   "list_view": "List View",
   "detailed_view": "Detailed View",
   
-  "welcome": "Welcome to liteVibrance",
-  "banner": "Enhance your experience with us.",
+  "welcome": "Welcome to Calm",
+  "banner":"we care for your loved ones with warmth and professionalism, strengthening the unique bond between caregiver and patient.We offer personalized home care to enhance quality of life and ensure well-being. Trust our commitment to love and dedication in every care we provide.",
   
   "premium_home_care_services": "Our Premium Home Care Services",
   "hide_services": "Hide Services",
@@ -3600,10 +3654,11 @@ Contenido:
   "your_message": "Your Message",
   "send_message": "Send Message",
   "address": "Address",
-  "dummy_address": "123 Main St, City, Country",
+  "dummy_address": "Blanco Encalada 197 - Lomas de San Isidro",
   "phone": "Phone",
-  "dummy_phone": "+1 234 567 890",
-  "dummy_email": "contact@example.com"
+  "dummy_phone": "+54 11-3095-0404",
+  "dummy_email": "contacto@calmhc.com",
+  "our_services" : "Our services"
 }
 
 
@@ -3639,19 +3694,20 @@ Contenido:
   "admin_users": "Usuarios",
   "manage_users": "Gestiona los usuarios",
   "go_to_users": "Ir a Usuarios",
-  
+  "services": "Servicios",
+
   "not_found_title": "Página No Encontrada",
   "not_found_message": "La página que buscas no existe.",
   
-  "liteVibrance": "liteVibrance",
+  "liteVibrance": "Calm",
   "home": "Inicio",
-  "products": "Productos",
+  "products": "Nuestro Equipo",
   "contact": "Contacto",
   "iniciar_sesion": "Iniciar Sesión",
   "hello": "Hola",
   "logout": "Cerrar Sesión",
   
-  "products_catalog": "Catálogo de Productos",
+  "products_catalog": "Nuestro equipo de trabajo",
   "no_products_found": "No se encontraron productos para",
   "view_detail": "Ver detalle",
   "loading": "Cargando...",
@@ -3676,8 +3732,8 @@ Contenido:
   "list_view": "Vista de Lista",
   "detailed_view": "Vista Detallada",
   
-  "welcome": "Bienvenido a liteVibrance",
-  "banner": "Mejora tu experiencia con nosotros.",
+  "welcome": "Bienvenido a Calm",
+  "banner": "Cuidamos a tus seres queridos con calidez y profesionalismo, fortaleciendo el vínculo único entre cuidador y paciente. Ofrecemos atención domiciliaria personalizada para mejorar la calidad de vida y garantizar bienestar.Confía en nuestro compromiso de amor y dedicación en cada cuidado.",
   
   "premium_home_care_services": "Nuestros Servicios de Cuidado a Domicilio Premium",
   "hide_services": "Ocultar Servicios",
@@ -3707,10 +3763,11 @@ Contenido:
   "your_message": "Tu mensaje",
   "send_message": "Enviar Mensaje",
   "address": "Dirección",
-  "dummy_address": "Calle Principal 123, Ciudad, País",
+  "dummy_address": "Blanco Encalada 197 - Lomas de San Isidro",
   "phone": "Teléfono",
-  "dummy_phone": "+34 123 456 789",
-  "dummy_email": "contacto@ejemplo.com"
+  "dummy_phone": "+54 11-3095-0404",
+  "dummy_email": "contacto@calmhc.com",
+  "our_services": "Nuestros servicios"
 }
 
 

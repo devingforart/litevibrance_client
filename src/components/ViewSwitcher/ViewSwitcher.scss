@@ -70,7 +70,12 @@
     background-color: rgba(255, 255, 255, 0.1);  /* Hover más sutil en modo oscuro */
   }
 }
-
+.view-switcher__menu{
+  background-color: var(--wave-color);
+  span,svg{
+    color:var(--color-card-bg)
+  }
+}
 /* Efecto de pulso para hacerlo más "glotante" */
 @keyframes pulse {
   0% {
@@ -82,4 +87,15 @@
   100% {
     transform: scale(1);
   }
+}
+@media (max-width: 768px) {
+  body.no-scroll .view-switcher {
+    display: none;
+    
+  }
+  .view-switcher {
+    margin: 0 auto;
+  }
+
+
 }
