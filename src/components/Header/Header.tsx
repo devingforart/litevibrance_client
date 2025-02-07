@@ -9,9 +9,12 @@ import { useTranslation } from 'react-i18next';
 
 const navLinks = [
   { name: 'home', path: '/' },
+  { name: 'Services', path: '/Services' },
+
   { name: 'products', path: '/products' },
   // { name: 'cart', path: '/cart' },
-  { name: 'contact', path: '/contact' }
+  { name: 'contact', path: '/contact' },
+
 ];
 
 const Header: React.FC = () => {
