@@ -84,7 +84,7 @@ const Contact: React.FC = () => {
         </div>
         <div className="contact__info-item">
           <h3>{t('email')}</h3>
-          <p>{t('dummy_email')}</p>
+          <p>{t('contact_email')}</p>
         </div>
       </div>
     </div>

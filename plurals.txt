@@ -498,12 +498,11 @@ import { useTranslation } from 'react-i18next';
 
 const navLinks = [
   { name: 'home', path: '/' },
+  { name: 'vision', path: '/MissionVision' },
   { name: 'services', path: '/Services' },
-
   { name: 'products', path: '/products' },
   // { name: 'cart', path: '/cart' },
   { name: 'contact', path: '/contact' },
-  { name: 'vision', path: '/MissionVision' },
 
 
 ];
@@ -2586,139 +2585,232 @@ Contenido:
 
 Contenido:
 .services {
-  padding: 4rem 2rem;
   background-color: var(--color-bg);
-  color: var(--color-text);
-  font-family: 'Montserrat', sans-serif;
-  transition: background-color var(--transition-speed), color var(--transition-speed);
+  padding: 5rem 2rem;
+  text-align: center;
 
   &__header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     margin-bottom: 3rem;
-    text-align: center;
-
-    .services__title {
+    h2 {
       font-size: 3rem;
       color: var(--color-primary);
-      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 2px;
-      margin-bottom: 1.5rem;
-      opacity: 0;
-      animation: fadeInDown 0.8s ease forwards;
+      position: relative;
+      margin-bottom: 2rem;
     }
 
-    .services__toggle {
-      padding: 0.8rem 1.8rem;
+    .services__subtitle {
+      font-size: 1.5rem;
+      color: var(--color-text-light);
+    }
+  }
+
+  &__highlighted {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 4rem;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .service-card {
+      position: relative;
+      width: 300px;
+      padding: 2rem;
       background-color: var(--color-primary);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
+      color: white;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
       cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: center;
 
       &:hover {
-        background-color: var(--color-primary-hover);
-        transform: translateY(-3px);
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .service-card__icon {
+        font-size: 3rem;
+        position: absolute;
+        top: -20px;
+        right: -20px;
+        color: white;
+      }
+
+      .service-card__title {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+
+      .service-card__description {
+        font-size: 1.1rem;
+        color: var(--color-text-light);
+        text-align: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .service-card__cta {
+        align-self: center;
+        margin-top: auto;
+        padding: 1rem 2rem;
+        background-color: var(--color-secondary);
+        color: white;
+        border-radius: 8px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: var(--color-secondary-hover);
+        }
       }
     }
   }
 
-  &__grid {
+  &__cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 2rem;
-  }
+    margin-bottom: 2rem;
 
-  &__card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
-    overflow: hidden;
-
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    }
-
-    // Efecto creativo: sutil fondo radial al hacer hover
-    &::before {
-      content: "";
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    &:hover::before {
-      opacity: 0.1;
-    }
-
-    &-title {
-      font-size: 1.8rem;
-      color: var(--color-primary);
-      margin-bottom: 1rem;
+    .service-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      padding: 3rem;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.3s ease;
       text-align: center;
-    }
 
-    &-description {
-      font-size: 1rem;
-      line-height: 1.6;
-      text-align: justify;
-    }
-  }
-}
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
 
-/* Animación para el título */
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+      .service-card__icon {
+        font-size: 2rem;
+        color: var(--color-primary);
+        margin-bottom: 1rem;
+        align-self: center;
+      }
+
+      .service-card__title {
+        font-size: 1.6rem;
+        color: var(--color-primary);
+        margin-bottom: 1rem;
+      }
+
+      .service-card__description {
+        font-size: 1.1rem;
+        color: var(--color-text-light);
+        margin-bottom: 1.5rem;
+        flex-grow: 1;
+      }
+
+      .service-card__cta {
+        padding: 1rem 2rem;
+        background-color: var(--color-primary);
+        color: white;
+        border-radius: 8px;
+        text-transform: uppercase;
+        cursor: pointer;
+        align-self: center;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: var(--color-primary-hover);
+        }
+      }
+    }
   }
 }
 
 /* Ajustes responsivos */
+@media (max-width: 1024px) {
+  .services {
+    padding: 4rem 2rem;
+
+    &__header h2 {
+      font-size: 2.8rem;
+    }
+
+    &__highlighted {
+      .service-card {
+        width: 250px;
+        padding: 1.8rem;
+      }
+    }
+
+    &__cards {
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .services {
     padding: 3rem 1rem;
 
-    &__header {
-      .services__title {
-        font-size: 2.4rem;
-      }
-      .services__toggle {
-        padding: 0.7rem 1.4rem;
-        font-size: 0.9rem;
-      }
+    &__header h2 {
+      font-size: 2.2rem;
     }
 
-    &__card {
+    .service-card {
+      width: 100%;
+      padding: 2rem;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .service-card__title {
+      font-size: 1.6rem;
+    }
+
+    .service-card__description {
+      font-size: 1rem;
+    }
+
+    .service-card__cta {
+      padding: 0.8rem 1.8rem;
+      font-size: 1rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .services {
+    padding: 2.5rem 1rem;
+
+    &__header h2 {
+      font-size: 1.8rem;
+    }
+
+    .service-card {
       padding: 1.5rem;
-      &-title {
-        font-size: 1.6rem;
-      }
-      &-description {
-        font-size: 0.9rem;
-      }
+      width: 90%;
+    }
+
+    .service-card__title {
+      font-size: 1.4rem;
+    }
+
+    .service-card__description {
+      font-size: 0.9rem;
+    }
+
+    .service-card__cta {
+      font-size: 0.9rem;
+      padding: 0.6rem 1.5rem;
     }
   }
 }
@@ -2730,76 +2822,98 @@ Contenido:
 
 Contenido:
 import { useTranslation } from 'react-i18next';
+import { FaStethoscope, FaMedkit, FaWheelchair, FaHeart } from 'react-icons/fa';
 import './Services.scss';
 
 const Services: React.FC = () => {
   const { t } = useTranslation();
 
+
   const servicesData = [
     {
+      title: t('fonoaudiologia', { defaultValue: 'Fonoaudiología a Distancia' }),
+      description: t('fonoaudiologia_a_distancia_description', { defaultValue: 'Servicios de adaptación en el hogar para personas mayores y discapacitadas.' }),
+    },
+    {
+      title: t('domicilio_adecuacion', { defaultValue: 'Adecuación de Domicilio' }),
+      description: t('adecuacion_domicilio', { defaultValue: 'Servicios para mejorar la accesibilidad del hogar, facilitando la movilidad y seguridad.' }),
+    },
+    {
       title: t('emotional_support', {
-        defaultValue: 'Emotional and Psychological Support',
+        defaultValue: 'Soporte Emocional y Psicológico',
       }),
       description: t('emotional_support_description', {
         defaultValue:
-          'We offer emotional and psychological support to both patients and their families to face the challenges of home hospitalization. Individual and group therapies are provided at home.',
+          'Ofrecemos soporte emocional y psicológico tanto a pacientes como a sus familias para enfrentar los desafíos de la hospitalización domiciliaria. Terapias individuales y grupales en el hogar.',
       }),
     },
     {
       title: t('physical_rehabilitation', {
-        defaultValue: 'Physical and Occupational Rehabilitation',
+        defaultValue: 'Rehabilitación Física y Ocupacional',
       }),
       description: t('physical_rehabilitation_description', {
         defaultValue:
-          'We offer physical and occupational rehabilitation programs for individuals recovering from surgery or accidents. Our therapists provide personalized sessions at home.',
+          'Programas personalizados de rehabilitación física y ocupacional para personas que se recuperan de cirugías o accidentes. Sesiones a domicilio.',
       }),
     },
     {
       title: t('nursing_services', {
-        defaultValue: 'Specialized Nursing Services',
+        defaultValue: 'Servicios de Enfermería Especializada',
       }),
       description: t('nursing_services_description', {
         defaultValue:
-          'Our specialized nursing services include medication administration, wound care, and post-operative follow-up, ensuring the patient receives quality care without needing to travel.',
+          'Servicios de enfermería especializada que incluyen administración de medicamentos, cuidados de heridas y seguimiento postoperatorio. Atención sin necesidad de desplazamiento.',
       }),
     },
     {
       title: t('caregiver_support', {
-        defaultValue: 'Caregiver Support',
+        defaultValue: 'Soporte a Cuidadores',
       }),
       description: t('caregiver_support_description', {
         defaultValue:
-          'Our trained caregivers provide both physical and emotional support for elderly individuals, ensuring their well-being at all times. This includes assistance with mobility, personal hygiene, and companionship.',
+          'Cuidadores entrenados brindan soporte físico y emocional a personas mayores, asegurando su bienestar. Asistencia en movilidad, higiene personal y compañía.',
       }),
     },
     {
       title: t('personalized_medical_care', {
-        defaultValue: 'Personalized Medical Care',
+        defaultValue: 'Atención Médica Personalizada',
       }),
       description: t('personalized_medical_care_description', {
         defaultValue:
-          'Our specialized doctors offer comprehensive medical care in the comfort of the home. This includes monitoring vital signs, prescribing medications, and following up on treatments.',
+          'Médicos especializados ofrecen atención médica integral a domicilio, incluyendo monitoreo de signos vitales, prescripción de medicamentos y seguimiento de tratamientos.',
       }),
     },
   ];
 
-  // Lógica para mostrar todos los servicios o solo algunos
-
-  const servicesToDisplay =  servicesData
-
   return (
     <section className="services">
       <div className="services__header">
-        <h2 className="services__title">
-          {t('our_services', { defaultValue: '' })}
-        </h2>
-
+        <h2>{t('our_services', { defaultValue: 'Nuestros Servicios' })}</h2>
+        <h3 className="services__subtitle">
+          {t('services_description', { defaultValue: 'Explora nuestros servicios personalizados para cuidar de vos y tus seres queridos.' })}
+        </h3>
       </div>
-      <div className="services__grid">
-        {servicesToDisplay.map((service, index) => (
-          <div key={index} className="services__card">
-            <h3 className="services__card-title">{service.title}</h3>
-            <p className="services__card-description">{service.description}</p>
+
+      {/* Servicios destacados */}
+{/*       <div className="services__highlighted">
+        {servicesData.slice(0, 2).map((service, index) => (
+          <div className="service-card" key={index}>
+            <div className="service-card__icon">{service.icon}</div>
+            <h3 className="service-card__title">{service.title}</h3>
+            <p className="service-card__description">{service.description}</p>
+            <button className="service-card__cta">{t('learn_more', { defaultValue: 'Saber más' })}</button>
+          </div>
+        ))}
+      </div> */}
+
+      {/* Todos los servicios */}
+      <div className="services__cards">
+        {servicesData.map((service, index) => (
+          <div className="service-card" key={index}>
+            <div className="service-card__icon">{service.icon}</div>
+            <h3 className="service-card__title">{service.title}</h3>
+            <p className="service-card__description">{service.description}</p>
+            <button className="service-card__cta">{t('learn_more', { defaultValue: 'Saber más' })}</button>
           </div>
         ))}
       </div>
@@ -3295,64 +3409,121 @@ export default Footer;
 Contenido:
 /* src/components/MissionVision/MissionVision.scss */
 .mission-vision {
-    padding: 4rem 2rem;
-    background-color: var(--color-card-bg);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  
+  padding: 4rem 2rem;
+  background-color: var(--color-card-bg);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin: 4rem auto;
+
+  &__header {
+    margin-bottom: 3rem;
+
     h2 {
-      font-size: 2.5rem;
-      margin-bottom: 2rem;
+      font-size: 2.8rem;
       color: var(--color-primary);
+      margin-bottom: 0.5rem;
     }
-  
-    .section {
-      margin-bottom: 2rem;
-  
+
+    p {
+      font-size: 1.2rem;
+      color: var(--color-text);
+    }
+  }
+
+  &__cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+
+    & > .mission-vision__card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      padding: 2rem;
+      flex: 1;
+      max-width: 320px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-align: left;
+
       h3 {
         font-size: 1.8rem;
         color: var(--color-primary);
+        margin-bottom: 1rem;
       }
-  
+
       p {
-        font-size: 1.1rem;
+        font-size: 1rem;
         color: var(--color-text);
+        line-height: 1.6;
+      }
+
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
       }
     }
   }
-  
+}
+
+/* Ajustes para pantallas medianas y pequeñas */
+@media (max-width: 768px) {
+  .mission-vision {
+    padding: 3rem 1rem;
+
+    &__header {
+      h2 {
+        font-size: 2.2rem;
+      }
+      p {
+        font-size: 1rem;
+      }
+    }
+
+    &__cards {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+}
+
 
 --------------------------------------------------------------------------------
 
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/MissionVision/MissionVision.tsx
 
 Contenido:
-// src/components/MissionVision/MissionVision.tsx
 import React from 'react';
 import './MissionVision.scss';
+import { useTranslation } from 'react-i18next';
 
 const MissionVision: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="mission-vision container">
-      <h2>Our Mission and Vision</h2>
-      <section className="section">
-        <h3>Mission</h3>
-        <p>
-          We provide personalized, continuous, and efficient care, focusing on the person with mutual respect and collaboration. We are passionate about helping people through different life stages.
-        </p>
-      </section>
-      <section className="section">
-        <h3>Vision</h3>
-        <p>
-          To be the professional group of choice for your family, providing high-quality services through continuous improvement of healthcare techniques and knowledge.
-        </p>
-      </section>
-      <section className="section">
-        <h3>Values</h3>
-        <p>
-          We value the commitment to providing care as a lifestyle. Continuous training for professionals and family members is essential for excellence in our services.
-        </p>
-      </section>
+      <header className="mission-vision__header">
+        <h2>{t('our_mission_vision', { defaultValue: 'Our Mission, Vision & Values' })}</h2>
+        <p>{t('mission_vision_intro', {
+          defaultValue: 'We are committed to delivering exceptional care through our core principles.',
+        })}</p>
+      </header>
+      <div className="mission-vision__cards">
+        <div className="mission-vision__card">
+          <h3>{t('mission', { defaultValue: 'Mission' })}</h3>
+          <p>{t('mission_val', { defaultValue: 'To provide personalized, continuous, and efficient care, focusing on the individual with mutual respect and collaboration. We are passionate about what we do.' })}</p>
+        </div>
+        <div className="mission-vision__card">
+          <h3>{t('vision', { defaultValue: 'Vision' })}</h3>
+          <p>{t('vision_val', { defaultValue: 'To be the team of professionals you choose for yourself or your family, delivering high-quality care with continuous improvement.' })}</p>
+        </div>
+        <div className="mission-vision__card">
+          <h3>{t('values', { defaultValue: 'Values' })}</h3>
+          <p>{t('values_val', { defaultValue: 'We value the commitment to care as a lifestyle, emphasizing continuous training and excellence in service.' })}</p>
+        </div>
+      </div>
     </div>
   );
 };
@@ -3451,7 +3622,7 @@ const Contact: React.FC = () => {
         </div>
         <div className="contact__info-item">
           <h3>{t('email')}</h3>
-          <p>{t('dummy_email')}</p>
+          <p>{t('contact_email')}</p>
         </div>
       </div>
     </div>
@@ -3718,7 +3889,7 @@ Contenido:
 
 Contenido:
 {
-  "checkout_success": "Your purchase has been completed successfully!",
+  "checkout_success": "Your purchase has been successfully completed!",
   "checkout": "Checkout",
   "empty_cart": "Your cart is empty.",
   "order_summary": "Order Summary",
@@ -3731,22 +3902,23 @@ Contenido:
   "credit_card": "Credit Card",
   "paypal": "PayPal",
   "promo_code": "Promo Code",
-  "enter_promo_code": "Enter your promo code",
+  "enter_promo_code": "Enter your code",
   "complete_purchase": "Complete Purchase",
   
   "admin_panel": "Admin Panel",
   "admin_products": "Products",
-  "manage_products": "Manage Products",
+  "manage_products": "Manage products",
   "go_to_products": "Go to Products",
   "admin_orders": "Orders",
-  "manage_orders": "Manage Orders",
+  "manage_orders": "Manage orders",
   "go_to_orders": "Go to Orders",
   "admin_users": "Users",
-  "manage_users": "Manage Users",
+  "manage_users": "Manage users",
   "go_to_users": "Go to Users",
-  
+  "services": "Services",
+
   "not_found_title": "Page Not Found",
-  "not_found_message": "The page you are looking for does not exist.",
+  "not_found_message": "The page you're looking for does not exist.",
   
   "liteVibrance": "Calm",
   "home": "Home",
@@ -3755,14 +3927,13 @@ Contenido:
   "iniciar_sesion": "Login",
   "hello": "Hello",
   "logout": "Logout",
-  "services": "Services",
-
-  "products_catalog": "Products Catalog",
+  
+  "products_catalog": "Our Work Team",
   "no_products_found": "No products found for",
-  "view_detail": "View Detail",
+  "view_detail": "View details",
   "loading": "Loading...",
   "product_not_found": "Product not found",
-  "back_to_catalog": "Volver",
+  "back_to_catalog": "Back",
   
   "create_account": "Create Account",
   "signup": "Sign Up",
@@ -3773,7 +3944,7 @@ Contenido:
   "subtotal": "Subtotal:",
   "remove": "Remove",
   "empty_cart_button": "Empty Cart",
-  "continue_checkout": "Continue to Checkout",
+  "continue_checkout": "Continue Checkout",
   
   "session_login": "Login",
   "access": "Access",
@@ -3783,47 +3954,56 @@ Contenido:
   "detailed_view": "Detailed View",
   
   "welcome": "Welcome to Calm",
-  "banner":"we care for your loved ones with warmth and professionalism, strengthening the unique bond between caregiver and patient.We offer personalized home care to enhance quality of life and ensure well-being. Trust our commitment to love and dedication in every care we provide.",
+  "banner": "We care for your loved ones with warmth and professionalism, strengthening the unique bond between caregiver and patient. We offer personalized home care to improve quality of life and ensure well-being. Trust in our commitment to love and dedication in every care.",
   
   "premium_home_care_services": "Our Premium Home Care Services",
   "hide_services": "Hide Services",
   "explore_services": "Explore Services",
   "emotional_support": "Emotional and Psychological Support",
-  "emotional_support_description": "We offer emotional and psychological support to both patients and their families to face the challenges of home hospitalization. Individual and group therapies are provided at home.",
+  "emotional_support_description": "We provide emotional and psychological support to patients and their families to face the challenges of home hospitalization. Individual and group therapies are offered at home.",
   "physical_rehabilitation": "Physical and Occupational Rehabilitation",
-  "physical_rehabilitation_description": "We offer physical and occupational rehabilitation programs for individuals recovering from surgery or accidents. Our therapists provide personalized sessions at home.",
-  "nursing_services": "Specialized Nursing Services",
-  "nursing_services_description": "Our specialized nursing services include medication administration, wound care, and post-operative follow-up, ensuring the patient receives quality care without needing to travel.",
-  "caregiver_support": "Caregiver Support",
-  "caregiver_support_description": "Our trained caregivers provide both physical and emotional support for elderly individuals, ensuring their well-being at all times. This includes assistance with mobility, personal hygiene, and companionship.",
-  "personalized_medical_care": "Personalized Medical Care",
-  "personalized_medical_care_description": "Our specialized doctors offer comprehensive medical care in the comfort of the home. This includes monitoring vital signs, prescribing medications, and following up on treatments.",
+  "physical_rehabilitation_description": "We offer physical and occupational rehabilitation programs for people recovering from surgeries or accidents. Our therapists provide personalized sessions at home.",
+  "nursing_services": "Specialized Nursing",
+  "nursing_services_description": "Our specialized nursing services include medication administration, wound care, and postoperative follow-up, ensuring quality care without the need to travel.",
+  "caregiver_support": "Home Caregivers",
+  "caregiver_support_description": "Our trained caregivers provide physical and emotional support to seniors, ensuring their well-being. This includes assistance with mobility, personal hygiene, and companionship.",
+  "personalized_medical_care": "Medical Care",
+  "personalized_medical_care_description": "Our specialized doctors offer comprehensive medical care at home. This includes monitoring vital signs, prescribing medications, and following up on treatments.",
   
   "footer_rights": "All rights reserved.",
   
   "contact_us": "Contact Us",
-  "contact_us_message": "Feel free to reach out to us with any questions or comments.",
+  "contact_us_message": "Feel free to contact us with any questions or comments.",
   "name": "Name",
-  "your_name": "Your Name",
+  "your_name": "Your name",
   "email": "Email",
-  "your_email": "Your Email",
+  "your_email": "Your email",
   "subject": "Subject",
   "message_subject": "Message Subject",
   "message": "Message",
-  "your_message": "Your Message",
+  "your_message": "Your message",
   "send_message": "Send Message",
   "address": "Address",
   "dummy_address": "Blanco Encalada 197 - Lomas de San Isidro",
   "phone": "Phone",
   "dummy_phone": "+54 11-3095-0404",
-  "dummy_email": "contacto@calmhc.com",
-  "our_services" : "Our services",
-  "vision" : "Vision",
-  "mission" : "Mission",
+  "dummy_email": "info@calmhc.com",
+  "our_services": "Our Services",
+  
+  "vision": "Vision",
+  "mission": "Mission",
   "values": "Values",
-  "mission_val": "To provide personalized, continuous, and efficient care, focusing on the individual and offering a space of mutual respect and collaboration. We want to accompany you through different stages of life because we are passionate about what we do.",
-  "values_val": "We value the willingness to provide care as a way of life. Even the simplest problems are addressed, which is why we consider the ongoing training of professionals and family members (integrated into the care team) essential for delivering excellent service.",
-  "vision_val": "To be the team of professionals you choose for yourself or your family, providing high-quality service through the continuous improvement of techniques and knowledge in the health field. To be a boutique company where only the quality of the services and care provided matters."
+  "mission_val": "To provide personalized, continuous, and efficient care, focusing on the person, creating a space of mutual respect and collaboration. We want to accompany you through different stages of life, as we are passionate about what we do.",
+  "values_val": "We value the willingness to provide care as a lifestyle. Even simple problems are incorporated to be solved, which is why ongoing training for professionals and family members (integrated into the care team) is considered essential for excellent service.",
+  "vision_val": "To be the human team of professionals you choose for yourself or your family and provide high-quality service through continuous improvement of techniques and knowledge in healthcare. To be a boutique company where only the quality of services and care matter.",
+  "our_mission_vision": "Our Mission, Vision, and Values",
+  "mission_vision_intro": "We are committed to providing exceptional care through our core principles.",
+  
+  "fonoaudiologia_a_distancia": "Teletherapy",
+  "fonoaudiologia_a_distancia_description": "We provide teletherapy services to improve communication and skills of the patient, facilitating access to professional treatments from the comfort of their home.",
+  "adecuacion_domicilio": "Home Adaptation",
+  "adecuacion_domicilio_description": "CALM offers a comprehensive service of specialized medical advice to adapt homes to the needs of elderly and disabled individuals. This includes personalized assessments and renovations to improve home safety and comfort.",
+  "contact_email": "info@calmhc.com"
 }
 
 
@@ -3907,11 +4087,11 @@ Contenido:
   "emotional_support_description": "Ofrecemos apoyo emocional y psicológico a pacientes y sus familias para enfrentar los desafíos de la hospitalización a domicilio. Se ofrecen terapias individuales y grupales en el hogar.",
   "physical_rehabilitation": "Rehabilitación Física y Ocupacional",
   "physical_rehabilitation_description": "Ofrecemos programas de rehabilitación física y ocupacional para personas que se recuperan de cirugías o accidentes. Nuestros terapeutas brindan sesiones personalizadas en el hogar.",
-  "nursing_services": "Servicios de Enfermería Especializada",
+  "nursing_services": "Enfermería Especializada",
   "nursing_services_description": "Nuestros servicios de enfermería especializada incluyen administración de medicamentos, cuidado de heridas y seguimiento postoperatorio, asegurando una atención de calidad sin necesidad de desplazarse.",
-  "caregiver_support": "Apoyo a Cuidadores",
+  "caregiver_support": "Cuidadores a domicilio",
   "caregiver_support_description": "Nuestros cuidadores capacitados brindan apoyo físico y emocional a personas mayores, garantizando su bienestar. Esto incluye asistencia con la movilidad, higiene personal y compañía.",
-  "personalized_medical_care": "Atención Médica Personalizada",
+  "personalized_medical_care": "Atención Médica",
   "personalized_medical_care_description": "Nuestros médicos especializados ofrecen atención médica integral en el hogar. Esto incluye el monitoreo de signos vitales, prescripción de medicamentos y seguimiento de tratamientos.",
   
   "footer_rights": "Todos los derechos reservados.",
@@ -3931,7 +4111,7 @@ Contenido:
   "dummy_address": "Blanco Encalada 197 - Lomas de San Isidro",
   "phone": "Teléfono",
   "dummy_phone": "+54 11-3095-0404",
-  "dummy_email": "contacto@calmhc.com",
+  "dummy_email": "info@calmhc.com",
   "our_services": "Nuestros servicios",
 
 
@@ -3940,7 +4120,16 @@ Contenido:
   "values": "Valores",
   "mission_val": "Brindar atención personalizada, continua y eficiente, haciendo foco en la persona, proponiendo un espacio de mutuo respeto y colaboración. Queremos acompañarlo a transitar diferentes etapas de la vida, porque sentimos pasión por lo que hacemos.",
   "values_val": "Valoramos la predisposición a brindar un servicio de cuidado como estilo de vida. Aún los problemas sencillos los incorporamos para ser resueltos, por eso la capacitación continua de los profesionales y del familiar (incorporado al equipo de atención) lo consideramos imprescindibles para un servicio de excelencia.",
-  "vision_val":"Ser el grupo humano de profesionales que elija para usted o su familia y brindar un servicio de alta calidad mediante mejora continua de técnicas y conocimientos en en el área de salud. Ser una empresa boutique, donde solo importe la calidad de servicios y cuidados aportados."
+  "vision_val":"Ser el grupo humano de profesionales que elija para usted o su familia y brindar un servicio de alta calidad mediante mejora continua de técnicas y conocimientos en en el área de salud. Ser una empresa boutique, donde solo importe la calidad de servicios y cuidados aportados.",
+  "our_mission_vision": "Nuestra Misión, Visión y Valores",
+  "mission_vision_intro": "Estamos comprometidos a brindar atención excepcional a través de nuestros principios fundamentales.",
+
+
+  "fonoaudiologia_a_distancia": "Fonoaudiología a Distancia",
+  "fonoaudiologia_a_distancia_description": "Brindamos servicios de fonoaudiología a distancia para mejorar la comunicación y habilidades del paciente, facilitando el acceso a tratamientos profesionales desde la comodidad de su hogar.",
+  "adecuacion_domicilio": "Transformación del hogar para garantizar seguridad y accesibilidad a personas mayores y con discapacidad, mediante adaptaciones como rampas, barras de seguridad y adecuación de espacios.",
+  "adecuacion_domicilio_description": "CALM ofrece un servicio integral de asesoramiento médico especializado para adaptar viviendas a las necesidades de personas mayores y con discapacidad. Esto incluye evaluaciones personalizadas y reformas para mejorar la seguridad y comodidad del hogar.",
+  "contact_email": "info@calmhc.com"
 
 }
 

@@ -73,11 +73,11 @@
   "emotional_support_description": "Ofrecemos apoyo emocional y psicológico a pacientes y sus familias para enfrentar los desafíos de la hospitalización a domicilio. Se ofrecen terapias individuales y grupales en el hogar.",
   "physical_rehabilitation": "Rehabilitación Física y Ocupacional",
   "physical_rehabilitation_description": "Ofrecemos programas de rehabilitación física y ocupacional para personas que se recuperan de cirugías o accidentes. Nuestros terapeutas brindan sesiones personalizadas en el hogar.",
-  "nursing_services": "Servicios de Enfermería Especializada",
+  "nursing_services": "Enfermería Especializada",
   "nursing_services_description": "Nuestros servicios de enfermería especializada incluyen administración de medicamentos, cuidado de heridas y seguimiento postoperatorio, asegurando una atención de calidad sin necesidad de desplazarse.",
-  "caregiver_support": "Apoyo a Cuidadores",
+  "caregiver_support": "Cuidadores a domicilio",
   "caregiver_support_description": "Nuestros cuidadores capacitados brindan apoyo físico y emocional a personas mayores, garantizando su bienestar. Esto incluye asistencia con la movilidad, higiene personal y compañía.",
-  "personalized_medical_care": "Atención Médica Personalizada",
+  "personalized_medical_care": "Atención Médica",
   "personalized_medical_care_description": "Nuestros médicos especializados ofrecen atención médica integral en el hogar. Esto incluye el monitoreo de signos vitales, prescripción de medicamentos y seguimiento de tratamientos.",
   
   "footer_rights": "Todos los derechos reservados.",
@@ -108,6 +108,14 @@
   "values_val": "Valoramos la predisposición a brindar un servicio de cuidado como estilo de vida. Aún los problemas sencillos los incorporamos para ser resueltos, por eso la capacitación continua de los profesionales y del familiar (incorporado al equipo de atención) lo consideramos imprescindibles para un servicio de excelencia.",
   "vision_val":"Ser el grupo humano de profesionales que elija para usted o su familia y brindar un servicio de alta calidad mediante mejora continua de técnicas y conocimientos en en el área de salud. Ser una empresa boutique, donde solo importe la calidad de servicios y cuidados aportados.",
   "our_mission_vision": "Nuestra Misión, Visión y Valores",
-  "mission_vision_intro": "Estamos comprometidos a brindar atención excepcional a través de nuestros principios fundamentales."
+  "mission_vision_intro": "Estamos comprometidos a brindar atención excepcional a través de nuestros principios fundamentales.",
+  "services_description":"Descripción de nuestros servicios",
+
+
+  "fonoaudiologia_a_distancia": "Fonoaudiología a Distancia",
+  "fonoaudiologia_a_distancia_description": "Brindamos servicios de fonoaudiología a distancia para mejorar la comunicación y habilidades del paciente, facilitando el acceso a tratamientos profesionales desde la comodidad de su hogar.",
+  "adecuacion_domicilio": "Adecuación del hogar para garantizar seguridad y accesibilidad a personas mayores y con discapacidad, mediante la implementación de adaptaciones como rampas, pasamanos y modificaciones en baños y entradas, promoviendo la independencia y el bienestar.",
+  "adecuacion_domicilio_description": "CALM ofrece un servicio integral de asesoramiento médico especializado para adaptar los hogares a las necesidades de personas mayores y discapacitadas. Esto incluye evaluaciones personalizadas y reformas para mejorar la seguridad y comodidad del hogar.",
+  "contact_email": "info@calmhc.com"
 
 }

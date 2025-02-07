@@ -1,137 +1,230 @@
 .services {
-  padding: 4rem 2rem;
   background-color: var(--color-bg);
-  color: var(--color-text);
-  font-family: 'Montserrat', sans-serif;
-  transition: background-color var(--transition-speed), color var(--transition-speed);
+  padding: 5rem 2rem;
+  text-align: center;
 
   &__header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     margin-bottom: 3rem;
-    text-align: center;
-
-    .services__title {
+    h2 {
       font-size: 3rem;
       color: var(--color-primary);
-      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 2px;
-      margin-bottom: 1.5rem;
-      opacity: 0;
-      animation: fadeInDown 0.8s ease forwards;
+      position: relative;
+      margin-bottom: 2rem;
     }
 
-    .services__toggle {
-      padding: 0.8rem 1.8rem;
+    .services__subtitle {
+      font-size: 1.5rem;
+      color: var(--color-text-light);
+    }
+  }
+
+  &__highlighted {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 4rem;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .service-card {
+      position: relative;
+      width: 300px;
+      padding: 2rem;
       background-color: var(--color-primary);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
+      color: white;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
       cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: center;
 
       &:hover {
-        background-color: var(--color-primary-hover);
-        transform: translateY(-3px);
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .service-card__icon {
+        font-size: 3rem;
+        position: absolute;
+        top: -20px;
+        right: -20px;
+        color: white;
+      }
+
+      .service-card__title {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+
+      .service-card__description {
+        font-size: 1.1rem;
+        color: var(--color-text-light);
+        text-align: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .service-card__cta {
+        align-self: center;
+        margin-top: auto;
+        padding: 1rem 2rem;
+        background-color: var(--color-secondary);
+        color: white;
+        border-radius: 8px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: var(--color-secondary-hover);
+        }
       }
     }
   }
 
-  &__grid {
+  &__cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 2rem;
-  }
+    margin-bottom: 2rem;
 
-  &__card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
-    overflow: hidden;
-
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    }
-
-    // Efecto creativo: sutil fondo radial al hacer hover
-    &::before {
-      content: "";
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    &:hover::before {
-      opacity: 0.1;
-    }
-
-    &-title {
-      font-size: 1.8rem;
-      color: var(--color-primary);
-      margin-bottom: 1rem;
+    .service-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      padding: 3rem;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.3s ease;
       text-align: center;
-    }
 
-    &-description {
-      font-size: 1rem;
-      line-height: 1.6;
-      text-align: justify;
-    }
-  }
-}
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      }
 
-/* Animación para el título */
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+      .service-card__icon {
+        font-size: 2rem;
+        color: var(--color-primary);
+        margin-bottom: 1rem;
+        align-self: center;
+      }
+
+      .service-card__title {
+        font-size: 1.6rem;
+        color: var(--color-primary);
+        margin-bottom: 1rem;
+      }
+
+      .service-card__description {
+        font-size: 1.1rem;
+        color: var(--color-text-light);
+        margin-bottom: 1.5rem;
+        flex-grow: 1;
+      }
+
+      .service-card__cta {
+        padding: 1rem 2rem;
+        background-color: var(--color-primary);
+        color: white;
+        border-radius: 8px;
+        text-transform: uppercase;
+        cursor: pointer;
+        align-self: center;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: var(--color-primary-hover);
+        }
+      }
+    }
   }
 }
 
 /* Ajustes responsivos */
+@media (max-width: 1024px) {
+  .services {
+    padding: 4rem 2rem;
+
+    &__header h2 {
+      font-size: 2.8rem;
+    }
+
+    &__highlighted {
+      .service-card {
+        width: 250px;
+        padding: 1.8rem;
+      }
+    }
+
+    &__cards {
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .services {
     padding: 3rem 1rem;
 
-    &__header {
-      .services__title {
-        font-size: 2.4rem;
-      }
-      .services__toggle {
-        padding: 0.7rem 1.4rem;
-        font-size: 0.9rem;
-      }
+    &__header h2 {
+      font-size: 2.2rem;
     }
 
-    &__card {
+    .service-card {
+      width: 100%;
+      padding: 2rem;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .service-card__title {
+      font-size: 1.6rem;
+    }
+
+    .service-card__description {
+      font-size: 1rem;
+    }
+
+    .service-card__cta {
+      padding: 0.8rem 1.8rem;
+      font-size: 1rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .services {
+    padding: 2.5rem 1rem;
+
+    &__header h2 {
+      font-size: 1.8rem;
+    }
+
+    .service-card {
       padding: 1.5rem;
-      &-title {
-        font-size: 1.6rem;
-      }
-      &-description {
-        font-size: 0.9rem;
-      }
+      width: 90%;
+    }
+
+    .service-card__title {
+      font-size: 1.4rem;
+    }
+
+    .service-card__description {
+      font-size: 0.9rem;
+    }
+
+    .service-card__cta {
+      font-size: 0.9rem;
+      padding: 0.6rem 1.5rem;
     }
   }
 }
