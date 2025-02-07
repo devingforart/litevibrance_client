@@ -503,6 +503,8 @@ const navLinks = [
   { name: 'products', path: '/products' },
   // { name: 'cart', path: '/cart' },
   { name: 'contact', path: '/contact' },
+  { name: 'vision', path: '/MissionVision' },
+
 
 ];
 
@@ -1905,7 +1907,12 @@ Contenido:
     background-color: rgba(255, 255, 255, 0.1);  /* Hover más sutil en modo oscuro */
   }
 }
-
+.view-switcher__menu{
+  background-color: var(--wave-color);
+  span,svg{
+    color:var(--color-card-bg)
+  }
+}
 /* Efecto de pulso para hacerlo más "glotante" */
 @keyframes pulse {
   0% {
@@ -1918,7 +1925,17 @@ Contenido:
     transform: scale(1);
   }
 }
+@media (max-width: 768px) {
+  body.no-scroll .view-switcher {
+    display: none;
+    
+  }
+  .view-switcher {
+    margin: 0 auto;
+  }
 
+
+}
 
 --------------------------------------------------------------------------------
 
@@ -2487,6 +2504,76 @@ Contenido:
       }
       .about__description {
         font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+
+/* src/components/Home/Home.scss */
+.home {
+  margin-top: 100px;
+  font-family: 'Roboto', sans-serif;
+  color: var(--color-text);
+
+  .container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  .hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 90vh;
+    background: linear-gradient(135deg, var(--hero-condition), var(--color-card-bg));
+    color: var(--color-text);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding: 2rem;
+  }
+
+  /* Nueva sección "Misión y Visión" */
+  .about-us {
+    background-color: var(--color-card-bg);
+    padding: 4rem 2rem;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-top: 4rem;
+
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .about-us__content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+
+      .about-us__section {
+        background: var(--glass-bg);
+        backdrop-filter: blur(var(--glass-blur));
+        border: 1px solid var(--glass-border);
+        border-radius: 8px;
+        padding: 2rem;
+        max-width: 400px;
+        text-align: left;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+        h3 {
+          font-size: 1.8rem;
+          color: var(--color-primary);
+        }
+
+        p {
+          font-size: 1.1rem;
+          color: var(--color-text);
+        }
       }
     }
   }
@@ -3203,6 +3290,78 @@ export default Footer;
 
 --------------------------------------------------------------------------------
 
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/MissionVision/MissionVision.scss
+
+Contenido:
+/* src/components/MissionVision/MissionVision.scss */
+.mission-vision {
+    padding: 4rem 2rem;
+    background-color: var(--color-card-bg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: var(--color-primary);
+    }
+  
+    .section {
+      margin-bottom: 2rem;
+  
+      h3 {
+        font-size: 1.8rem;
+        color: var(--color-primary);
+      }
+  
+      p {
+        font-size: 1.1rem;
+        color: var(--color-text);
+      }
+    }
+  }
+  
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/MissionVision/MissionVision.tsx
+
+Contenido:
+// src/components/MissionVision/MissionVision.tsx
+import React from 'react';
+import './MissionVision.scss';
+
+const MissionVision: React.FC = () => {
+  return (
+    <div className="mission-vision container">
+      <h2>Our Mission and Vision</h2>
+      <section className="section">
+        <h3>Mission</h3>
+        <p>
+          We provide personalized, continuous, and efficient care, focusing on the person with mutual respect and collaboration. We are passionate about helping people through different life stages.
+        </p>
+      </section>
+      <section className="section">
+        <h3>Vision</h3>
+        <p>
+          To be the professional group of choice for your family, providing high-quality services through continuous improvement of healthcare techniques and knowledge.
+        </p>
+      </section>
+      <section className="section">
+        <h3>Values</h3>
+        <p>
+          We value the commitment to providing care as a lifestyle. Continuous training for professionals and family members is essential for excellence in our services.
+        </p>
+      </section>
+    </div>
+  );
+};
+
+export default MissionVision;
+
+
+--------------------------------------------------------------------------------
+
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Contact/Contact.tsx
 
 Contenido:
@@ -3603,7 +3762,7 @@ Contenido:
   "view_detail": "View Detail",
   "loading": "Loading...",
   "product_not_found": "Product not found",
-  "back_to_catalog": "Back to Catalog",
+  "back_to_catalog": "Volver",
   
   "create_account": "Create Account",
   "signup": "Sign Up",
@@ -3658,7 +3817,13 @@ Contenido:
   "phone": "Phone",
   "dummy_phone": "+54 11-3095-0404",
   "dummy_email": "contacto@calmhc.com",
-  "our_services" : "Our services"
+  "our_services" : "Our services",
+  "vision" : "Vision",
+  "mission" : "Mission",
+  "values": "Values",
+  "mission_val": "To provide personalized, continuous, and efficient care, focusing on the individual and offering a space of mutual respect and collaboration. We want to accompany you through different stages of life because we are passionate about what we do.",
+  "values_val": "We value the willingness to provide care as a way of life. Even the simplest problems are addressed, which is why we consider the ongoing training of professionals and family members (integrated into the care team) essential for delivering excellent service.",
+  "vision_val": "To be the team of professionals you choose for yourself or your family, providing high-quality service through the continuous improvement of techniques and knowledge in the health field. To be a boutique company where only the quality of the services and care provided matters."
 }
 
 
@@ -3712,7 +3877,7 @@ Contenido:
   "view_detail": "Ver detalle",
   "loading": "Cargando...",
   "product_not_found": "Producto no encontrado",
-  "back_to_catalog": "Volver al Catálogo",
+  "back_to_catalog": "Volver",
   
   "create_account": "Crear Cuenta",
   "signup": "Registrarse",
@@ -3767,7 +3932,16 @@ Contenido:
   "phone": "Teléfono",
   "dummy_phone": "+54 11-3095-0404",
   "dummy_email": "contacto@calmhc.com",
-  "our_services": "Nuestros servicios"
+  "our_services": "Nuestros servicios",
+
+
+  "vision" : "Visión",
+  "mission" : "Misión",
+  "values": "Valores",
+  "mission_val": "Brindar atención personalizada, continua y eficiente, haciendo foco en la persona, proponiendo un espacio de mutuo respeto y colaboración. Queremos acompañarlo a transitar diferentes etapas de la vida, porque sentimos pasión por lo que hacemos.",
+  "values_val": "Valoramos la predisposición a brindar un servicio de cuidado como estilo de vida. Aún los problemas sencillos los incorporamos para ser resueltos, por eso la capacitación continua de los profesionales y del familiar (incorporado al equipo de atención) lo consideramos imprescindibles para un servicio de excelencia.",
+  "vision_val":"Ser el grupo humano de profesionales que elija para usted o su familia y brindar un servicio de alta calidad mediante mejora continua de técnicas y conocimientos en en el área de salud. Ser una empresa boutique, donde solo importe la calidad de servicios y cuidados aportados."
+
 }
 
 

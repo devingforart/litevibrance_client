@@ -43,7 +43,7 @@
   "view_detail": "Ver detalle",
   "loading": "Cargando...",
   "product_not_found": "Producto no encontrado",
-  "back_to_catalog": "Volver al Catálogo",
+  "back_to_catalog": "Volver",
   
   "create_account": "Crear Cuenta",
   "signup": "Registrarse",
@@ -98,5 +98,16 @@
   "phone": "Teléfono",
   "dummy_phone": "+54 11-3095-0404",
   "dummy_email": "contacto@calmhc.com",
-  "our_services": "Nuestros servicios"
+  "our_services": "Nuestros servicios",
+
+
+  "vision" : "Visión",
+  "mission" : "Misión",
+  "values": "Valores",
+  "mission_val": "Brindar atención personalizada, continua y eficiente, haciendo foco en la persona, proponiendo un espacio de mutuo respeto y colaboración. Queremos acompañarlo a transitar diferentes etapas de la vida, porque sentimos pasión por lo que hacemos.",
+  "values_val": "Valoramos la predisposición a brindar un servicio de cuidado como estilo de vida. Aún los problemas sencillos los incorporamos para ser resueltos, por eso la capacitación continua de los profesionales y del familiar (incorporado al equipo de atención) lo consideramos imprescindibles para un servicio de excelencia.",
+  "vision_val":"Ser el grupo humano de profesionales que elija para usted o su familia y brindar un servicio de alta calidad mediante mejora continua de técnicas y conocimientos en en el área de salud. Ser una empresa boutique, donde solo importe la calidad de servicios y cuidados aportados.",
+  "our_mission_vision": "Nuestra Misión, Visión y Valores",
+  "mission_vision_intro": "Estamos comprometidos a brindar atención excepcional a través de nuestros principios fundamentales."
+
 }

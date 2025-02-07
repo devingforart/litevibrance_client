@@ -16,6 +16,7 @@ import Notification from './components/Notification/Notification'; // Importamos
 import './components/sass/global.scss';
 import Contact from './components/Contact/Contact';
 import Services from './components/Services/Services';
+import MissionVision from './components/MissionVision/MissionVision';
 
 const App: React.FC = () => {
   return (
@@ -35,6 +36,7 @@ const App: React.FC = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/contact" element={<Contact />} /> 
           <Route path="/services" element={<Services />} /> 
+          <Route path="/MissionVision" element={<MissionVision />} /> 
 
           <Route path="*" element={<NotFound />} />
         </Routes>

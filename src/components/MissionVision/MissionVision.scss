@@ -1,0 +1,81 @@
+/* src/components/MissionVision/MissionVision.scss */
+.mission-vision {
+  padding: 4rem 2rem;
+  background-color: var(--color-card-bg);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin: 4rem auto;
+
+  &__header {
+    margin-bottom: 3rem;
+
+    h2 {
+      font-size: 2.8rem;
+      color: var(--color-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: var(--color-text);
+    }
+  }
+
+  &__cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+
+    & > .mission-vision__card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      padding: 2rem;
+      flex: 1;
+      max-width: 320px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-align: left;
+
+      h3 {
+        font-size: 1.8rem;
+        color: var(--color-primary);
+        margin-bottom: 1rem;
+      }
+
+      p {
+        font-size: 1rem;
+        color: var(--color-text);
+        line-height: 1.6;
+      }
+
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      }
+    }
+  }
+}
+
+/* Ajustes para pantallas medianas y pequeñas */
+@media (max-width: 768px) {
+  .mission-vision {
+    padding: 3rem 1rem;
+
+    &__header {
+      h2 {
+        font-size: 2.2rem;
+      }
+      p {
+        font-size: 1rem;
+      }
+    }
+
+    &__cards {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+}

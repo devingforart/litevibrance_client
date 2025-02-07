@@ -43,7 +43,7 @@
   "view_detail": "View Detail",
   "loading": "Loading...",
   "product_not_found": "Product not found",
-  "back_to_catalog": "Back to Catalog",
+  "back_to_catalog": "Volver",
   
   "create_account": "Create Account",
   "signup": "Sign Up",
@@ -98,5 +98,14 @@
   "phone": "Phone",
   "dummy_phone": "+54 11-3095-0404",
   "dummy_email": "contacto@calmhc.com",
-  "our_services" : "Our services"
+  "our_services" : "Our services",
+  "vision" : "Vision",
+  "mission" : "Mission",
+  "values": "Values",
+  "mission_val": "To provide personalized, continuous, and efficient care, focusing on the individual and offering a space of mutual respect and collaboration. We want to accompany you through different stages of life because we are passionate about what we do.",
+  "values_val": "We value the willingness to provide care as a way of life. Even the simplest problems are addressed, which is why we consider the ongoing training of professionals and family members (integrated into the care team) essential for delivering excellent service.",
+  "vision_val": "To be the team of professionals you choose for yourself or your family, providing high-quality service through the continuous improvement of techniques and knowledge in the health field. To be a boutique company where only the quality of the services and care provided matters.",
+  "our_mission_vision": "Our Mission, Vision & Values",
+  "mission_vision_intro": "We are committed to delivering exceptional care through our core principles."
+
 }
