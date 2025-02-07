@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="footer">
       <p>
-        &copy; {new Date().getFullYear()} liteVibrance. {t('footer_rights', { defaultValue: 'Todos los derechos reservados.' })}
+        &copy; {new Date().getFullYear()} Calm. {t('footer_rights', { defaultValue: 'Todos los derechos reservados.' })}
       </p>
     </footer>
   );

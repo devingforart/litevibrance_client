@@ -499,8 +499,8 @@ import { useTranslation } from 'react-i18next';
 const navLinks = [
   { name: 'home', path: '/' },
   { name: 'products', path: '/products' },
-  { name: 'cart', path: '/cart' },
-  { name: 'contact', path: '/contact' }
+/*   { name: 'cart', path: '/cart' },
+ */  { name: 'contact', path: '/contact' }
 ];
 
 const Header: React.FC = () => {
@@ -968,16 +968,15 @@ Contenido:
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductList/ProductList.tsx
 
 Contenido:
+// src/components/ProductList/ProductList.tsx
 import React, { useState } from 'react';
 import './ProductList.scss';
 import { Link, useSearchParams } from 'react-router-dom';
 import ProductCard from '../ProductCard/ProductCard';
 import ProductListItem from '../ProductListItem/ProductListItem';
 import ViewSwitcher, { ViewMode } from '../ViewSwitcher/ViewSwitcher';
-import { dummyProducts,} from '../../data/products';
+import { dummyProducts } from '../../data/products';
 import { useTranslation } from 'react-i18next';
-
-
 
 const ProductSkeleton = () => (
   <div className="product-card skeleton">
@@ -992,14 +991,14 @@ const ProductSkeleton = () => (
 const ProductList: React.FC = () => {
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('search') || '';
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
-  // Ya no usamos loading ni useEffect para la carga de productos
+  const [viewMode, setViewMode] = useState<ViewMode>('detailed');
   const { t } = useTranslation();
 
   const normalizeString = (str: string) =>
     str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
-  const filteredProducts = products.filter((product) =>
+  // Filtramos los productos según la búsqueda usando dummyProducts
+  const filteredProducts = dummyProducts.filter((product) =>
     normalizeString(product.name).includes(normalizeString(searchQuery))
   );
 
@@ -1015,7 +1014,7 @@ const ProductList: React.FC = () => {
         </p>
       ) : (
         <>
-          {/* Si en algún momento necesitas mostrar un skeleton de carga, puedes habilitar loading */}
+          {/* Si en algún momento necesitas mostrar un skeleton de carga, puedes habilitar la variable loading */}
           {false ? (
             <div className="product-list__grid">
               {Array(8)
@@ -1028,14 +1027,14 @@ const ProductList: React.FC = () => {
             <>
               {viewMode === 'grid' && (
                 <div className="product-list__grid">
-                  {(searchQuery ? filteredProducts : products).map((product) => (
+                  {(searchQuery ? filteredProducts : dummyProducts).map((product) => (
                     <ProductCard key={product.uuid} product={product} />
                   ))}
                 </div>
               )}
               {viewMode === 'list' && (
                 <div className="product-list__list">
-                  {(searchQuery ? filteredProducts : products).map((product) => (
+                  {(searchQuery ? filteredProducts : dummyProducts).map((product) => (
                     <ProductListItem key={product.uuid} product={product} />
                   ))}
                 </div>
@@ -1047,8 +1046,9 @@ const ProductList: React.FC = () => {
                       <div className="image-wrapper">
                         <img
                           src={
-                            product.photos?.[0] ||
-                            'https://via.placeholder.com/600x400?text=No+Image'
+                            product.photos && product.photos.length > 0
+                              ? product.photos[0]
+                              : 'https://via.placeholder.com/600x400?text=No+Image'
                           }
                           alt={product.name}
                         />
@@ -1056,8 +1056,7 @@ const ProductList: React.FC = () => {
                       <div className="info">
                         <h3>{product.name}</h3>
                         <p>{product.description}</p>
-{/*                         <p className="price">${product.price.toFixed(2)}</p>
- */}                        <Link
+                        <Link
                           to={`/products/${product.uuid}/${product.slug}`}
                           className="btn-primary"
                         >
@@ -2334,15 +2333,7 @@ const Home: React.FC = () => {
 
   return (
     <main className="home">
-      {/* Sección Hero con video de fondo */}
       <section className="hero">
-        <div className="hero__video-wrapper">
-          <video className="hero__video" autoPlay muted loop>
-            <source src="/assets/videos/hero-video.mp4" type="video/mp4" />
-            {t('video_not_supported')}
-          </video>
-          <div className="hero__overlay"></div>
-        </div>
         <div className="hero__content container">
           <h1 className="hero__title animate__animated animate__fadeInDown">
             {t('welcome')}
@@ -2350,67 +2341,13 @@ const Home: React.FC = () => {
           <p className="hero__subtitle animate__animated animate__fadeInUp">
             {t('banner')}
           </p>
-          <Link to="/products" className="btn btn-primary animate__animated animate__zoomIn">
-            {t('products')}
+          <Link
+            to="/Services"
+            className="btn btn-primary animate__animated animate__zoomIn"
+          >
+            {t('explore_services', { defaultValue: 'Explore Services' })}
           </Link>
         </div>
-      </section>
-
-      {/* Sección de Colecciones Destacadas */}
-      <section className="collection-showcase container animate__animated animate__fadeInUp">
-        <h2 className="section-title">{t('featured_collection')}</h2>
-        <div className="collection-gallery">
-          <div className="gallery-item">
-            <img src="/assets/images/collection1.jpg" alt={t('collection1_alt')} />
-            <div className="gallery-overlay">
-              <h3>{t('collection1_title')}</h3>
-              <Link to="/products" className="btn btn-secondary">
-                {t('view_collection')}
-              </Link>
-            </div>
-          </div>
-          <div className="gallery-item">
-            <img src="/assets/images/collection2.jpg" alt={t('collection2_alt')} />
-            <div className="gallery-overlay">
-              <h3>{t('collection2_title')}</h3>
-              <Link to="/products" className="btn btn-secondary">
-                {t('view_collection')}
-              </Link>
-            </div>
-          </div>
-          <div className="gallery-item">
-            <img src="/assets/images/collection3.jpg" alt={t('collection3_alt')} />
-            <div className="gallery-overlay">
-              <h3>{t('collection3_title')}</h3>
-              <Link to="/products" className="btn btn-secondary">
-                {t('view_collection')}
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Sección Sobre Nosotros */}
-      <section className="about-us container animate__animated animate__fadeInUp">
-        <div className="about-content">
-          <h2>{t('about_us_title')}</h2>
-          <p>{t('about_us_text')}</p>
-          <Link to="/about" className="btn btn-outline">
-            {t('learn_more')}
-          </Link>
-        </div>
-        <div className="about-image">
-          <img src="/assets/images/about-us.jpg" alt={t('about_us_alt')} />
-        </div>
-      </section>
-
-      {/* Sección de Llamado a la Acción (CTA) */}
-      <section className="cta container animate__animated animate__fadeInUp">
-        <h2 className="cta__title">{t('cta_title')}</h2>
-        <p className="cta__text">{t('cta_text')}</p>
-        <Link to="/contact" className="btn btn-secondary">
-          {t('cta_button')}
-        </Link>
       </section>
     </main>
   );
@@ -2424,205 +2361,318 @@ export default Home;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Home/Home.scss
 
 Contenido:
-/* src/components/Home/Home.scss */
+
 .home {
-  margin-top: 65px; // Espacio para header fijo
+  margin-top: 100px; // Considera el espacio para el header fijo
+  font-family: 'Roboto', sans-serif;
+  color: var(--color-text);
 
-  /* Sección Hero */
+  .container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  /* SECCIÓN HERO */
   .hero {
-    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: 100vh;
+    /* Para light mode se utiliza un degradado sutil con las variables --hero-condition y --color-card-bg */
+    background: linear-gradient(135deg, var(--hero-condition), var(--color-card-bg));
+    color: var(--color-text);
+    text-align: center;
+    position: relative;
     overflow: hidden;
+    padding: 2rem;
 
-    &__video-wrapper {
+    /* Efecto animado de fondo (opcional) */
+    &::before {
+      content: "";
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-
-      .hero__video {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-      
-      .hero__overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.4);
-      }
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(0, 0, 0, 0.02) 0%, transparent 70%);
+      animation: pulse 6s infinite;
+      z-index: 1;
     }
 
-    &__content {
+    .hero__content {
       position: relative;
       z-index: 2;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      text-align: center;
-      color: #fff;
+    }
 
-      .hero__title {
-        font-size: 3.5rem;
-        margin-bottom: 1rem;
-      }
+    .hero__title {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      /* Ajuste opcional: en light mode se puede usar un sutil text-shadow si lo deseas */
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
 
-      .hero__subtitle {
-        font-size: 1.3rem;
-        margin-bottom: 2rem;
-      }
+    .hero__subtitle {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
     }
   }
 
-  /* Sección Colección Destacada */
-  .collection-showcase {
-    padding: 4rem 0;
+  /* SECCIÓN SOBRE NOSOTROS */
+  .about {
+    background-color: var(--color-card-bg);
+    padding: 4rem 2rem;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 4rem;
 
-    .section-title {
-      text-align: center;
+    .about__title {
       font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .about__description {
+      font-size: 1.2rem;
+      line-height: 1.6;
       margin-bottom: 2rem;
       color: var(--color-text);
     }
+  }
 
-    .collection-gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
+}
 
-      .gallery-item {
-        position: relative;
-        overflow: hidden;
-        border-radius: 8px;
 
-        img {
-          width: 100%;
-          height: auto;
-          transition: transform 0.4s ease;
-        }
 
-        &:hover img {
-          transform: scale(1.1);
-        }
+--------------------------------------------------------------------------------
 
-        .gallery-overlay {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0, 0, 0, 0.6);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          opacity: 0;
-          transition: opacity 0.4s ease;
-          color: #fff;
-          
-          h3 {
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
-          }
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Services/Services.scss
 
-          .btn {
-            font-size: 1rem;
-            padding: 0.5rem 1rem;
-          }
-        }
+Contenido:
+.services {
+  padding: 2rem;
+  background: var(--color-bg);
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 
-        &:hover .gallery-overlay {
-          opacity: 1;
-        }
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 2.5rem;
+      color: var(--color-primary);
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      transition: color 0.3s ease;
+    }
+
+    .services__toggle {
+      padding: 1rem 2rem;
+      background-color: var(--color-primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s ease;
+
+      &:hover {
+        background-color: var(--color-primary-hover);
+        transform: translateY(-3px);
+      }
+
+      &:focus {
+        outline: none;
       }
     }
   }
 
-  /* Sección Sobre Nosotros */
-  .about-us {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    padding: 4rem 0;
+  &__content {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.8s ease forwards;
 
-    .about-content {
-      flex: 1 1 400px;
-      padding: 1rem;
+    .services__section {
+      margin-bottom: 3rem;
+      transition: transform 0.3s ease;
 
       h2 {
-        font-size: 2.5rem;
+        font-size: 2rem;
+        color: var(--color-primary);
         margin-bottom: 1rem;
-        color: var(--color-text);
+        font-weight: 600;
+        text-align: center;
       }
 
       p {
-        font-size: 1.1rem;
-        margin-bottom: 1.5rem;
+        font-size: 1.2rem;
         color: var(--color-text);
-        opacity: 0.8;
+        line-height: 1.6;
+        text-align: justify;
       }
-    }
 
-    .about-image {
-      flex: 1 1 400px;
-      padding: 1rem;
-
-      img {
-        width: 100%;
-        border-radius: 8px;
-        object-fit: cover;
-        transition: transform 0.4s ease;
-        
-        &:hover {
-          transform: scale(1.05);
-        }
+      &:hover {
+        transform: translateY(-3px);
       }
     }
   }
 
-  /* Sección CTA */
-  .cta {
-    text-align: center;
-    padding: 4rem 0;
-    background: #f8f8f8;
-    border-radius: 8px;
-
-    .cta__title {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      color: var(--color-text);
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
     }
-
-    .cta__text {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
-      color: var(--color-text);
+    100% {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 }
 
-/* Media Queries */
+// Responsive styles for smaller screens
 @media (max-width: 768px) {
-  .hero__content {
-    h1 {
-      font-size: 2.5rem;
+  .services {
+    padding: 1.5rem;
+    
+    &__header {
+      flex-direction: column;
+      align-items: flex-start;
     }
+
+    &__content {
+      padding: 1.5rem;
+    }
+
+    .services__toggle {
+      width: 100%;
+      padding: 0.8rem;
+      font-size: 1.1rem;
+    }
+
+    .services__section {
+      margin-bottom: 1.5rem;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+    }
+
     p {
       font-size: 1rem;
     }
   }
-
-  .about-us {
-    flex-direction: column;
-  }
 }
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Services/Services.tsx
+
+Contenido:
+// src/components/Services/Services.tsx
+import React, { useState } from 'react';
+import './Services.scss';
+import { useTranslation } from 'react-i18next';
+
+const Services: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(true);
+  const { t } = useTranslation();
+
+  const toggleServices = () => {
+    setIsVisible(!isVisible);
+  };
+
+  return (
+    <div className="services">
+      <div className="services__header">
+        <h1>
+          {t('premium_home_care_services', { defaultValue: 'Our Premium Home Care Services' })}
+        </h1>
+        <button className="services__toggle" onClick={toggleServices}>
+          {isVisible 
+            ? t('hide_services', { defaultValue: 'Hide Services' })
+            : t('explore_services', { defaultValue: 'Explore Services' })}
+        </button>
+      </div>
+
+      {isVisible && (
+        <div className="services__content">
+          <div className="services__section">
+            <h2>
+              {t('emotional_support', { defaultValue: 'Emotional and Psychological Support' })}
+            </h2>
+            <p>
+              {t('emotional_support_description', {
+                defaultValue:
+                  'We offer emotional and psychological support to both patients and their families to face the challenges of home hospitalization. Individual and group therapies are provided at home.',
+              })}
+            </p>
+          </div>
+
+          <div className="services__section">
+            <h2>
+              {t('physical_rehabilitation', { defaultValue: 'Physical and Occupational Rehabilitation' })}
+            </h2>
+            <p>
+              {t('physical_rehabilitation_description', {
+                defaultValue:
+                  'We offer physical and occupational rehabilitation programs for individuals recovering from surgery or accidents. Our therapists provide personalized sessions at home.',
+              })}
+            </p>
+          </div>
+
+          <div className="services__section">
+            <h2>
+              {t('nursing_services', { defaultValue: 'Specialized Nursing Services' })}
+            </h2>
+            <p>
+              {t('nursing_services_description', {
+                defaultValue:
+                  'Our specialized nursing services include medication administration, wound care, and post-operative follow-up, ensuring the patient receives quality care without needing to travel.',
+              })}
+            </p>
+          </div>
+
+          <div className="services__section">
+            <h2>
+              {t('caregiver_support', { defaultValue: 'Caregiver Support' })}
+            </h2>
+            <p>
+              {t('caregiver_support_description', {
+                defaultValue:
+                  'Our trained caregivers provide both physical and emotional support for elderly individuals, ensuring their well-being at all times. This includes assistance with mobility, personal hygiene, and companionship.',
+              })}
+            </p>
+          </div>
+
+          <div className="services__section">
+            <h2>
+              {t('personalized_medical_care', { defaultValue: 'Personalized Medical Care' })}
+            </h2>
+            <p>
+              {t('personalized_medical_care_description', {
+                defaultValue:
+                  'Our specialized doctors offer comprehensive medical care in the comfort of the home. This includes monitoring vital signs, prescribing medications, and following up on treatments.',
+              })}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Services;
 
 
 --------------------------------------------------------------------------------
@@ -2630,40 +2680,39 @@ Contenido:
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductModal/ProductModal.tsx
 
 Contenido:
-// src/components/ProductListItem/ProductListItem.tsx
+// src/components/ProductModal/ProductModal.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Product } from '../../data/products';
-import './ProductListItem.scss';
+import './ProductModal.scss';
+import { useTranslation } from 'react-i18next';
 
-interface ProductListItemProps {
+interface ProductModalProps {
   product: Product;
 }
 
-const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
-  const imageUrl = product.photos && product.photos.length > 0
-    ? product.photos[0]
-    : 'https://via.placeholder.com/100?text=No+Image';
+const ProductModal: React.FC<ProductModalProps> = ({ product }) => {
+  const { t } = useTranslation();
+  const imageUrl =
+    product.photos && product.photos.length > 0
+      ? product.photos[0]
+      : 'https://via.placeholder.com/100?text=No+Image';
 
   return (
-    <div className="product-list-item">
+    <div className="product-modal">
       <img src={imageUrl} alt={product.name} />
-      <div className="product-list-item__details">
+      <div className="product-modal__details">
         <h3>{product.name}</h3>
         <p>${product.price.toFixed(2)}</p>
-        {/* Agregamos también el slug para cumplir con la ruta */}
-        <Link
-          to={`/products/${product.uuid}/${product.slug}`}
-          className="btn-primary"
-        >
-          Ver detalle
+        <Link to={`/products/${product.uuid}/${product.slug}`} className="btn-primary">
+          {t('view_detail', { defaultValue: 'Ver detalle' })}
         </Link>
       </div>
     </div>
   );
 };
 
-export default ProductListItem;
+export default ProductModal;
 
 
 --------------------------------------------------------------------------------
@@ -2744,7 +2793,7 @@ Contenido:
 Contenido:
 /* src/components/sass/global.scss */
 /* ------------------------------------------------------
-   global.scss – Variables y estilos base para tu página de medicina
+   global.scss – Variables y estilos base para un hospital y medicina
    ------------------------------------------------------ */
 
 /* Importación de Google Fonts */
@@ -2760,27 +2809,31 @@ html, body {
   height: 100%;
   margin: 0;
 }
+body{
+  height: auto;
 
+}
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* VARIABLES PARA MODO CLARO – Inspiración Médica sin verdes */
+/* VARIABLES PARA MODO CLARO – Inspirado en ambientes hospitalarios */
 :root {
   /* Fondos y textos */
-  --color-bg: #ffffff;           /* Fondo blanco puro, emana limpieza y profesionalidad */
-  --color-text: #343a40;         /* Texto en gris oscuro para excelente legibilidad */
-  --color-card-bg: #f8f9fa;      /* Tarjetas con fondo gris muy claro para destacar el contenido */
+  --color-bg: #f0f8ff;           /* AliceBlue: un blanco azulado que evoca limpieza y calma */
+  --color-text: #212121;         /* Gris oscuro para asegurar excelente legibilidad */
+  --color-card-bg: #ffffff;      /* Blanco puro, enfatizando un ambiente estéril y profesional */
+  --hero-condition: rgb(240, 248, 255); /* Sutil variación de AliceBlue para áreas destacadas */
 
   /* Colores Institucionales */
-  --color-primary: #007bff;      /* Azul brillante, clásico en entornos de salud por transmitir confianza */
-  --color-primary-hover: #0056b3;/* Azul más oscuro para efectos hover */
-  --color-secondary: #6c757d;    /* Gris medio para elementos secundarios */
-  --color-accent: #6f42c1;       /* Acénto púrpura para detalles, que añade un toque moderno sin recurrir al verde */
+  --color-primary: #0077c8;      /* Azul institucional que inspira confianza y profesionalismo */
+  --color-primary-hover: #005fa3;/* Variante más oscura para interacciones (hover) */
+  --color-secondary: #4B7B9D;    /* Azul grisáceo sobrio, ideal para elementos secundarios */
+  --color-accent: #28a745;       /* Verde fresco que evoca salud y bienestar */
 
-  --gray-300: #dee2e6;           /* Gris muy claro para separadores y detalles sutiles */
+  --gray-300: #ced4da;           /* Gris claro para separadores y detalles sutiles */
 
   /* Efecto Glass */
   --glass-bg: rgba(255, 255, 255, 0.85);
@@ -2789,37 +2842,45 @@ html, body {
 
   /* Header */
   --header-bg: rgba(255, 255, 255, 0.97);
-  --header-text: #343a40;
+  --header-text: #212121;
   --header-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
   /* Decoración (onda) */
-  --wave-color: #6f42c1;
+  --wave-color: #0077c8;
 
   --transition-speed: 0.3s;
 }
 
-/* VARIABLES PARA MODO OSCURO – Se mantiene la versión que te gustó */
+/* VARIABLES PARA MODO OSCURO – Inspirado en ambientes hospitalarios */
 :root[data-theme='dark'] {
-  --color-bg: #322f2f;
-  --color-text: #f5e9d7;
-  --color-card-bg: #3d3937;
+  /* Fondos y textos */
+  --color-bg: #1A202C;         /* Fondo oscuro, casi negro, que ayuda a reducir la fatiga visual */
+  --color-text: #E6E6E6;        /* Blanco suave para texto, garantizando buen contraste */
+  --color-card-bg: #2D3748;     /* Fondo ligeramente más claro para las tarjetas, para diferenciar el contenido */
+  --hero-condition: rgb(26, 32, 44); /* Fondo muy oscuro para la sección principal */
 
-  --color-primary: #d4a373;
-  --color-primary-hover: #b8855b;
-  --color-secondary: #c9b8a4;
-  --color-accent: #b23a48;
+  /* Colores Institucionales */
+  --color-primary: #4FD1C5;      /* Verde agua brillante que transmite salud y frescura */
+  --color-primary-hover: #38B2AC;/* Variación más profunda para hover, mantiene consistencia */
+  --color-secondary: #9AE3D4;    /* Azul verde claro para elementos secundarios y más suaves */
+  --color-accent: #F6AD55;       /* Naranja cálido para acentos, destacando botones y acciones */
 
-  --gray-300: #8d8d8d;
+  --gray-300: #718096;           /* Gris medio que funciona bien para separadores y detalles secundarios */
 
-  --glass-bg: rgba(20, 20, 20, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.15);
-  --glass-blur: 10px;
+  /* Efecto Glass */
+  --glass-bg: rgba(0, 0, 0, 0.4);   /* Fondo oscuro y translúcido para crear un efecto glass moderado */
+  --glass-border: rgba(255, 255, 255, 0.1); /* Borde sutil en el glass para contraste */
+  --glass-blur: 10px;           /* Desenfoque más suave para los efectos de glass */
 
-  --header-bg: rgba(30, 30, 30, 0.85);
-  --header-text: #f5e9d7;
-  --header-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+  /* Header */
+  --header-bg: rgba(26, 32, 44, 0.85); /* Fondo oscuro pero ligeramente translúcido para el header */
+  --header-text: #E6E6E6;        /* Texto claro para una mejor visibilidad */
+  --header-box-shadow: 0 2px 12px rgba(0, 0, 0, 0.7); /* Sombra suave para darle profundidad al header */
 
-  --wave-color: #a65d5d;
+  /* Decoración (onda) */
+  --wave-color: #F6AD55;        /* Naranja brillante para las ondas decorativas */
+
+  --transition-speed: 0.3s;
 }
 
 html, body {
@@ -3021,7 +3082,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
       <div className="product-card__info">
         <h3 className="product-card__title">{product.name}</h3>
-        <p className="product-card__price">${product.price.toFixed(2)}</p>
         <Link
           to={`/products/${product.uuid}/${product.slug}`}
           className="btn-primary product-card__button"
@@ -3079,7 +3139,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="footer">
       <p>
-        &copy; {new Date().getFullYear()} liteVibrance. {t('footer_rights', { defaultValue: 'Todos los derechos reservados.' })}
+        &copy; {new Date().getFullYear()} Calm. {t('footer_rights', { defaultValue: 'Todos los derechos reservados.' })}
       </p>
     </footer>
   );
@@ -3437,6 +3497,220 @@ Contenido:
   .floating-theme-switch:active {
     transform: scale(1.1); /* Efecto de "click" expandido */
   }
+}
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/locales/en/translation.json
+
+Contenido:
+{
+  "checkout_success": "Your purchase has been completed successfully!",
+  "checkout": "Checkout",
+  "empty_cart": "Your cart is empty.",
+  "order_summary": "Order Summary",
+  "total": "Total:",
+  "shipping_address": "Shipping Address",
+  "enter_shipping_address": "Enter your address",
+  "phone_number": "Phone Number",
+  "enter_phone_number": "Enter your phone number",
+  "payment_method": "Payment Method",
+  "credit_card": "Credit Card",
+  "paypal": "PayPal",
+  "promo_code": "Promo Code",
+  "enter_promo_code": "Enter your promo code",
+  "complete_purchase": "Complete Purchase",
+  
+  "admin_panel": "Admin Panel",
+  "admin_products": "Products",
+  "manage_products": "Manage Products",
+  "go_to_products": "Go to Products",
+  "admin_orders": "Orders",
+  "manage_orders": "Manage Orders",
+  "go_to_orders": "Go to Orders",
+  "admin_users": "Users",
+  "manage_users": "Manage Users",
+  "go_to_users": "Go to Users",
+  
+  "not_found_title": "Page Not Found",
+  "not_found_message": "The page you are looking for does not exist.",
+  
+  "liteVibrance": "liteVibrance",
+  "home": "Home",
+  "products": "Products",
+  "contact": "Contact",
+  "iniciar_sesion": "Login",
+  "hello": "Hello",
+  "logout": "Logout",
+  
+  "products_catalog": "Products Catalog",
+  "no_products_found": "No products found for",
+  "view_detail": "View Detail",
+  "loading": "Loading...",
+  "product_not_found": "Product not found",
+  "back_to_catalog": "Back to Catalog",
+  
+  "create_account": "Create Account",
+  "signup": "Sign Up",
+  
+  "cart": "Cart",
+  "guest_cart_empty": "Your cart is empty.",
+  "quantity": "Quantity:",
+  "subtotal": "Subtotal:",
+  "remove": "Remove",
+  "empty_cart_button": "Empty Cart",
+  "continue_checkout": "Continue to Checkout",
+  
+  "session_login": "Login",
+  "access": "Access",
+  
+  "grid_view": "Grid View",
+  "list_view": "List View",
+  "detailed_view": "Detailed View",
+  
+  "welcome": "Welcome to liteVibrance",
+  "banner": "Enhance your experience with us.",
+  
+  "premium_home_care_services": "Our Premium Home Care Services",
+  "hide_services": "Hide Services",
+  "explore_services": "Explore Services",
+  "emotional_support": "Emotional and Psychological Support",
+  "emotional_support_description": "We offer emotional and psychological support to both patients and their families to face the challenges of home hospitalization. Individual and group therapies are provided at home.",
+  "physical_rehabilitation": "Physical and Occupational Rehabilitation",
+  "physical_rehabilitation_description": "We offer physical and occupational rehabilitation programs for individuals recovering from surgery or accidents. Our therapists provide personalized sessions at home.",
+  "nursing_services": "Specialized Nursing Services",
+  "nursing_services_description": "Our specialized nursing services include medication administration, wound care, and post-operative follow-up, ensuring the patient receives quality care without needing to travel.",
+  "caregiver_support": "Caregiver Support",
+  "caregiver_support_description": "Our trained caregivers provide both physical and emotional support for elderly individuals, ensuring their well-being at all times. This includes assistance with mobility, personal hygiene, and companionship.",
+  "personalized_medical_care": "Personalized Medical Care",
+  "personalized_medical_care_description": "Our specialized doctors offer comprehensive medical care in the comfort of the home. This includes monitoring vital signs, prescribing medications, and following up on treatments.",
+  
+  "footer_rights": "All rights reserved.",
+  
+  "contact_us": "Contact Us",
+  "contact_us_message": "Feel free to reach out to us with any questions or comments.",
+  "name": "Name",
+  "your_name": "Your Name",
+  "email": "Email",
+  "your_email": "Your Email",
+  "subject": "Subject",
+  "message_subject": "Message Subject",
+  "message": "Message",
+  "your_message": "Your Message",
+  "send_message": "Send Message",
+  "address": "Address",
+  "dummy_address": "123 Main St, City, Country",
+  "phone": "Phone",
+  "dummy_phone": "+1 234 567 890",
+  "dummy_email": "contact@example.com"
+}
+
+
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/locales/es/translation.json
+
+Contenido:
+{
+  "checkout_success": "¡Tu compra ha sido realizada con éxito!",
+  "checkout": "Checkout",
+  "empty_cart": "Tu carrito está vacío.",
+  "order_summary": "Resumen de la Orden",
+  "total": "Total:",
+  "shipping_address": "Dirección de Envío",
+  "enter_shipping_address": "Ingresa tu dirección",
+  "phone_number": "Número de Teléfono",
+  "enter_phone_number": "Ingresa tu teléfono",
+  "payment_method": "Método de Pago",
+  "credit_card": "Tarjeta de Crédito",
+  "paypal": "PayPal",
+  "promo_code": "Código Promocional",
+  "enter_promo_code": "Ingresa tu código",
+  "complete_purchase": "Completar Compra",
+  
+  "admin_panel": "Panel de Administración",
+  "admin_products": "Productos",
+  "manage_products": "Gestiona los productos",
+  "go_to_products": "Ir a Productos",
+  "admin_orders": "Órdenes",
+  "manage_orders": "Gestiona las órdenes",
+  "go_to_orders": "Ir a Órdenes",
+  "admin_users": "Usuarios",
+  "manage_users": "Gestiona los usuarios",
+  "go_to_users": "Ir a Usuarios",
+  
+  "not_found_title": "Página No Encontrada",
+  "not_found_message": "La página que buscas no existe.",
+  
+  "liteVibrance": "liteVibrance",
+  "home": "Inicio",
+  "products": "Productos",
+  "contact": "Contacto",
+  "iniciar_sesion": "Iniciar Sesión",
+  "hello": "Hola",
+  "logout": "Cerrar Sesión",
+  
+  "products_catalog": "Catálogo de Productos",
+  "no_products_found": "No se encontraron productos para",
+  "view_detail": "Ver detalle",
+  "loading": "Cargando...",
+  "product_not_found": "Producto no encontrado",
+  "back_to_catalog": "Volver al Catálogo",
+  
+  "create_account": "Crear Cuenta",
+  "signup": "Registrarse",
+  
+  "cart": "Carrito",
+  "guest_cart_empty": "Tu carrito está vacío.",
+  "quantity": "Cantidad:",
+  "subtotal": "Subtotal:",
+  "remove": "Eliminar",
+  "empty_cart_button": "Vaciar Carrito",
+  "continue_checkout": "Continuar con la Compra",
+  
+  "session_login": "Inicio de Sesión",
+  "access": "Acceder",
+  
+  "grid_view": "Vista de Cuadrícula",
+  "list_view": "Vista de Lista",
+  "detailed_view": "Vista Detallada",
+  
+  "welcome": "Bienvenido a liteVibrance",
+  "banner": "Mejora tu experiencia con nosotros.",
+  
+  "premium_home_care_services": "Nuestros Servicios de Cuidado a Domicilio Premium",
+  "hide_services": "Ocultar Servicios",
+  "explore_services": "Explorar Servicios",
+  "emotional_support": "Apoyo Emocional y Psicológico",
+  "emotional_support_description": "Ofrecemos apoyo emocional y psicológico a pacientes y sus familias para enfrentar los desafíos de la hospitalización a domicilio. Se ofrecen terapias individuales y grupales en el hogar.",
+  "physical_rehabilitation": "Rehabilitación Física y Ocupacional",
+  "physical_rehabilitation_description": "Ofrecemos programas de rehabilitación física y ocupacional para personas que se recuperan de cirugías o accidentes. Nuestros terapeutas brindan sesiones personalizadas en el hogar.",
+  "nursing_services": "Servicios de Enfermería Especializada",
+  "nursing_services_description": "Nuestros servicios de enfermería especializada incluyen administración de medicamentos, cuidado de heridas y seguimiento postoperatorio, asegurando una atención de calidad sin necesidad de desplazarse.",
+  "caregiver_support": "Apoyo a Cuidadores",
+  "caregiver_support_description": "Nuestros cuidadores capacitados brindan apoyo físico y emocional a personas mayores, garantizando su bienestar. Esto incluye asistencia con la movilidad, higiene personal y compañía.",
+  "personalized_medical_care": "Atención Médica Personalizada",
+  "personalized_medical_care_description": "Nuestros médicos especializados ofrecen atención médica integral en el hogar. Esto incluye el monitoreo de signos vitales, prescripción de medicamentos y seguimiento de tratamientos.",
+  
+  "footer_rights": "Todos los derechos reservados.",
+  
+  "contact_us": "Contáctanos",
+  "contact_us_message": "No dudes en contactarnos con cualquier pregunta o comentario.",
+  "name": "Nombre",
+  "your_name": "Tu nombre",
+  "email": "Correo Electrónico",
+  "your_email": "Tu correo electrónico",
+  "subject": "Asunto",
+  "message_subject": "Asunto del mensaje",
+  "message": "Mensaje",
+  "your_message": "Tu mensaje",
+  "send_message": "Enviar Mensaje",
+  "address": "Dirección",
+  "dummy_address": "Calle Principal 123, Ciudad, País",
+  "phone": "Teléfono",
+  "dummy_phone": "+34 123 456 789",
+  "dummy_email": "contacto@ejemplo.com"
 }
 
 

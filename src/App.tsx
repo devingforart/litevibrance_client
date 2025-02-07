@@ -16,6 +16,7 @@ import FloatingThemeSwitch from './components/ThemeSwitch/FloatingThemeSwitch';
 import Notification from './components/Notification/Notification'; // Importamos el componente de notificaciones
 import './components/sass/global.scss';
 import Contact from './components/Contact/Contact';
+import Services from './components/Services/Services';
 
 const App: React.FC = () => {
   return (
@@ -34,13 +35,14 @@ const App: React.FC = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/contact" element={<Contact />} /> 
+          <Route path="/services" element={<Services />} /> 
 
           <Route path="*" element={<NotFound />} />
         </Routes>
 
       </main>
-      <Footer />
-      <Notification /> {/* Aquí se renderizan las notificaciones */}
+{/*       <Footer />
+ */}      <Notification /> {/* Aquí se renderizan las notificaciones */}
     </div>
   );
 };
