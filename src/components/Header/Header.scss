@@ -23,7 +23,7 @@
     .brand__logo {
       position: relative;
       top: 10px;
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: bold;
       color: var(--color-primary); /* Rojo intenso */
       letter-spacing: 2px;
@@ -80,7 +80,8 @@
 
       .nav__item {
         .nav__link {
-          font-size: 1.2rem;
+          top: 5px;
+          font-size: 1.0rem;
           color: var(--color-secondary);
           text-decoration: none;
           transition: color 0.2s ease;
