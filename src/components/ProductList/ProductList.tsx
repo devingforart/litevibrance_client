@@ -88,7 +88,6 @@ const ProductList: React.FC = () => {
                         <p>{product.description}</p>
                         <Link
                           to={`/products/${product.uuid}/${product.slug}`}
-                          className="btn-primary"
                         >
                           {t('view_detail')}
                         </Link>

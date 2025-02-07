@@ -97,5 +97,6 @@
   "dummy_address": "123 Main St, City, Country",
   "phone": "Phone",
   "dummy_phone": "+1 234 567 890",
-  "dummy_email": "contact@example.com"
+  "dummy_email": "contact@example.com",
+  "our_services" : "Our services"
 }

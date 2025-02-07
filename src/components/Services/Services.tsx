@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './Services.scss';
 
@@ -54,23 +53,16 @@ const Services: React.FC = () => {
   ];
 
   // Lógica para mostrar todos los servicios o solo algunos
-  const [showAll, setShowAll] = useState(true);
-  const toggleServices = () => {
-    setShowAll((prev) => !prev);
-  };
-  const servicesToDisplay = showAll ? servicesData : servicesData.slice(0, 2);
+
+  const servicesToDisplay =  servicesData
 
   return (
     <section className="services">
       <div className="services__header">
         <h2 className="services__title">
-          {t('our_services', { defaultValue: 'Our Services' })}
+          {t('our_services', { defaultValue: '' })}
         </h2>
-        <button className="services__toggle" onClick={toggleServices}>
-          {showAll
-            ? t('show_less', { defaultValue: 'Show Less' })
-            : t('show_more', { defaultValue: 'Show More' })}
-        </button>
+
       </div>
       <div className="services__grid">
         {servicesToDisplay.map((service, index) => (

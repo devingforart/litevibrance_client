@@ -97,5 +97,6 @@
   "dummy_address": "Calle Principal 123, Ciudad, País",
   "phone": "Teléfono",
   "dummy_phone": "+34 123 456 789",
-  "dummy_email": "contacto@ejemplo.com"
+  "dummy_email": "contacto@ejemplo.com",
+  "our_services": "Nuestros servicios"
 }
