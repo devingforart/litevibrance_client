@@ -10,8 +10,8 @@ import { useTranslation } from 'react-i18next';
 const navLinks = [
   { name: 'home', path: '/' },
   { name: 'products', path: '/products' },
-  { name: 'cart', path: '/cart' },
-  { name: 'contact', path: '/contact' }
+/*   { name: 'cart', path: '/cart' },
+ */  { name: 'contact', path: '/contact' }
 ];
 
 const Header: React.FC = () => {

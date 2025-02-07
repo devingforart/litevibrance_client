@@ -1,4 +1,3 @@
-// src/components/Home/Home.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -9,15 +8,8 @@ const Home: React.FC = () => {
 
   return (
     <main className="home">
-      {/* Sección Hero con video de fondo */}
+      {/* Sección HERO – Bienvenida con fondo degradado sutil en light mode */}
       <section className="hero">
-        <div className="hero__video-wrapper">
-          <video className="hero__video" autoPlay muted loop>
-            <source src="/assets/videos/hero-video.mp4" type="video/mp4" />
-            {t('video_not_supported')}
-          </video>
-          <div className="hero__overlay"></div>
-        </div>
         <div className="hero__content container">
           <h1 className="hero__title animate__animated animate__fadeInDown">
             {t('welcome')}
@@ -25,65 +17,74 @@ const Home: React.FC = () => {
           <p className="hero__subtitle animate__animated animate__fadeInUp">
             {t('banner')}
           </p>
-          <Link to="/products" className="btn btn-primary animate__animated animate__zoomIn">
-            {t('products')}
+          <Link 
+            to="/services" 
+            className="btn btn-primary animate__animated animate__zoomIn"
+          >
+            {t('explore_services')}
           </Link>
         </div>
       </section>
 
-      {/* Sección de Colecciones Destacadas */}
-      <section className="collection-showcase container animate__animated animate__fadeInUp">
-        <h2 className="section-title">{t('featured_collection')}</h2>
-        <div className="collection-gallery">
-          <div className="gallery-item">
-            <img src="/assets/images/collection1.jpg" alt={t('collection1_alt')} />
-            <div className="gallery-overlay">
-              <h3>{t('collection1_title')}</h3>
-              <Link to="/products" className="btn btn-secondary">
-                {t('view_collection')}
-              </Link>
-            </div>
+      {/* Sección SOBRE NOSOTROS */}
+      <section className="about container">
+        <h2 className="about__title">{t('about_us_title')}</h2>
+        <p className="about__description">{t('about_us_text')}</p>
+        <Link to="/about" className="btn btn-secondary">
+          {t('learn_more')}
+        </Link>
+      </section>
+
+      {/* Sección VALORES – Nuestro compromiso con la atención personalizada */}
+      <section className="values container">
+        <h2 className="values__title">Nuestro Compromiso</h2>
+        <p className="values__description">
+          En Internación Domiciliaria, nuestra prioridad es el cuidado integral de la persona. Creemos que cada ser humano merece un trato personalizado, respetuoso y lleno de empatía, que se refleje en cada acción y servicio que brindamos.
+        </p>
+        <p className="values__description">
+          Nuestro equipo de profesionales está comprometido con la excelencia, combinando experiencia médica y humana para asegurar el bienestar de nuestros pacientes. Trabajamos día a día para crear un ambiente seguro, cálido y lleno de valores, donde la dignidad y la calidad de vida son el centro de nuestra atención.
+        </p>
+      </section>
+
+      {/* Sección SERVICIOS */}
+      <section className="services container">
+        <h2 className="section-title">{t('featured_services')}</h2>
+        <div className="services__grid">
+          <div className="service-card">
+            <h3 className="service-card__title">{t('service1_title')}</h3>
+            <p className="service-card__description">
+              {t('service1_description')}
+            </p>
+            <Link to="/services/service1" className="btn btn-secondary">
+              {t('view_details')}
+            </Link>
           </div>
-          <div className="gallery-item">
-            <img src="/assets/images/collection2.jpg" alt={t('collection2_alt')} />
-            <div className="gallery-overlay">
-              <h3>{t('collection2_title')}</h3>
-              <Link to="/products" className="btn btn-secondary">
-                {t('view_collection')}
-              </Link>
-            </div>
+          <div className="service-card">
+            <h3 className="service-card__title">{t('service2_title')}</h3>
+            <p className="service-card__description">
+              {t('service2_description')}
+            </p>
+            <Link to="/services/service2" className="btn btn-secondary">
+              {t('view_details')}
+            </Link>
           </div>
-          <div className="gallery-item">
-            <img src="/assets/images/collection3.jpg" alt={t('collection3_alt')} />
-            <div className="gallery-overlay">
-              <h3>{t('collection3_title')}</h3>
-              <Link to="/products" className="btn btn-secondary">
-                {t('view_collection')}
-              </Link>
-            </div>
+          <div className="service-card">
+            <h3 className="service-card__title">{t('service3_title')}</h3>
+            <p className="service-card__description">
+              {t('service3_description')}
+            </p>
+            <Link to="/services/service3" className="btn btn-secondary">
+              {t('view_details')}
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Sección Sobre Nosotros */}
-      <section className="about-us container animate__animated animate__fadeInUp">
-        <div className="about-content">
-          <h2>{t('about_us_title')}</h2>
-          <p>{t('about_us_text')}</p>
-          <Link to="/about" className="btn btn-outline">
-            {t('learn_more')}
-          </Link>
-        </div>
-        <div className="about-image">
-          <img src="/assets/images/about-us.jpg" alt={t('about_us_alt')} />
-        </div>
-      </section>
-
-      {/* Sección de Llamado a la Acción (CTA) */}
-      <section className="cta container animate__animated animate__fadeInUp">
+      {/* Sección CTA */}
+      <section className="cta container">
         <h2 className="cta__title">{t('cta_title')}</h2>
         <p className="cta__text">{t('cta_text')}</p>
-        <Link to="/contact" className="btn btn-secondary">
+        <Link to="/contact" className="btn btn-primary">
           {t('cta_button')}
         </Link>
       </section>

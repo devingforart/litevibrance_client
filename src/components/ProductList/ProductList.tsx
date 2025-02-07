@@ -21,7 +21,7 @@ const ProductSkeleton = () => (
 const ProductList: React.FC = () => {
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('search') || '';
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [viewMode, setViewMode] = useState<ViewMode>('detailed');
   const { t } = useTranslation();
 
   const normalizeString = (str: string) =>
