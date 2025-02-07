@@ -86,7 +86,6 @@ const Services: React.FC = () => {
       <div className="services__cards">
         {servicesData.map((service, index) => (
           <div className="service-card" key={index}>
-            <div className="service-card__icon">{service.icon}</div>
             <h3 className="service-card__title">{service.title}</h3>
             <p className="service-card__description">{service.description}</p>
             <button className="service-card__cta">{t('learn_more', { defaultValue: 'Saber más' })}</button>
