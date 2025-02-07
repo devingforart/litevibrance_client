@@ -1,6 +1,6 @@
 /* src/components/sass/global.scss */
 /* ------------------------------------------------------
-   global.scss – Variables y estilos base para litevibrance
+   global.scss – Variables y estilos base para tu página de medicina
    ------------------------------------------------------ */
 
 /* Importación de Google Fonts */
@@ -11,6 +11,7 @@ main {
   margin-top: 100px;
   flex: 1;
 }
+
 html, body {
   height: 100%;
   margin: 0;
@@ -22,58 +23,59 @@ html, body {
   box-sizing: border-box;
 }
 
-/* Variables para modo claro */
+/* VARIABLES PARA MODO CLARO – Inspiración Médica sin verdes */
 :root {
-  /* Paleta de colores para litevibrance */
-  --color-bg: #ffffff;
-  --color-text: #212121;
-  --color-card-bg: #f9f9f9;
+  /* Fondos y textos */
+  --color-bg: #ffffff;           /* Fondo blanco puro, emana limpieza y profesionalidad */
+  --color-text: #343a40;         /* Texto en gris oscuro para excelente legibilidad */
+  --color-card-bg: #f8f9fa;      /* Tarjetas con fondo gris muy claro para destacar el contenido */
 
-  --color-primary: #C62828;       /* Rojo intenso */
-  --color-primary-hover: #B71C1C;  
-  --color-secondary: #212121;       /* Negro/dark gray */
-  --color-accent: #FFD600;          /* Amarillo vibrante */
-  
-  --gray-300: #bdbdbd;
+  /* Colores Institucionales */
+  --color-primary: #007bff;      /* Azul brillante, clásico en entornos de salud por transmitir confianza */
+  --color-primary-hover: #0056b3;/* Azul más oscuro para efectos hover */
+  --color-secondary: #6c757d;    /* Gris medio para elementos secundarios */
+  --color-accent: #6f42c1;       /* Acénto púrpura para detalles, que añade un toque moderno sin recurrir al verde */
 
-  /* Efecto glass actualizado */
-  --glass-bg: rgba(255, 255, 255, 0.8);
-  --glass-border: rgba(255, 255, 255, 0.9);
+  --gray-300: #dee2e6;           /* Gris muy claro para separadores y detalles sutiles */
+
+  /* Efecto Glass */
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.95);
   --glass-blur: 8px;
 
   /* Header */
-  --header-bg: rgba(255, 255, 255, 0.95);
-  --header-text: #212121;
+  --header-bg: rgba(255, 255, 255, 0.97);
+  --header-text: #343a40;
   --header-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
   /* Decoración (onda) */
-  --wave-color: #C62828;
-  
+  --wave-color: #6f42c1;
+
   --transition-speed: 0.3s;
 }
 
-/* Variables para modo oscuro */
+/* VARIABLES PARA MODO OSCURO – Se mantiene la versión que te gustó */
 :root[data-theme='dark'] {
-  --color-bg: #212121;
-  --color-text: #f2f2f2;
-  --color-card-bg: #2c2c2c;
+  --color-bg: #322f2f;
+  --color-text: #f5e9d7;
+  --color-card-bg: #3d3937;
 
-  --color-primary: #EF5350;
-  --color-primary-hover: #E53935;
-  --color-secondary: #f2f2f2;
-  --color-accent: #FFD600;
-  
-  --gray-300: #888;
+  --color-primary: #d4a373;
+  --color-primary-hover: #b8855b;
+  --color-secondary: #c9b8a4;
+  --color-accent: #b23a48;
 
-  --glass-bg: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.2);
+  --gray-300: #8d8d8d;
+
+  --glass-bg: rgba(20, 20, 20, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.15);
   --glass-blur: 10px;
 
-  --header-bg: rgba(0, 0, 0, 0.8);
-  --header-text: #f2f2f2;
-  --header-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  --header-bg: rgba(30, 30, 30, 0.85);
+  --header-text: #f5e9d7;
+  --header-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
 
-  --wave-color: #EF5350;
+  --wave-color: #a65d5d;
 }
 
 html, body {

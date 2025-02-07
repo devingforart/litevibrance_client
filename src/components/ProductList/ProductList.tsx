@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+// src/components/ProductList/ProductList.tsx
+import React, { useState } from 'react';
 import './ProductList.scss';
 import { Link, useSearchParams } from 'react-router-dom';
 import ProductCard from '../ProductCard/ProductCard';
 import ProductListItem from '../ProductListItem/ProductListItem';
 import ViewSwitcher, { ViewMode } from '../ViewSwitcher/ViewSwitcher';
-import { Product } from '../../data/products';
+import { dummyProducts } from '../../data/products';
 import { useTranslation } from 'react-i18next';
 
 const ProductSkeleton = () => (
@@ -21,33 +22,13 @@ const ProductList: React.FC = () => {
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('search') || '';
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
-  const [loading, setLoading] = useState(true);
-  const [products, setProducts] = useState<Product[]>([]);
   const { t } = useTranslation();
-
-  useEffect(() => {
-    setLoading(true);
-    fetch(`${import.meta.env.VITE_API_URL}/api/products`)
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`Error HTTP: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data: Product[]) => {
-        setProducts(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error al obtener productos:', err);
-        setLoading(false);
-      });
-  }, []);
 
   const normalizeString = (str: string) =>
     str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
-  const filteredProducts = products.filter((product) =>
+  // Filtramos los productos según la búsqueda usando dummyProducts
+  const filteredProducts = dummyProducts.filter((product) =>
     normalizeString(product.name).includes(normalizeString(searchQuery))
   );
 
@@ -63,7 +44,8 @@ const ProductList: React.FC = () => {
         </p>
       ) : (
         <>
-          {loading ? (
+          {/* Si en algún momento necesitas mostrar un skeleton de carga, puedes habilitar la variable loading */}
+          {false ? (
             <div className="product-list__grid">
               {Array(8)
                 .fill(0)
@@ -75,27 +57,28 @@ const ProductList: React.FC = () => {
             <>
               {viewMode === 'grid' && (
                 <div className="product-list__grid">
-                  {(searchQuery ? filteredProducts : products).map((product) => (
+                  {(searchQuery ? filteredProducts : dummyProducts).map((product) => (
                     <ProductCard key={product.uuid} product={product} />
                   ))}
                 </div>
               )}
               {viewMode === 'list' && (
                 <div className="product-list__list">
-                  {(searchQuery ? filteredProducts : products).map((product) => (
+                  {(searchQuery ? filteredProducts : dummyProducts).map((product) => (
                     <ProductListItem key={product.uuid} product={product} />
                   ))}
                 </div>
               )}
               {viewMode === 'detailed' && (
                 <div className="product-list__detailed">
-                  {(searchQuery ? filteredProducts : products).map((product) => (
+                  {(searchQuery ? filteredProducts : dummyProducts).map((product) => (
                     <div key={product.uuid} className="product-detail">
                       <div className="image-wrapper">
                         <img
                           src={
-                            product.photos?.[0] ||
-                            'https://via.placeholder.com/600x400?text=No+Image'
+                            product.photos && product.photos.length > 0
+                              ? product.photos[0]
+                              : 'https://via.placeholder.com/600x400?text=No+Image'
                           }
                           alt={product.name}
                         />
@@ -103,7 +86,6 @@ const ProductList: React.FC = () => {
                       <div className="info">
                         <h3>{product.name}</h3>
                         <p>{product.description}</p>
-                        <p className="price">${product.price.toFixed(2)}</p>
                         <Link
                           to={`/products/${product.uuid}/${product.slug}`}
                           className="btn-primary"

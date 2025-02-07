@@ -26,7 +26,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
       <div className="product-card__info">
         <h3 className="product-card__title">{product.name}</h3>
-        <p className="product-card__price">${product.price.toFixed(2)}</p>
         <Link
           to={`/products/${product.uuid}/${product.slug}`}
           className="btn-primary product-card__button"

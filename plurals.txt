@@ -1,103 +1,155 @@
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Checkout/Checkout.scss
 
 Contenido:
-/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/Checkout/Checkout.scss */
-/* Quitamos: @use "../sass/_colors.scss" as c; */
+/* src/components/Checkout/Checkout.scss */
 .checkout {
   margin-top: 2rem;
   animation: fadeIn 0.6s ease forwards;
 
   h2 {
     text-align: center;
-    font-size: 2rem;
-    /* Antes: color: c.$secondary-color; */
-    color: var(--color-secondary);
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-    margin-bottom: 2rem;
+    font-size: 2.2rem;
+    color: var(--color-primary);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 1.5rem;
     opacity: 0;
     animation: slideDown 0.7s ease forwards;
   }
 
+  &__content {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* Resumen de la orden */
+  &__summary {
+    flex: 1;
+    max-width: 400px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    animation: fadeUp 0.6s ease forwards;
+    
+    h3 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: var(--color-secondary);
+    }
+    
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1rem 0;
+      
+      li {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--gray-300);
+        
+        .item-name {
+          font-weight: 600;
+          color: var(--color-secondary);
+        }
+        .item-quantity,
+        .item-total {
+          font-weight: 500;
+          color: var(--color-text);
+        }
+      }
+    }
+    
+    .checkout__total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      padding-top: 0.5rem;
+    }
+  }
+
+  /* Formulario de checkout */
   &__form {
+    flex: 1;
+    max-width: 500px;
     background: var(--glass-bg);
     backdrop-filter: blur(var(--glass-blur));
     border: 1px solid var(--glass-border);
     border-radius: 8px;
     padding: 2rem;
-    max-width: 600px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    opacity: 0;
-    transform: translateY(10px);
-    animation: fadeUp 0.6s ease forwards 0.4s;
-
-    label {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    animation: fadeUp 0.6s ease forwards;
+    
+    .form-group {
       display: flex;
       flex-direction: column;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-      /* c.$text-color -> var(--color-text) */
-      color: var(--color-text);
-
+      margin-bottom: 1.2rem;
+      
+      label {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--color-secondary);
+      }
+      
       input,
       select {
-        margin-top: 0.5rem;
-        padding: 0.75rem;
-        /* c.$gray-300 -> var(--gray-300) */
+        padding: 0.8rem;
         border: 1px solid var(--gray-300);
         border-radius: 4px;
-        outline: none;
-        background: rgba(255,255,255,0.2);
+        background: rgba(255, 255, 255, 0.7);
         color: var(--color-text);
         transition: border-color 0.3s, box-shadow 0.3s;
-
+        
         &:focus {
-          /* c.$accent-color -> var(--color-accent) */
           border-color: var(--color-accent);
-          box-shadow: 0 0 6px rgba(16,185,129, 0.3);
+          box-shadow: 0 0 6px rgba(255, 214, 0, 0.5);
         }
       }
     }
-
-    .btn-primary {
+    
+    button {
+      width: 100%;
       margin-top: 1rem;
-      align-self: center;
+      padding: 0.8rem;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 6px;
+      background-color: var(--color-primary);
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+      
+      &:hover {
+        background-color: var(--color-primary-hover);
+        transform: translateY(-3px);
+      }
+      
+      &:active {
+        transform: scale(0.98);
+      }
     }
   }
 }
 
-/* Animaciones keyframes */
+/* Animaciones */
 @keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
+  to { opacity: 1; }
 }
 
 @keyframes slideDown {
-  0% {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  0% { transform: translateY(-20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
 }
 
 @keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsividad */
-@media (max-width: 768px) {
-  .checkout__form {
-    padding: 1.5rem;
-  }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 
@@ -106,7 +158,8 @@ Contenido:
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Checkout/Checkout.tsx
 
 Contenido:
-import React from 'react';
+// src/components/Checkout/Checkout.tsx
+import React, { useState } from 'react';
 import './Checkout.scss';
 import { useCart } from '../../context/CartContext';
 import { useNotification } from '../../context/NotificationContext';
@@ -117,46 +170,120 @@ const Checkout: React.FC = () => {
   const { addNotification } = useNotification();
   const { t } = useTranslation();
 
+  // Estados para el formulario
+  const [shippingAddress, setShippingAddress] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('creditCard');
+  const [promoCode, setPromoCode] = useState('');
+
+  const totalPrice = cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    addNotification(t('purchase_success'), 'success');
+    // Aquí podrías validar el formulario, aplicar el código promocional, etc.
+    addNotification(
+      t('checkout_success', { defaultValue: '¡Tu compra ha sido realizada con éxito!' }),
+      'success'
+    );
     clear();
   };
 
-  const totalPrice = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  if (cartItems.length === 0) {
+    return (
+      <div className="checkout container">
+        <h2>{t('checkout', { defaultValue: 'Checkout' })}</h2>
+        <p>{t('empty_cart', { defaultValue: 'Tu carrito está vacío.' })}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="checkout container">
-      <h2>{t('payment_process')}</h2>
-      {cartItems.length === 0 ? (
-        <p>{t('empty_cart')}</p>
-      ) : (
-        <form className="checkout__form" onSubmit={handleSubmit}>
-          <div className="checkout__summary">
-            <h3>{t('order_summary')}</h3>
-            <ul>
-              {cartItems.map(item => (
-                <li key={item.product_uuid}>
-                  {item.name} x {item.quantity} - ${ (item.price * item.quantity).toFixed(2) }
-                </li>
-              ))}
-            </ul>
-            <p>{t('total')} {`$${totalPrice.toFixed(2)}`}</p>
+      <h2>{t('checkout', { defaultValue: 'Checkout' })}</h2>
+      <div className="checkout__content">
+        {/* Resumen de la Orden */}
+        <div className="checkout__summary">
+          <h3>{t('order_summary', { defaultValue: 'Resumen de la Orden' })}</h3>
+          <ul>
+            {cartItems.map((item) => (
+              <li key={item.product_uuid}>
+                <span className="item-name">{item.name}</span>
+                <span className="item-quantity">x{item.quantity}</span>
+                <span className="item-total">${(item.price * item.quantity).toFixed(2)}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="checkout__total">
+            <span>{t('total', { defaultValue: 'Total:' })}</span>
+            <span>${totalPrice.toFixed(2)}</span>
           </div>
-          <label>
-            {t('shipping_address')}
-            <input type="text" name="address" required />
-          </label>
-          <label>
-            {t('payment_method')}
-            <select name="paymentMethod">
-              <option value="creditCard">{t('credit_card')}</option>
-              <option value="paypal">{t('paypal')}</option>
+        </div>
+
+        {/* Formulario de Checkout */}
+        <form className="checkout__form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="shippingAddress">
+              {t('shipping_address', { defaultValue: 'Dirección de Envío' })}
+            </label>
+            <input
+              type="text"
+              id="shippingAddress"
+              value={shippingAddress}
+              onChange={(e) => setShippingAddress(e.target.value)}
+              placeholder={t('enter_shipping_address', { defaultValue: 'Ingresa tu dirección' })}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="phoneNumber">
+              {t('phone_number', { defaultValue: 'Número de Teléfono' })}
+            </label>
+            <input
+              type="tel"
+              id="phoneNumber"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              placeholder={t('enter_phone_number', { defaultValue: 'Ingresa tu teléfono' })}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="paymentMethod">
+              {t('payment_method', { defaultValue: 'Método de Pago' })}
+            </label>
+            <select
+              id="paymentMethod"
+              value={paymentMethod}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            >
+              <option value="creditCard">
+                {t('credit_card', { defaultValue: 'Tarjeta de Crédito' })}
+              </option>
+              <option value="paypal">
+                {t('paypal', { defaultValue: 'PayPal' })}
+              </option>
             </select>
-          </label>
-          <button type="submit" className="btn-primary">{t('finish_purchase')}</button>
+          </div>
+          <div className="form-group">
+            <label htmlFor="promoCode">
+              {t('promo_code', { defaultValue: 'Código Promocional' })}
+            </label>
+            <input
+              type="text"
+              id="promoCode"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value)}
+              placeholder={t('enter_promo_code', { defaultValue: 'Ingresa tu código' })}
+            />
+          </div>
+          <button type="submit" className="btn-primary">
+            {t('complete_purchase', { defaultValue: 'Completar Compra' })}
+          </button>
         </form>
-      )}
+      </div>
     </div>
   );
 };
@@ -360,9 +487,9 @@ export default NotFound;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Header/Header.tsx
 
 Contenido:
+// src/components/Header/Header.tsx
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaSearch } from 'react-icons/fa';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import './Header.scss';
@@ -378,7 +505,6 @@ const navLinks = [
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const { cartItems } = useCart();
   const { isAuthenticated, login, logout, user } = useAuth();
@@ -387,20 +513,10 @@ const Header: React.FC = () => {
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.classList.add('no-scroll');
-    } else {
-      document.body.classList.remove('no-scroll');
-    }
+    document.body.classList.toggle('no-scroll', isOpen);
   }, [isOpen]);
 
   const toggleMenu = () => setIsOpen(!isOpen);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    navigate(`/products?search=${encodeURIComponent(searchTerm.trim())}`);
-    setSearchTerm('');
-  };
 
   return (
     <header className="header">
@@ -409,33 +525,15 @@ const Header: React.FC = () => {
           <span className="brand__logo">{t('liteVibrance')}</span>
         </Link>
       </div>
-
-      <div className="header__center">
-        <form className="header__search" onSubmit={handleSearch}>
-          <input
-            type="text"
-            placeholder={t('search_placeholder')}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button type="submit">
-            <FaSearch />
-          </button>
-        </form>
-      </div>
-
       <div className="header__toggle" onClick={toggleMenu}>
         {isOpen ? '✕' : '☰'}
       </div>
-
       <nav className={`header__nav ${isOpen ? 'open' : ''}`}>
         <ul className="nav__list">
-          {/* El LanguageSwitcher se muestra siempre */}
           <li className="nav__item">
             <LanguageSwitcher />
           </li>
-
-          {navLinks.map((link) => (
+          {navLinks.map(link => (
             <li key={link.name} className="nav__item">
               <Link
                 to={link.path}
@@ -449,7 +547,6 @@ const Header: React.FC = () => {
               </Link>
             </li>
           ))}
-
           {!isAuthenticated ? (
             <li className="nav__item">
               <Link
@@ -488,10 +585,9 @@ const Header: React.FC = () => {
           )}
         </ul>
       </nav>
-
       <div className="header__wave">
         <svg viewBox="0 0 500 80" preserveAspectRatio="none">
-          <path d="M0,30 C150,90 350,0 500,30 L500,00 L0,0 Z" />
+          <path d="M0,30 C150,90 350,0 500,30 L500,0 L0,0 Z" />
         </svg>
       </div>
     </header>
@@ -507,8 +603,6 @@ export default Header;
 
 Contenido:
 /* src/components/Header/Header.scss */
-
-/* Evitar scroll cuando menú está abierto (móvil) */
 .no-scroll {
   overflow: hidden;
 }
@@ -517,202 +611,131 @@ Contenido:
   position: fixed;
   top: 0;
   width: 100%;
-  height: 65px;
   background: var(--header-bg);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 0 1.5rem;
+  height: 70px;
   z-index: 1000;
   box-shadow: var(--header-box-shadow);
-  transition: all 0.3s ease-in-out;
-  background-color: var(--header-box-shadow);
-}
+  transition: all 0.3s ease;
 
-.header__brand {
-  .brand__logo {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--header-text);
-    text-decoration: none;
-  }
-}
-
-.header__toggle {
-  display: none;
-  font-size: 1.6rem;
-  color: var(--header-text);
-  cursor: pointer;
-  z-index: 1100;
-
-  @media (max-width: 768px) {
-    display: block;
-  }
-}
-
-/* Reestructuramos para evitar "mixed declarations" */
-.header__nav {
-  /* Declaraciones principales primero */
-  position: fixed;
-  top: 65px;
-  left: 0;
-  width: 100%;
-  height: calc(100vh - 65px);
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
-  transform: translateX(-100%);
-  transition: transform 0.3s ease-in-out;
-  overflow-y: auto;
-
-  /* Luego la regla @media */
-  @media (min-width: 769px) {
-    ul {
-      display: flex;
-      gap: 2rem;
-    }
-  }
-
-  &.open {
-    transform: translateX(0);
-  }
-
-  .nav__list {
-    list-style: none;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .nav__item {
-    margin: 1rem 0;
-    .nav__link {
-      font-size: 1.2rem;
-      color: var(--header-text);
-      text-decoration: none;
-      transition: color 0.2s ease;
+  /* El logo en el lado izquierdo */
+  &__brand {
+    .brand__logo {
+      position: relative;
+      top: 10px;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--color-primary); /* Rojo intenso */
+      letter-spacing: 2px;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+      /* Se mantiene sin cambio brusco en hover */
       &:hover {
-        color: var(--color-primary);
+        opacity: 0.9;
       }
     }
   }
 
-  /* Ajustes para pantallas grandes */
-  @media (min-width: 769px) {
-    position: static;
-    transform: none;
-    background: transparent;
-    backdrop-filter: none;
-    width: auto;
-    height: auto;
-    overflow: visible;
-    display: flex;
-    align-items: center;
+  /* Toggle para móviles */
+  &__toggle {
+    display: none;
+    font-size: 2rem;
+    color: var(--color-primary);
+    cursor: pointer;
+    @media (max-width: 768px) {
+      display: block;
+    }
+  }
+
+  /* Navegación */
+  &__nav {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 70px);
+    background: var(--header-bg);
+    backdrop-filter: blur(8px);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    overflow-y: auto;
+
+    &.open {
+      transform: translateX(0);
+    }
 
     .nav__list {
-      flex-direction: row;
-      padding: 0;
+      list-style: none;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-top: 20px;
+
+      /* Para dispositivos de escritorio se reorganiza a la derecha */
+      @media (min-width: 1024px) {
+        flex-direction: row;
+        justify-content: flex-end;
+        padding: 0;
+        gap: 3rem;
+      }
+
       .nav__item {
-        margin: 0;
         .nav__link {
-          font-size: 1rem;
+          font-size: 1.2rem;
+          color: var(--color-secondary);
+          text-decoration: none;
+          transition: color 0.2s ease;
+          position: relative;
+          &:hover {
+            color: var(--color-primary);
+          }
+          .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background: var(--color-primary);
+            color: #fff;
+            border-radius: 50%;
+            padding: 0.2rem 0.4rem;
+            font-size: 0.75rem;
+          }
         }
       }
     }
+
+    @media (min-width: 1024px) {
+      position: static;
+      transform: none;
+      background: transparent;
+      backdrop-filter: none;
+      height: auto;
+      overflow: visible;
+      /* Se coloca a la derecha con margin-left automático */
+      margin-left: auto;
+    }
   }
-}
 
-/* Onda decorativa */
-.header__wave {
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 100%;
-  height: 80px;
-  z-index: -1;
-  overflow: hidden;
-
-  svg {
+  &__wave {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
     width: 100%;
-    height: 100%;
-    fill: var(--wave-color);
-    transition: fill 0.3s;
-  }
-
-  @media (max-width: 768px) {
+    height: 80px;
+    z-index: -1;
     display: none;
+    @media (min-width: 1024px) {
+      display: block;
+      svg {
+        width: 100%;
+        height: 100%;
+        fill: var(--wave-color);
+      }
+    }
   }
 }
-
-
-
-/* ... estilos previos ... */
-
-.header__center {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 85px; /* Ajustado para evitar solapamiento */
-  width: 100%;
-  max-width: 500px;
-}
-
-.header__search {
-  display: flex;
-  align-items: center;
-  background-color: #fff;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: relative;
-
-  input {
-    border: none;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    outline: none;
-    width: 600px;
-  }
-
-  button {
-    background-color: var(--color-primary);
-    border: none;
-    padding: 0.5rem;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color var(--transition-speed);
-  }
-
-  button:hover {
-    background-color: var(--color-primary-hover);
-  }
-
-  svg {
-    font-size: 1.2rem;
-  }
-}
-.cart-badge {
-  background-color: var(--color-primary);
-  color: #fff;
-  border-radius: 50%;
-  font-size: 0.7rem;
-  padding: 0.2rem 0.4rem;
-  margin-left: 0.5rem;
-  display: inline-block;
-  min-width: 20px;
-  text-align: center;
-}
-
-/* Ocultar la marca en mobile para evitar conflictos con el buscador */
-@media (max-width: 768px) {
-  .header__brand {
-    display: none;
-  }
-}
-
 
 
 --------------------------------------------------------------------------------
@@ -738,7 +761,6 @@ Contenido:
     }
   }
 
-  /* Las definiciones anteriores para grid, list y detailed se mantienen */
   &__grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -752,89 +774,166 @@ Contenido:
   }
 
   &__detailed {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
+    /* Para pantallas grandes, cada producto ocupa el alto completo de la ventana */
+    height: 100vh;
+    scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch;
 
-  .product-list__detailed-item {
-    display: flex;
-    background-color: var(--color-card-bg);
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: var(--card-shadow);
-    transition: box-shadow 0.3s ease;
-
-    &:hover {
-      box-shadow: var(--card-shadow-hover);
-    }
-
-    img {
-      width: 200px;
-      height: auto;
-      object-fit: cover;
-    }
-
-    .detailed-info {
-      padding: 1rem;
+    .product-detail {
+      scroll-snap-align: start;
+      height: 100vh;
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      flex-direction: row;
+      background-color: var(--color-card-bg);
 
-      h3 {
-        margin: 0;
-        color: var(--color-text);
+      .image-wrapper {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.3s ease;
+          &:hover {
+            transform: scale(1.05);
+          }
+        }
       }
-      p {
-        margin: 0.5rem 0;
-      }
-      .description {
-        font-size: 0.9rem;
-        color: var(--color-text);
-        opacity: 0.8;
-      }
-      a.btn-primary {
-        align-self: flex-start;
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
+
+      .info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        text-align: center;
+
+        h3 {
+          font-size: 2rem;
+          color: var(--color-text);
+          margin-bottom: 10px;
+        }
+        p {
+          font-size: 1.2rem;
+          color: var(--color-text-secondary);
+          margin-bottom: 10px;
+        }
+        .price {
+          font-size: 1.8rem;
+          font-weight: 600;
+          color: var(--color-primary);
+          margin-bottom: 20px;
+        }
+        .btn-primary {
+          background-color: var(--color-primary);
+          color: var(--color-accent);
+          padding: 10px 20px;
+          border-radius: 6px;
+          font-size: 1rem;
+          text-decoration: none;
+          transition: background-color 0.3s ease, transform 0.3s ease;
+
+          &:hover {
+            background-color: var(--color-primary-hover);
+            transform: scale(1.05);
+          }
+          &:active {
+            transform: scale(0.98);
+          }
+        }
       }
     }
   }
 }
+
+// Media query para dispositivos con ancho hasta 768px
+@media (max-width: 768px) {
+  .product-list {
+    &__detailed {
+      height: auto;
+
+      .product-detail {
+        flex-direction: column;
+        height: auto;
+
+        .image-wrapper {
+          width: 100%;
+          height: 50vh;
+        }
+
+        .info {
+          padding: 15px;
+          h3 {
+            font-size: 1.5rem;
+          }
+          p {
+            font-size: 1rem;
+          }
+          .price {
+            font-size: 1.4rem;
+          }
+          .btn-primary {
+            padding: 12px 20px;
+            font-size: 1rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Media query para dispositivos aún más pequeños (hasta 480px)
+@media (max-width: 480px) {
+  .product-list {
+    &__header {
+      flex-direction: column;
+      align-items: flex-start;
+      
+      h2 {
+        font-size: 1.8rem;
+      }
+    }
+    
+    &__detailed {
+      .product-detail {
+        .info {
+          h3 {
+            font-size: 1.3rem;
+          }
+          p {
+            font-size: 0.9rem;
+          }
+          .price {
+            font-size: 1.2rem;
+          }
+          .btn-primary {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Estilos de animación y skeleton (se mantienen o ajustan según tus preferencias) */
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-@keyframes slideDown {
-  0% {
-    opacity: 0;
-    transform: translateY(-15px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@keyframes pulse {
+  0% { background-color: #ddd; }
+  50% { background-color: #eee; }
+  100% { background-color: #ddd; }
 }
 
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-
-// SKELETON PRODUCTS
 .skeleton {
   display: flex;
   flex-direction: column;
@@ -859,138 +958,8 @@ Contenido:
     animation: pulse 1.5s infinite ease-in-out;
   }
 
-  .skeleton-title {
-    width: 60%;
-  }
-
-  .skeleton-price {
-    width: 40%;
-    margin-top: 5px;
-  }
-}
-
-@keyframes pulse {
-  0% {
-    background-color: #ddd;
-  }
-  50% {
-    background-color: #eee;
-  }
-  100% {
-    background-color: #ddd;
-  }
-}
-
-
-.product-list__detailed {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 30px;
-  margin-top: 30px;
-}
-
-.product-detail {
-  background-color: var(--color-card-bg);
-  border-radius: 12px;
-  padding: 25px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  text-align: center;
-  position: relative;
-
- 
-}
-
-.product-detail img {
-  width: 100%;
-  height: 300px; /* Imágenes más grandes en desktop */
-  object-fit: cover;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: scale(1.05);
-  }
-}
-
-.product-detail h3 {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--color-text);
-  margin-bottom: 15px;
-  line-height: 1.4;
-}
-
-.product-detail p {
-  font-size: 1rem;
-  color: var(--color-text-secondary);
-  margin-bottom: 20px;
-  line-height: 1.6;
-}
-
-.product-detail .price {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--color-primary);
-  margin-bottom: 25px;
-}
-
-.product-detail .btn-primary {
-  background-color: var(--color-primary);
-  color: var(--color-accent);
-  padding: 15px 25px;
-  border-radius: 6px;
-  font-size: 1.1rem;
-  text-align: center;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
-  min-width: 200px;
-
-
-  &:hover {
-    background-color: var(--color-primary-hover);
-    transform: scale(1.05);
-  }
-
-  &:focus {
-    outline: none;
-  }
-}
-
-.product-detail .btn-primary:active {
-  transform: scale(0.98);
-}
-
-/* Mobile Adjustments */
-@media (max-width: 768px) {
-  .product-list__detailed {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .product-detail img {
-    height: 250px;
-  }
-
-  .product-detail h3 {
-    font-size: 1.3rem;
-  }
-
-  .product-detail .price {
-    font-size: 1.2rem;
-  }
-
-  .product-detail .btn-primary {
-    padding: 12px 20px;
-    font-size: 1rem;
-    min-width: auto;
-    color:var(--color-bg)
-  }
+  .skeleton-title { width: 60%; }
+  .skeleton-price { width: 40%; margin-top: 5px; }
 }
 
 
@@ -999,14 +968,16 @@ Contenido:
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductList/ProductList.tsx
 
 Contenido:
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './ProductList.scss';
 import { Link, useSearchParams } from 'react-router-dom';
 import ProductCard from '../ProductCard/ProductCard';
 import ProductListItem from '../ProductListItem/ProductListItem';
 import ViewSwitcher, { ViewMode } from '../ViewSwitcher/ViewSwitcher';
-import { Product } from '../../data/products';
+import { dummyProducts,} from '../../data/products';
 import { useTranslation } from 'react-i18next';
+
+
 
 const ProductSkeleton = () => (
   <div className="product-card skeleton">
@@ -1022,29 +993,9 @@ const ProductList: React.FC = () => {
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('search') || '';
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
-  const [loading, setLoading] = useState(true);
-  const [products, setProducts] = useState<Product[]>([]);
+  // Ya no usamos loading ni useEffect para la carga de productos
   const { t } = useTranslation();
 
-  useEffect(() => {
-    setLoading(true);
-    fetch(`${import.meta.env.VITE_API_URL}/api/products`)
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`Error HTTP: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data: Product[]) => {
-        setProducts(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error al obtener productos:', err);
-        setLoading(false);
-      });
-  }, []);
-  
   const normalizeString = (str: string) =>
     str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
@@ -1059,14 +1010,19 @@ const ProductList: React.FC = () => {
         <ViewSwitcher viewMode={viewMode} setViewMode={setViewMode} isDarkMode={false} />
       </div>
       {searchQuery && filteredProducts.length === 0 ? (
-        <p>{t('no_products_found')} "{searchQuery}"</p>
+        <p>
+          {t('no_products_found')} "{searchQuery}"
+        </p>
       ) : (
         <>
-          {loading ? (
+          {/* Si en algún momento necesitas mostrar un skeleton de carga, puedes habilitar loading */}
+          {false ? (
             <div className="product-list__grid">
-              {Array(8).fill(0).map((_, index) => (
-                <ProductSkeleton key={index} />
-              ))}
+              {Array(8)
+                .fill(0)
+                .map((_, index) => (
+                  <ProductSkeleton key={index} />
+                ))}
             </div>
           ) : (
             <>
@@ -1086,18 +1042,28 @@ const ProductList: React.FC = () => {
               )}
               {viewMode === 'detailed' && (
                 <div className="product-list__detailed">
-                  {(searchQuery ? filteredProducts : products).map((product) => (
+                  {(searchQuery ? filteredProducts : dummyProducts).map((product) => (
                     <div key={product.uuid} className="product-detail">
-                      <h3>{product.name}</h3>
-                      <img
-                        src={product.photos?.[0] || 'https://via.placeholder.com/600x400?text=No+Image'}
-                        alt={product.name}
-                      />
-                      <p>{product.description}</p>
-                      <p>${product.price.toFixed(2)}</p>
-                      <Link to={`/products/${product.uuid}/${product.slug}`} className="btn-primary">
-                        {t('view_detail')}
-                      </Link>
+                      <div className="image-wrapper">
+                        <img
+                          src={
+                            product.photos?.[0] ||
+                            'https://via.placeholder.com/600x400?text=No+Image'
+                          }
+                          alt={product.name}
+                        />
+                      </div>
+                      <div className="info">
+                        <h3>{product.name}</h3>
+                        <p>{product.description}</p>
+{/*                         <p className="price">${product.price.toFixed(2)}</p>
+ */}                        <Link
+                          to={`/products/${product.uuid}/${product.slug}`}
+                          className="btn-primary"
+                        >
+                          {t('view_detail')}
+                        </Link>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -1118,124 +1084,80 @@ export default ProductList;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductDetail/ProductDetail.tsx
 
 Contenido:
+// src/components/ProductDetail/ProductDetail.tsx
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import './ProductDetail.scss';
-import { useCart } from '../../context/CartContext';
-import { useNotification } from '../../context/NotificationContext';
 import { useTranslation } from 'react-i18next';
-
-export interface Product {
-  uuid: string;
-  name: string;
-  slug: string;
-  price: number;
-  photos?: string[];
-  description?: string;
-}
+import { Product, dummyProducts } from '../../data/products';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams();
-  const { add, clear } = useCart();
-  const { addNotification } = useNotification();
-  const [quantity, setQuantity] = useState(1);
   const [selectedPhoto, setSelectedPhoto] = useState(0);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/products/${id}`)
-      .then(res => res.json())
-      .then((data: Product) => {
-        setProduct(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error al obtener producto:', err);
-        setLoading(false);
-      });
+    // Buscamos el producto en el array hardcodeado
+    const foundProduct = dummyProducts.find((p) => p.uuid === id);
+    setProduct(foundProduct || null);
+    setLoading(false);
   }, [id]);
 
-  if (loading) return <div className="product-detail container">{t('loading')}</div>;
+  if (loading) {
+    return <div className="product-detail container">{t('loading')}</div>;
+  }
+
   if (!product) {
     return (
       <div className="product-detail container">
         <h2>{t('product_not_found')}</h2>
-        <Link to="/products" className="btn-primary">{t('back_to_catalog')}</Link>
+        <Link to="/products" className="btn-secondary">
+          {t('back_to_catalog')}
+        </Link>
       </div>
     );
   }
 
-  const photoArray = product.photos && product.photos.length > 0 ? product.photos : [];
-  const mainImage = photoArray.length > 0
-    ? photoArray[selectedPhoto]
-    : 'https://via.placeholder.com/600x400?text=No+Image';
-
-  const handleAddToCart = () => {
-    add(
-      product.uuid,
-      {
-        name: product.name,
-        image: product.photos?.[0] || 'https://via.placeholder.com/600x400?text=No+Image',
-        price: product.price
-      },
-      quantity
-    );
-    addNotification(`${product.name} (x${quantity}) ${t('add_to_cart')}`, 'success');
-  };
-
-  const handleBuyNow = async () => {
-    await clear();
-    await add(
-      product.uuid,
-      {
-        name: product.name,
-        image: product.photos?.[0] || 'https://via.placeholder.com/600x400?text=No+Image',
-        price: product.price
-      },
-      quantity
-    );
-    addNotification(`${product.name} (x${quantity}) ${t('buy_now')}`, 'success');
-    navigate('/checkout');
-  };
+  const photoArray =
+    product.photos && product.photos.length > 0 ? product.photos : [];
+  const mainImage =
+    photoArray.length > 0
+      ? photoArray[selectedPhoto]
+      : 'https://via.placeholder.com/600x400?text=No+Image';
 
   return (
     <div className="product-detail container">
       <div className="product-detail__content">
-        <div className="product-detail__gallery">
+        <div className="product-detail__image-section">
           <div className="product-detail__main-image">
             <img src={mainImage} alt={`${product.name} ${selectedPhoto + 1}`} />
           </div>
-          <div className="product-detail__thumbnails">
-            {photoArray.map((photo, index) => (
-              <img
-                key={index}
-                src={photo}
-                alt={`${product.name} ${index + 1}`}
-                className={selectedPhoto === index ? 'active' : ''}
-                onClick={() => setSelectedPhoto(index)}
-              />
-            ))}
-          </div>
+          {photoArray.length > 1 && (
+            <div className="product-detail__thumbnails">
+              {photoArray.map((photo, index) => (
+                <img
+                  key={index}
+                  src={photo}
+                  alt={`${product.name} ${index + 1}`}
+                  className={selectedPhoto === index ? 'active' : ''}
+                  onClick={() => setSelectedPhoto(index)}
+                />
+              ))}
+            </div>
+          )}
         </div>
         <div className="product-detail__info">
           <h2 className="product-detail__title">{product.name}</h2>
-          <p className="product-detail__price">${product.price.toFixed(2)}</p>
+     {/*      <p className="product-detail__price">
+            ${product.price.toFixed(2)}
+          </p> */}
           <p className="product-detail__description">{product.description}</p>
-          <div className="product-detail__quantity">
-            <label>{t('quantity')}</label>
-            <div className="quantity-controls">
-              <button onClick={() => setQuantity(q => (q > 1 ? q - 1 : 1))} className="quantity-btn">–</button>
-              <input type="text" readOnly value={quantity} />
-              <button onClick={() => setQuantity(q => q + 1)} className="quantity-btn">+</button>
-            </div>
-          </div>
           <div className="product-detail__actions">
-            <button onClick={handleAddToCart} className="btn-primary">{t('add_to_cart')}</button>
-            <button onClick={handleBuyNow} className="btn-secondary">{t('buy_now')}</button>
-            <Link to="/products" className="btn-secondary">{t('back_to_catalog')}</Link>
+            <Link to="/products" className="btn-secondary">
+              {t('back_to_catalog')}
+            </Link>
           </div>
         </div>
       </div>
@@ -1258,72 +1180,76 @@ Contenido:
 
   &__content {
     display: flex;
-    gap: 3rem;
+    gap: 2rem;
     background: var(--glass-bg);
     backdrop-filter: blur(var(--glass-blur));
     border: 1px solid var(--glass-border);
     border-radius: 12px;
-    padding: 3rem;
+    padding: 2rem;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    animation: fadeUp 0.6s ease forwards;
+    align-items: flex-start;
 
     @media (max-width: 768px) {
       flex-direction: column;
-      align-items: center;
-      padding: 2rem;
-      gap: 2rem;
+      padding: 1rem;
+      gap: 1rem;
     }
   }
 
-  /* Estilos para la galería */
-  &__gallery {
-    flex: 1;
+  /* Sección de la imagen (más pequeña para dar protagonismo a la info) */
+  &__image-section {
+    flex: 0 0 300px; /* Se fija el ancho a 300px */
     display: flex;
     flex-direction: column;
     gap: 1rem;
-
-    &__main-image {
+    @media (max-width: 768px) {
+      flex: none;
       width: 100%;
-      height: 400px;
-      display: flex;
-      justify-content: center;
       align-items: center;
-      overflow: hidden;
-      border-radius: 12px;
-      
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.3s ease;
+    }
+  }
+
+  &__main-image {
+    width: 100%;
+    height: 250px; /* Imagen más pequeña */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+  }
+
+  &__thumbnails {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+
+    img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.3s, transform 0.3s;
+
+      &:hover {
+        opacity: 1;
+        transform: scale(1.05);
       }
     }
 
-    &__thumbnails {
-      display: flex;
-      gap: 0.5rem;
-      overflow-x: auto;
-      padding: 0.5rem 0;
-
-      .thumbnail {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-        border-radius: 8px;
-        cursor: pointer;
-        opacity: 0.7;
-        transition: opacity 0.3s, transform 0.3s;
-        
-        &:hover {
-          opacity: 1;
-          transform: scale(1.05);
-        }
-      }
-      
-      .active {
-        border: 2px solid var(--color-primary);
-        opacity: 1;
-      }
+    .active {
+      border: 2px solid var(--color-primary);
+      opacity: 1;
     }
   }
 
@@ -1331,93 +1257,44 @@ Contenido:
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    justify-content: center;
+    gap: 1rem;
 
-    &__title {
+    .product-detail__title {
       font-size: 2.5rem;
       color: var(--color-primary);
       margin-bottom: 0.5rem;
     }
 
-    &__price {
+    .product-detail__price {
       font-size: 2rem;
       color: var(--color-accent);
       font-weight: bold;
     }
 
-    &__description {
-      font-size: 1.1rem;
+    .product-detail__description {
+      font-size: 1.2rem;
       line-height: 1.6;
       color: var(--color-text);
     }
   }
 
-  &__quantity {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    label {
-      font-size: 1.1rem;
-      color: var(--color-text);
-    }
-    .quantity-controls {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      input {
-        width: 50px;
-        text-align: center;
-        font-size: 1.1rem;
-        border: 1px solid var(--gray-300);
-        border-radius: 4px;
-        padding: 0.4rem;
-        background: transparent;
-        color: var(--color-text);
-      }
-      .quantity-btn {
-        background: var(--color-primary);
-        color: #fff;
-        border: none;
-        padding: 0.5rem 0.8rem;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        &:hover {
-          background: var(--color-primary-hover);
-        }
-      }
-    }
-  }
-
   &__actions {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-    .btn-primary,
+    margin-top: 1.5rem;
+
     .btn-secondary {
-      
-      padding: 1rem 2rem;
+      padding: 0.8rem 1.5rem;
       font-size: 1rem;
-      border-radius: 8px;
-      transition: transform 0.3s, background-color 0.3s;
-    }
-    .btn-primary {
+      border: none;
+      border-radius: 6px;
       background-color: var(--color-primary);
       color: #fff;
-      border: none;
+      text-decoration: none;
+      transition: background-color 0.3s, transform 0.3s;
+
       &:hover {
         background-color: var(--color-primary-hover);
-        transform: translateY(-3px);
-      }
-    }
-    .btn-secondary {
-      background-color: var(--color-accent);
-      color: var(--color-primary);
-      border: 2px solid var(--color-primary);
-      &:hover {
-        background-color: var(--color-primary);
-        color: #fff;
-        transform: translateY(-3px);
+        transform: translateY(-2px);
       }
     }
   }
@@ -1429,17 +1306,6 @@ Contenido:
   }
   to {
     opacity: 1;
-  }
-}
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -1561,6 +1427,7 @@ export default Register;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Cart/Cart.tsx
 
 Contenido:
+// src/components/Cart/Cart.tsx
 import React from 'react';
 import './Cart.scss';
 import { useCart } from '../../context/CartContext';
@@ -1576,51 +1443,70 @@ const Cart: React.FC = () => {
     0
   );
 
+  if (cartItems.length === 0) {
+    return (
+      <div className="cart container">
+        <h2 className="cart__title">{t('cart', { defaultValue: 'Carrito' })}</h2>
+        <div className="cart__empty">
+          <p>{t('guest_cart_empty', { defaultValue: 'Tu carrito está vacío.' })}</p>
+          <Link to="/products" className="btn-primary">
+            {t('go_to_products', { defaultValue: 'Ver Productos' })}
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="cart container">
-      <h2 className="cart__title">{t('cart')}</h2>
-      {cartItems.length === 0 ? (
-        <div className="cart__empty">
-          <p>{t('guest_cart_empty')}</p>
-          <Link to="/products" className="btn-primary">{t('go_to_products')}</Link>
-        </div>
-      ) : (
-        <div className="cart__content">
-          <div className="cart__items">
-            {cartItems.map((item) => (
-              <div key={item.product_uuid} className="cart__item">
-                <div className="cart__item-image">
-                  <img src={item.image} alt={item.name} />
-                </div>
-                <div className="cart__item-details">
-                  <h3>{item.name}</h3>
-                  <p className="cart__item-quantity">{t('quantity')} {item.quantity}</p>
-                  <p className="cart__item-subtotal">
-                    {t('subtotal')} ${ (item.price * item.quantity).toFixed(2) }
-                  </p>
-                  <button
-                    onClick={() => remove(item.product_uuid)}
-                    className="btn-primary cart__item-remove"
-                  >
-                    {t('remove')}
-                  </button>
-                </div>
+      <h2 className="cart__title">{t('cart', { defaultValue: 'Carrito' })}</h2>
+      <div className="cart__content">
+        {/* Lista de productos */}
+        <div className="cart__items">
+          {cartItems.map((item) => (
+            <div key={item.product_uuid} className="cart__item">
+              <div className="cart__item-image">
+                <img src={item.image} alt={item.name} />
               </div>
-            ))}
-          </div>
-          <div className="cart__summary">
-            <h3>{t('total')} ${ totalPrice.toFixed(2) }</h3>
-            <div className="cart__summary-actions">
+              <div className="cart__item-details">
+                <h3 className="item-name">{item.name}</h3>
+                <div className="item-quantity">
+                  {t('quantity', { defaultValue: 'Cantidad:' })} {item.quantity}
+                </div>
+                <div className="item-price">
+                  {t('subtotal', { defaultValue: 'Subtotal:' })} ${(
+                    item.price * item.quantity
+                  ).toFixed(2)}
+                </div>
+                <button
+                  onClick={() => remove(item.product_uuid)}
+                  className="btn-remove"
+                >
+                  {t('remove', { defaultValue: 'Eliminar' })}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+        {/* Resumen de la orden */}
+        <div className="cart__summary">
+          <div className="summary-card">
+            <h3>{t('order_summary', { defaultValue: 'Resumen de la Orden' })}</h3>
+            <div className="summary-details">
+              <span>{t('total', { defaultValue: 'Total:' })}</span>
+              <span className="total-price">${totalPrice.toFixed(2)}</span>
+            </div>
+            <div className="summary-actions">
               <button onClick={clear} className="btn-secondary">
-                {t('empty_cart_button')}
+                {t('empty_cart_button', { defaultValue: 'Vaciar Carrito' })}
               </button>
               <Link to="/checkout" className="btn-primary">
-                {t('continue_checkout')}
+                {t('continue_checkout', { defaultValue: 'Continuar con la Compra' })}
               </Link>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
@@ -1636,6 +1522,7 @@ Contenido:
 /* src/components/Cart/Cart.scss */
 .cart {
   padding: 2rem 0;
+
   &.container {
     max-width: 1200px;
     margin: 0 auto;
@@ -1644,7 +1531,8 @@ Contenido:
 
   &__title {
     text-align: center;
-    font-size: 2rem;
+    font-size: 2.2rem;
+    color: var(--color-primary);
     margin-bottom: 1.5rem;
   }
 
@@ -1653,6 +1541,7 @@ Contenido:
     p {
       font-size: 1.2rem;
       margin-bottom: 1rem;
+      color: var(--color-secondary);
     }
     .btn-primary {
       padding: 0.8rem 1.5rem;
@@ -1666,7 +1555,6 @@ Contenido:
     gap: 2rem;
     @media (min-width: 768px) {
       flex-direction: row;
-      align-items: flex-start;
     }
   }
 
@@ -1677,87 +1565,155 @@ Contenido:
     gap: 1.5rem;
   }
 
-  &__item {
+  .cart__item {
     display: flex;
-    background-color: #fff;
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    gap: 1rem;
-    align-items: center;
-    flex-wrap: wrap;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    flex-direction: row;
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
 
     &-image {
-      flex: 0 0 100px;
+      flex: 0 0 150px;
+      height: 150px;
+      overflow: hidden;
       img {
         width: 100%;
-        height: auto;
-        border-radius: 4px;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+      &:hover img {
+        transform: scale(1.05);
       }
     }
 
     &-details {
       flex: 1;
-      h3 {
-        font-size: 1.2rem;
-        margin: 0 0 0.5rem;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      .item-name {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--color-secondary);
+        margin-bottom: 0.5rem;
       }
-      p {
-        margin: 0.3rem 0;
-        font-size: 0.95rem;
+
+      .item-quantity,
+      .item-price {
+        font-size: 1rem;
+        color: var(--color-text);
+        margin-bottom: 0.5rem;
       }
-      .cart__item-remove {
-        margin-top: 0.5rem;
+
+      .btn-remove {
+        align-self: flex-start;
+        background: var(--color-primary);
+        color: #fff;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s;
+        font-size: 0.9rem;
+        &:hover {
+          background: var(--color-primary-hover);
+          transform: translateY(-2px);
+        }
       }
     }
   }
 
   &__summary {
     flex: 1;
-    background-color: #f9f9f9;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    h3 {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-    &-actions {
+    .summary-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       display: flex;
       flex-direction: column;
-      gap: 1rem;
-      .btn-primary,
-      .btn-secondary {
-        width: 100%;
-        text-align: center;
-        padding: 0.8rem;
-        font-size: 1rem;
-        text-decoration: none;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
+      gap: 1.5rem;
+      text-align: center;
+
+      h3 {
+        font-size: 1.8rem;
+        color: var(--color-secondary);
+        margin-bottom: 0.5rem;
+      }
+
+      .summary-details {
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--color-primary);
+        padding: 0.5rem 0;
+
+        .total-price {
+          color: var(--color-primary);
+        }
+      }
+
+      .summary-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        .btn-secondary {
+          background: transparent;
+          color: var(--color-primary);
+          border: 2px solid var(--color-primary);
+          padding: 0.8rem 1.5rem;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 1rem;
+          transition: background-color 0.3s, transform 0.3s;
+          &:hover {
+            background: var(--color-primary);
+            color: #fff;
+            transform: translateY(-2px);
+          }
+        }
+        .btn-primary {
+          background: var(--color-primary);
+          color: #fff;
+          border: none;
+          padding: 0.8rem 1.5rem;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 1rem;
+          transition: background-color 0.3s, transform 0.3s;
+          &:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-2px);
+          }
+        }
       }
     }
   }
 }
 
-/* Botones genéricos */
-.btn-primary {
-  background-color: #007bff;
-  color: #fff;
-  &:hover {
-    background-color: #0056b3;
-  }
-}
-
-.btn-secondary {
-  background-color: #6c757d;
-  color: #fff;
-  &:hover {
-    background-color: #545b62;
-  }
+/* Animación de entrada (opcional) */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 
@@ -2377,19 +2333,86 @@ const Home: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="home">
-      <div className="home__hero container">
-        <div className="hero__content">
-          <h1>{t('welcome')}</h1>
-          <p>
+    <main className="home">
+      {/* Sección Hero con video de fondo */}
+      <section className="hero">
+        <div className="hero__video-wrapper">
+          <video className="hero__video" autoPlay muted loop>
+            <source src="/assets/videos/hero-video.mp4" type="video/mp4" />
+            {t('video_not_supported')}
+          </video>
+          <div className="hero__overlay"></div>
+        </div>
+        <div className="hero__content container">
+          <h1 className="hero__title animate__animated animate__fadeInDown">
+            {t('welcome')}
+          </h1>
+          <p className="hero__subtitle animate__animated animate__fadeInUp">
             {t('banner')}
           </p>
-          <Link to="/products" className="btn-primary btn-hero">
+          <Link to="/products" className="btn btn-primary animate__animated animate__zoomIn">
             {t('products')}
           </Link>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Sección de Colecciones Destacadas */}
+      <section className="collection-showcase container animate__animated animate__fadeInUp">
+        <h2 className="section-title">{t('featured_collection')}</h2>
+        <div className="collection-gallery">
+          <div className="gallery-item">
+            <img src="/assets/images/collection1.jpg" alt={t('collection1_alt')} />
+            <div className="gallery-overlay">
+              <h3>{t('collection1_title')}</h3>
+              <Link to="/products" className="btn btn-secondary">
+                {t('view_collection')}
+              </Link>
+            </div>
+          </div>
+          <div className="gallery-item">
+            <img src="/assets/images/collection2.jpg" alt={t('collection2_alt')} />
+            <div className="gallery-overlay">
+              <h3>{t('collection2_title')}</h3>
+              <Link to="/products" className="btn btn-secondary">
+                {t('view_collection')}
+              </Link>
+            </div>
+          </div>
+          <div className="gallery-item">
+            <img src="/assets/images/collection3.jpg" alt={t('collection3_alt')} />
+            <div className="gallery-overlay">
+              <h3>{t('collection3_title')}</h3>
+              <Link to="/products" className="btn btn-secondary">
+                {t('view_collection')}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Sección Sobre Nosotros */}
+      <section className="about-us container animate__animated animate__fadeInUp">
+        <div className="about-content">
+          <h2>{t('about_us_title')}</h2>
+          <p>{t('about_us_text')}</p>
+          <Link to="/about" className="btn btn-outline">
+            {t('learn_more')}
+          </Link>
+        </div>
+        <div className="about-image">
+          <img src="/assets/images/about-us.jpg" alt={t('about_us_alt')} />
+        </div>
+      </section>
+
+      {/* Sección de Llamado a la Acción (CTA) */}
+      <section className="cta container animate__animated animate__fadeInUp">
+        <h2 className="cta__title">{t('cta_title')}</h2>
+        <p className="cta__text">{t('cta_text')}</p>
+        <Link to="/contact" className="btn btn-secondary">
+          {t('cta_button')}
+        </Link>
+      </section>
+    </main>
   );
 };
 
@@ -2401,80 +2424,206 @@ export default Home;
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Home/Home.scss
 
 Contenido:
-/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/Home/Home.scss */
+/* src/components/Home/Home.scss */
 .home {
-  margin-top: 65px; /* Dejar espacio si tienes un header fijo */
+  margin-top: 65px; // Espacio para header fijo
 
-  &__hero {
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-    min-height: calc(100vh - 120px);
-    gap: 2rem;
+  /* Sección Hero */
+  .hero {
     position: relative;
-    border-radius: 8px;
-    padding: 2rem;
+    height: 100vh;
+    overflow: hidden;
 
-    .hero__image {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 12px;
+    &__video-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+
+      .hero__video {
+        width: 100%;
+        height: 100%;
         object-fit: cover;
-        transition: transform 0.4s ease;
-        &:hover {
-          transform: scale(1.02);
-        }
+      }
+      
+      .hero__overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
       }
     }
 
-    .hero__content {
+    &__content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
       text-align: center;
-      max-width: 600px; 
-      
-      h1 {
-        font-size: 2.6rem;
+      color: #fff;
+
+      .hero__title {
+        font-size: 3.5rem;
         margin-bottom: 1rem;
-        line-height: 1.2;
-        /* color: var(--color-text); // ya heredaría, pero OK para seguridad */
+      }
+
+      .hero__subtitle {
+        font-size: 1.3rem;
+        margin-bottom: 2rem;
+      }
+    }
+  }
+
+  /* Sección Colección Destacada */
+  .collection-showcase {
+    padding: 4rem 0;
+
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: var(--color-text);
+    }
+
+    .collection-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+
+      .gallery-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+
+        img {
+          width: 100%;
+          height: auto;
+          transition: transform 0.4s ease;
+        }
+
+        &:hover img {
+          transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.6);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          transition: opacity 0.4s ease;
+          color: #fff;
+          
+          h3 {
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+          }
+
+          .btn {
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+          }
+        }
+
+        &:hover .gallery-overlay {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  /* Sección Sobre Nosotros */
+  .about-us {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 4rem 0;
+
+    .about-content {
+      flex: 1 1 400px;
+      padding: 1rem;
+
+      h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
         color: var(--color-text);
       }
 
       p {
         font-size: 1.1rem;
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
         color: var(--color-text);
         opacity: 0.8;
       }
+    }
 
-      .btn-hero {
-        font-size: 1.2rem;
-        padding: 1rem 2rem;
+    .about-image {
+      flex: 1 1 400px;
+      padding: 1rem;
+
+      img {
+        width: 100%;
+        border-radius: 8px;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+        
+        &:hover {
+          transform: scale(1.05);
+        }
       }
     }
   }
- 
-  @media (max-width: 768px) {
-    &__hero {
-      min-height: auto;
-      padding: 1rem;
+
+  /* Sección CTA */
+  .cta {
+    text-align: center;
+    padding: 4rem 0;
+    background: #f8f8f8;
+    border-radius: 8px;
+
+    .cta__title {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--color-text);
+    }
+
+    .cta__text {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      color: var(--color-text);
     }
   }
 }
 
-.home__hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: calc(100vh - 250px); /* Hace que la sección Hero ocupe el espacio restante */
-  gap: 2rem;
-  position: relative;
-  border-radius: 8px;
-  padding: 2rem;
+/* Media Queries */
+@media (max-width: 768px) {
+  .hero__content {
+    h1 {
+      font-size: 2.5rem;
+    }
+    p {
+      font-size: 1rem;
+    }
+  }
+
+  .about-us {
+    flex-direction: column;
+  }
 }
+
 
 --------------------------------------------------------------------------------
 
@@ -2593,154 +2742,99 @@ Contenido:
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/sass/global.scss
 
 Contenido:
-/* /home/southatoms/Escritorio/lite_vibrance_web/src/components/sass/global.scss */
+/* src/components/sass/global.scss */
 /* ------------------------------------------------------
-   global.scss (Unificación de variables y estilos base)
+   global.scss – Variables y estilos base para tu página de medicina
    ------------------------------------------------------ */
 
-/* 1. Tipografía (Google Fonts) */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Montserrat:wght@400;700&display=swap');
+/* Importación de Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+main {
+  margin-top: 100px;
+  flex: 1;
+}
+
 html, body {
   height: 100%;
   margin: 0;
 }
 
-/* Contenedor principal de la app */
-.app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-.home {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* Asegura que el footer se alinee al fondo */
-
-
-}
-/* El main debe ocupar el espacio disponible para empujar el footer hacia abajo */
-main {
-  padding-top: 80px; /* O el valor que compense la altura del header */
-  flex: 1;
-}
-/* 2. Reset básico */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* 3. VARIABLES: Modo Claro (por defecto) */
+/* VARIABLES PARA MODO CLARO – Inspiración Médica sin verdes */
 :root {
-  /* Fondo y texto */
-  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  --card-shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.4);
+  /* Fondos y textos */
+  --color-bg: #ffffff;           /* Fondo blanco puro, emana limpieza y profesionalidad */
+  --color-text: #343a40;         /* Texto en gris oscuro para excelente legibilidad */
+  --color-card-bg: #f8f9fa;      /* Tarjetas con fondo gris muy claro para destacar el contenido */
 
-  --color-bg:              #f9fafb;      /* Gris muy claro */
-  --color-text:            #1f2933;      /* Gris muy oscuro */
+  /* Colores Institucionales */
+  --color-primary: #007bff;      /* Azul brillante, clásico en entornos de salud por transmitir confianza */
+  --color-primary-hover: #0056b3;/* Azul más oscuro para efectos hover */
+  --color-secondary: #6c757d;    /* Gris medio para elementos secundarios */
+  --color-accent: #6f42c1;       /* Acénto púrpura para detalles, que añade un toque moderno sin recurrir al verde */
 
-  /* Fondo para tarjetas (por ejemplo, ProductCard) */
-  --color-card-bg:         #ffffff;      /* Blanco para modo claro */
+  --gray-300: #dee2e6;           /* Gris muy claro para separadores y detalles sutiles */
 
-  /* Paleta principal */
-  --color-primary:         #3b82f6;      /* Azul medio */
-  --color-primary-hover:   #2563eb;      /* Azul un poco más oscuro */
-  --color-secondary:       #6366f1;      /* Índigo clarito */
-  --color-accent:          #f4f4f4;      /* Azul oscuro o acento */
-  --color-accent-hover:    #059669;
-
-  /* Un gris intermedio para bordes, inputs, etc. */
-  --gray-300:             #d1d5db;       /* Gris clarito */
-
-  /* Efecto “glass” suave */
-  --glass-bg:             rgba(255, 255, 255, 0.3);
-  --glass-border:         rgba(255, 255, 255, 0.4);
-  --glass-blur:           6px;
+  /* Efecto Glass */
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.95);
+  --glass-blur: 8px;
 
   /* Header */
-  --header-bg:            rgba(255, 255, 255, 0.7);
-  --header-text:          #1f2933;
-  --header-box-shadow:    0 2px 10px rgba(0, 0, 0, 0.1);
+  --header-bg: rgba(255, 255, 255, 0.97);
+  --header-text: #343a40;
+  --header-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
-  /* Onda */
-  --wave-color:           #fff;
+  /* Decoración (onda) */
+  --wave-color: #6f42c1;
 
-  /* Switch */
-  --switch-bg-off:        #bbb;
-  --switch-bg-on:         #666;
-  --switch-knob:          #fff;
-
-  /* Transición */
-  --transition-speed:     0.3s;
+  --transition-speed: 0.3s;
 }
 
-/* 4. VARIABLES: Modo Oscuro */
+/* VARIABLES PARA MODO OSCURO – Se mantiene la versión que te gustó */
 :root[data-theme='dark'] {
-  --card-shadow: 0 4px 12px rgba(46, 87, 110, 0.8);
-  --card-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.9);
-  
-  /* Fondo y texto */
-  --color-bg:             #1f1f1f;       /* Gris oscuro */
-  --color-text:           #f2f2f2;       /* Texto claro */
+  --color-bg: #322f2f;
+  --color-text: #f5e9d7;
+  --color-card-bg: #3d3937;
 
-  /* Fondo para tarjetas (por ejemplo, ProductCard) */
-  --color-card-bg:        #1e1e1e;       /* Fondo oscuro para tarjetas */
+  --color-primary: #d4a373;
+  --color-primary-hover: #b8855b;
+  --color-secondary: #c9b8a4;
+  --color-accent: #b23a48;
 
-  /* Paleta principal */
-  --color-primary:        #4f46e5;       /* Índigo */
-  --color-primary-hover:  #4338ca;       /* Índigo más oscuro */
-  --color-secondary:      #8b8efc;       /* Índigo clarito para dark */
-  --color-accent:         #d5eceb;       /* Verde (ajusta si deseas) */
-  --color-accent-hover:   #059669;
+  --gray-300: #8d8d8d;
 
-  /* Gris para bordes/inputs en dark */
-  --gray-300:            #888;          /* Más claro que el fondo */
+  --glass-bg: rgba(20, 20, 20, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --glass-blur: 10px;
 
-  /* Efecto “glass” un poco más oscuro */
-  --glass-bg:            rgba(255, 255, 255, 0.08);
-  --glass-border:        rgba(255, 255, 255, 0.15);
-  --glass-blur:          8px;
+  --header-bg: rgba(30, 30, 30, 0.85);
+  --header-text: #f5e9d7;
+  --header-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
 
-  /* Header */
-  --header-bg:           rgba(0, 0, 0, 0.5);
-  --header-text:         #f2f2f2;
-  --header-box-shadow:   0 2px 10px rgba(0, 0, 0, 0.3);
-
-  /* Onda */
-  --wave-color:          #333;
-
-  /* Switch */
-  --switch-bg-off:       #777;
-  --switch-bg-on:        #bbb;
-  --switch-knob:         #111;
-
-
-  .view-switcher__menu{
-    background-color: var(--wave-color);
-    box-shadow:   0 2px 10px rgba(231, 213, 213, 0.3);
-
-  }
+  --wave-color: #a65d5d;
 }
 
-/* 5. Estilos base para tipografías */
-html,
-body {
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+html, body {
+  font-family: 'Roboto', sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text);
   transition: background-color var(--transition-speed), color var(--transition-speed);
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
 }
 
-/* Encabezados usan Montserrat */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Montserrat', sans-serif;
-  font-weight: 300;
+  font-weight: 400;
 }
 
-/* Container base */
 .container {
   width: 90%;
   max-width: 1200px;
@@ -2748,17 +2842,15 @@ h1, h2, h3, h4, h5, h6 {
   padding: 1rem 0;
 }
 
-/* Links */
 a {
   color: var(--color-primary);
   text-decoration: none;
   transition: color var(--transition-speed);
-  &:hover {
-    color: var(--color-primary-hover);
-  }
+}
+a:hover {
+  color: var(--color-primary-hover);
 }
 
-/* Botones */
 .btn-primary {
   background-color: var(--color-primary);
   color: #fff;
@@ -2768,13 +2860,10 @@ a {
   cursor: pointer;
   font-size: 1rem;
   transition: background-color var(--transition-speed), transform 0.2s;
-  &:hover {
-    background-color: var(--color-primary-hover);
-    transform: translateY(-2px);
-  }
-  &:active {
-    transform: scale(0.98);
-  }
+}
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
 }
 
 .btn-secondary {
@@ -2785,40 +2874,30 @@ a {
   border-radius: 6px;
   cursor: pointer;
   font-size: 1rem;
-  transition:
-    background-color var(--transition-speed),
-    color var(--transition-speed),
-    transform 0.2s;
-  &:hover {
-    background-color: var(--color-primary);
-    color: #fff;
-    transform: translateY(-2px);
-  }
-  &:active {
-    transform: scale(0.98);
-  }
+  transition: background-color var(--transition-speed), color var(--transition-speed), transform 0.2s;
+}
+.btn-secondary:hover {
+  background-color: var(--color-primary);
+  color: #fff;
+  transform: translateY(-2px);
 }
 
-/* Cartas (glass) */
+/* Estilo para cartas (efecto glass) */
 .card {
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--glass-border);
   border-radius: 8px;
   padding: 1.5rem;
   margin: 1rem 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition:
-    background-color var(--transition-speed),
-    box-shadow var(--transition-speed);
+  transition: background-color var(--transition-speed), box-shadow var(--transition-speed);
 }
 
-/* Animación fadeIn */
+/* Animación de aparición */
 .fade-in {
   animation: fadeIn var(--transition-speed) forwards;
 }
-
 @keyframes fadeIn {
   0%   { opacity: 0; transform: translateY(15px); }
   100% { opacity: 1; transform: translateY(0); }
@@ -2963,28 +3042,24 @@ export default ProductCard;
 
 Contenido:
 /* src/components/Footer/Footer.scss */
-
 .footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
   border-top: 1px solid var(--glass-border);
   text-align: center;
   padding: 1.5rem;
-  margin-top: 2rem;
   color: var(--color-text);
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeUp 0.5s ease forwards;
-  position: relative; /* Asegúrate de que no se posicione fuera del flujo */
-  bottom: 0;
-  width: 100%; /* Asegura que el footer ocupe todo el ancho */
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease forwards;
 }
 
-@keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 
@@ -2993,6 +3068,7 @@ Contenido:
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Footer/Footer.tsx
 
 Contenido:
+// src/components/Footer/Footer.tsx
 import React from 'react';
 import './Footer.scss';
 import { useTranslation } from 'react-i18next';
@@ -3002,7 +3078,9 @@ const Footer: React.FC = () => {
 
   return (
     <footer className="footer">
-      <p>&copy; {new Date().getFullYear()} liteVibrance. {t('footer_rights', { defaultValue: "All rights reserved." })}</p>
+      <p>
+        &copy; {new Date().getFullYear()} liteVibrance. {t('footer_rights', { defaultValue: 'Todos los derechos reservados.' })}
+      </p>
     </footer>
   );
 };
