@@ -24,7 +24,8 @@ const App: React.FC = () => {
     <div className="app-container">
       <Header />
       <FloatingThemeSwitch />
-      <main>
+      <div className="App">
+      <main className="App-content">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<ProductList />} />
@@ -43,6 +44,7 @@ const App: React.FC = () => {
         </Routes>
 
       </main>
+      </div>
        <Footer />
     <Notification /> {/* Aquí se renderizan las notificaciones */}
     </div>

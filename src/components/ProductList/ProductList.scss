@@ -30,7 +30,7 @@
 
   &__detailed {
     /* Para pantallas grandes, cada producto ocupa el alto completo de la ventana */
-    height: 100vh;
+    min-height: 100vh;
     scroll-snap-type: y mandatory;
     -webkit-overflow-scrolling: touch;
 
@@ -216,3 +216,4 @@
   .skeleton-title { width: 60%; }
   .skeleton-price { width: 40%; margin-top: 5px; }
 }
+

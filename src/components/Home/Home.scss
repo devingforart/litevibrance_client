@@ -15,7 +15,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 90vh;
     background: linear-gradient(135deg, var(--hero-condition), var(--color-card-bg));
     color: var(--color-text);
     text-align: center;
@@ -138,19 +137,6 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem 1rem;
-  }
-
-  .hero {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 90vh;
-    background: linear-gradient(135deg, var(--hero-condition), var(--color-card-bg));
-    color: var(--color-text);
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    padding: 2rem;
   }
 
   /* Nueva sección "Misión y Visión" */

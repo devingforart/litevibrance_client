@@ -8,6 +8,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
+/* El contenido principal se expande para ocupar el espacio disponible */
+
+.App {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+
+  min-height: calc(100vh - 170px);
+}
+
+.App-content {
+  flex: 1;
+}
 main {
   margin-top: 100px;
   flex: 1;
@@ -176,3 +189,5 @@ a:hover {
   0%   { opacity: 0; transform: translateY(15px); }
   100% { opacity: 1; transform: translateY(0); }
 }
+
+

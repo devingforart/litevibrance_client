@@ -3,8 +3,6 @@ import os
 # Lista que incluye directorios y archivos individuales
 directories = [
 "/home/southatoms/Escritorio/lite_vibrance_web/src/components",
-"/home/southatoms/Escritorio/lite_vibrance_web/src/locales/en/translation.json",
-"/home/southatoms/Escritorio/lite_vibrance_web/src/locales/es/translation.json"
 
 
 
