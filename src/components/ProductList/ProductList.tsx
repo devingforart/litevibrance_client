@@ -18,6 +18,8 @@ const ProductSkeleton = () => (
   </div>
 );
 
+console.log('view', ViewSwitcher);
+
 const ProductList: React.FC = () => {
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('search') || '';
@@ -31,13 +33,14 @@ const ProductList: React.FC = () => {
   const filteredProducts = dummyProducts.filter((product) =>
     normalizeString(product.name).includes(normalizeString(searchQuery))
   );
+  setViewMode('detailed')
 
   return (
     <div className="product-list container">
-      <div className="product-list__header">
+  {/*     <div className="product-list__header">
         <h2>{t('products_catalog')}</h2>
         <ViewSwitcher viewMode={viewMode} setViewMode={setViewMode} isDarkMode={false} />
-      </div>
+      </div> */}
       {searchQuery && filteredProducts.length === 0 ? (
         <p>
           {t('no_products_found')} "{searchQuery}"
