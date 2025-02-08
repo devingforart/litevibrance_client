@@ -10,18 +10,22 @@ const Home: React.FC = () => {
   return (
     <main className="home">
       <section className="hero">
+        {/* Video de fondo */}
+        <video className="hero__video" autoPlay muted loop>
+          <source src="/videos/hero-background.mp4" type="video/mp4" />
+          {t('video_not_supported', 'Tu navegador no soporta videos HTML5.')}
+        </video>
+        {/* Overlay para oscurecer el video y mejorar la legibilidad */}
+        <div className="hero__overlay"></div>
         <div className="hero__content container">
-          <h1 className="hero__title animate__animated animate__fadeInDown">
-            {t('welcome')}
+          <h1 className="hero__title">
+            {t('welcome', 'Bienvenido a Nuestra Página')}
           </h1>
-          <p className="hero__subtitle animate__animated animate__fadeInUp">
-            {t('banner')}
+          <p className="hero__subtitle">
+            {t('banner', 'Descubre nuestros servicios innovadores')}
           </p>
-          <Link
-            to="/Services"
-            className="btn btn-primary animate__animated animate__zoomIn"
-          >
-            {t('explore_services', { defaultValue: 'Explore Services' })}
+          <Link to="/services" className="btn btn-primary">
+            {t('explore_services', 'Explorar Servicios')}
           </Link>
         </div>
       </section>

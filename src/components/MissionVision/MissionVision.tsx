@@ -1,34 +1,37 @@
-import React from 'react';
-import './MissionVision.scss';
-import { useTranslation } from 'react-i18next';
+import React from "react";
+import "./MissionVision.scss";
 
-const MissionVision: React.FC = () => {
-  const { t } = useTranslation();
+const principles = [
+  {
+    title: "Misión",
+    description:
+      "Brindar atención personalizada, continua y eficiente, haciendo foco en la persona y proponiendo un espacio de mutuo respeto y colaboración. Nuestro compromiso es acompañarlo en cada etapa de la vida, demostrando pasión y profesionalismo en lo que hacemos.",
+  },
+  {
+    title: "Visión",
+    description:
+      "Ser el grupo humano de profesionales de referencia para usted y su familia, brindando servicios de alta calidad mediante la mejora continua de técnicas y conocimientos en el área de salud. Aspiramos a ser una empresa boutique donde la calidad y el cuidado integral sean la prioridad.",
+  },
+  {
+    title: "Valores",
+    description:
+      "Adoptamos el cuidado como estilo de vida. Valoramos la capacitación continua y la colaboración con el familiar, parte del equipo de atención, para garantizar la excelencia en el servicio. Creemos que cada detalle, por pequeño que sea, contribuye a un servicio de calidad.",
+  },
+];
 
+const ApplePrinciples = () => {
   return (
-    <div className="mission-vision container">
-      <header className="mission-vision__header">
-        <h2>{t('our_mission_vision', { defaultValue: 'Our Mission, Vision & Values' })}</h2>
-        <p>{t('mission_vision_intro', {
-          defaultValue: 'We are committed to delivering exceptional care through our core principles.',
-        })}</p>
-      </header>
-      <div className="mission-vision__cards">
-        <div className="mission-vision__card">
-          <h3>{t('mission', { defaultValue: 'Mission' })}</h3>
-          <p>{t('mission_val', { defaultValue: 'To provide personalized, continuous, and efficient care, focusing on the individual with mutual respect and collaboration. We are passionate about what we do.' })}</p>
-        </div>
-        <div className="mission-vision__card">
-          <h3>{t('vision', { defaultValue: 'Vision' })}</h3>
-          <p>{t('vision_val', { defaultValue: 'To be the team of professionals you choose for yourself or your family, delivering high-quality care with continuous improvement.' })}</p>
-        </div>
-        <div className="mission-vision__card">
-          <h3>{t('values', { defaultValue: 'Values' })}</h3>
-          <p>{t('values_val', { defaultValue: 'We value the commitment to care as a lifestyle, emphasizing continuous training and excellence in service.' })}</p>
-        </div>
+    <section className="apple-principles">
+      <div className="apple-principles__container">
+        {principles.map((principle, index) => (
+          <div className="apple-card" key={index}>
+            <h2 className="apple-card__title">{principle.title}</h2>
+            <p className="apple-card__description">{principle.description}</p>
+          </div>
+        ))}
       </div>
-    </div>
+    </section>
   );
 };
 
-export default MissionVision;
+export default ApplePrinciples;

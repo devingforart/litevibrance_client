@@ -1,183 +1,91 @@
+// src/components/Home/Home.scss
 .home {
-  margin-top: 100px; // Considera el espacio para el header fijo
-  font-family: 'Roboto', sans-serif;
-  color: var(--color-text);
-
-  .container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
-  }
-
-  /* SECCIÓN HERO */
   .hero {
+    position: relative;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--hero-condition), var(--color-card-bg));
-    color: var(--color-text);
-    text-align: center;
-    position: relative;
     overflow: hidden;
-    padding: 2rem;
 
-    // Efecto animado de fondo (opcional)
-    &::before {
-      content: "";
+    // Video de fondo
+    &__video {
       position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(0, 0, 0, 0.02) 0%, transparent 70%);
-      animation: pulse 6s infinite;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      filter: brightness(0.6); // Atenúa el video para mejorar la legibilidad del contenido
       z-index: 1;
     }
 
-    .hero__content {
-      position: relative;
+    // Overlay con degradado usando las variables institucionales
+    &__overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.7;
       z-index: 2;
     }
 
-    .hero__title {
-      font-size: 3.5rem;
-      margin-bottom: 1rem;
-      font-weight: 700;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    // Contenido centralizado
+    &__content {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      color: var(--color-text);
+      padding: 2rem;
+      animation: fadeInUp 1s ease-out;
     }
 
-    .hero__subtitle {
+    &__title {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    &__subtitle {
       font-size: 1.5rem;
       margin-bottom: 2rem;
-    }
-
-    // Ajustes responsivos para pantallas medianas (máx 768px)
-    @media (max-width: 768px) {
-      flex-direction: column;
-      height: auto;
-      padding: 1.5rem;
-
-      .hero__title {
-        font-size: 2.5rem;
-      }
-      .hero__subtitle {
-        font-size: 1.2rem;
-      }
-    }
-
-    // Ajustes adicionales para pantallas pequeñas (máx 480px)
-    @media (max-width: 480px) {
-      padding: 1rem;
-
-      .hero__title {
-        font-size: 2rem;
-      }
-      .hero__subtitle {
-        font-size: 1rem;
-      }
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
   }
 
-  /* SECCIÓN SOBRE NOSOTROS */
-  .about {
-    background-color: var(--color-card-bg);
-    padding: 4rem 2rem;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    margin-bottom: 4rem;
+  // Botón personalizado usando las variables
+  .btn {
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 50px;
+    background: var(--color-primary);
+    color: #fff;
+    text-decoration: none;
+    transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
 
-    .about__title {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-    .about__description {
-      font-size: 1.2rem;
-      line-height: 1.6;
-      margin-bottom: 2rem;
-      color: var(--color-text);
-    }
-
-    // Ajustes responsivos para pantallas medianas (máx 768px)
-    @media (max-width: 768px) {
-      padding: 3rem 1rem;
-      
-      .about__title {
-        font-size: 2rem;
-      }
-      .about__description {
-        font-size: 1rem;
-      }
-    }
-
-    // Ajustes adicionales para pantallas pequeñas (máx 480px)
-    @media (max-width: 480px) {
-      padding: 2rem 0.5rem;
-      
-      .about__title {
-        font-size: 1.8rem;
-      }
-      .about__description {
-        font-size: 0.9rem;
-      }
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      background: var(--color-primary-hover);
     }
   }
 }
 
-
-/* src/components/Home/Home.scss */
-.home {
-  margin-top: 100px;
-  font-family: 'Roboto', sans-serif;
-  color: var(--color-text);
-
-  .container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
+// Animación para la entrada suave del contenido
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-
-  /* Nueva sección "Misión y Visión" */
-  .about-us {
-    background-color: var(--color-card-bg);
-    padding: 4rem 2rem;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    margin-top: 4rem;
-
-    h2 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .about-us__content {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      justify-content: center;
-
-      .about-us__section {
-        background: var(--glass-bg);
-        backdrop-filter: blur(var(--glass-blur));
-        border: 1px solid var(--glass-border);
-        border-radius: 8px;
-        padding: 2rem;
-        max-width: 400px;
-        text-align: left;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-
-        h3 {
-          font-size: 1.8rem;
-          color: var(--color-primary);
-        }
-
-        p {
-          font-size: 1.1rem;
-          color: var(--color-text);
-        }
-      }
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
