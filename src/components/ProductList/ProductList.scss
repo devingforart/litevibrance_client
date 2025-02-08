@@ -1,3 +1,4 @@
+/* src/components/ProductList/ProductList.scss */
 .product-list {
   margin-top: 3rem;
   padding: 0 1rem;
@@ -29,7 +30,6 @@
   }
 
   &__detailed {
-    /* Para pantallas grandes, cada producto ocupa el alto completo de la ventana */
     min-height: 100vh;
     scroll-snap-type: y mandatory;
     -webkit-overflow-scrolling: touch;
@@ -106,7 +106,7 @@
   }
 }
 
-// Media query para dispositivos con ancho hasta 768px
+/* Media query para dispositivos con ancho hasta 768px */
 @media (max-width: 768px) {
   .product-list {
     &__detailed {
@@ -142,7 +142,7 @@
   }
 }
 
-// Media query para dispositivos aún más pequeños (hasta 480px)
+/* Media query para dispositivos aún más pequeños (hasta 480px) */
 @media (max-width: 480px) {
   .product-list {
     &__header {
@@ -176,8 +176,7 @@
   }
 }
 
-/* Estilos de animación y skeleton (se mantienen o ajustan según tus preferencias) */
-
+/* Estilos de animación y skeleton */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -217,3 +216,9 @@
   .skeleton-price { width: 40%; margin-top: 5px; }
 }
 
+/* Ajuste para pantallas grandes */
+@media (min-width: 1200px) {
+  .product-list__grid {
+    gap: 1.5rem;
+  }
+}

@@ -1,20 +1,16 @@
 /* src/components/sass/global.scss */
 /* ------------------------------------------------------
-   global.scss – Variables y estilos base para un hospital y medicina
-   Versión Creativa: Paleta fresca y contemporánea
+   global.scss – Variables y estilos base
    ------------------------------------------------------ */
 
 /* Importación de Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
-/* El contenido principal se expande para ocupar el espacio disponible */
-
 .App {
   display: flex;
   flex-direction: column;
   height: auto;
-
   min-height: 100vh;
 }
 
@@ -22,8 +18,9 @@
   flex: 1;
 }
 main {
-  margin-top: 30px;
   flex: 1;
+  padding-top: 70px; /* O el valor que necesites */
+
 }
 
 html, body {
@@ -41,67 +38,45 @@ body {
   box-sizing: border-box;
 }
 
-/* VARIABLES PARA MODO CLARO – Versión Creativa */
+/* VARIABLES PARA MODO CLARO */
 :root {
-  /* Fondos y textos */
-  --color-bg: #FFFAF2;           /* Un off-white cálido para un ambiente luminoso y acogedor */
-  --color-text: #333333;         /* Gris oscuro para una excelente legibilidad */
-  --color-card-bg: #FFFFFF;      /* Blanco puro para resaltar el contenido */
-  --hero-condition: #fffdfb;      /* Mismo tono que el fondo para una integración sutil */
-
-  /* Colores Institucionales */
-  --color-primary: #6C5CE7;      /* Púrpura vibrante, moderno y sofisticado */
-  --color-primary-hover: #5941C2;/* Variante más intensa para interacciones (hover) */
-  --color-secondary: #2b8888;    /* Verde esmeralda, aporta frescura y dinamismo */
-  --color-accent: #FF7675;       /* Coral suave para destacar acciones y detalles */
-
-  --gray-300: #D1D1D1;           /* Gris claro para separadores y acentos sutiles */
-
-  /* Efecto Glass */
+  --color-bg: #FFFAF2;
+  --color-text: #333333;
+  --color-card-bg: #FFFFFF;
+  --hero-condition: #fffdfb;
+  --color-primary: #6C5CE7;
+  --color-primary-hover: #5941C2;
+  --color-secondary: #2b8888;
+  --color-accent: #FF7675;
+  --gray-300: #D1D1D1;
   --glass-bg: rgba(255, 255, 255, 0.9);
   --glass-border: rgba(255, 255, 255, 0.95);
   --glass-blur: 8px;
-
-  /* Header */
   --header-bg: rgba(255, 255, 255, 0.95);
   --header-text: #333333;
   --header-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-
-  /* Decoración (onda) */
   --wave-color: #6C5CE7;
-
   --transition-speed: 0.3s;
 }
 
-/* VARIABLES PARA MODO OSCURO – Versión Creativa */
+/* VARIABLES PARA MODO OSCURO */
 :root[data-theme='dark'] {
-  /* Fondos y textos */
-  --color-bg: #2C2E33;         /* Un fondo oscuro con matices modernos */
-  --color-text: #EDEDED;        /* Texto casi blanco para buen contraste */
-  --color-card-bg: #3A3D45;     /* Fondo para tarjetas, con profundidad y sutileza */
-  --hero-condition: #2C2E33;     /* Integración con el fondo principal */
-
-  /* Colores Institucionales */
-  --color-primary: #A29BFE;      /* Púrpura pastel que ilumina el entorno oscuro */
-  --color-primary-hover: #8F8EDC;/* Variante para hover, manteniendo la armonía */
-  --color-secondary: #41d28c;    /* Verde neón para acentos modernos y vibrantes */
-  --color-accent: #fcf7e8;       /* Naranja suave para resaltar elementos importantes */
-
-  --gray-300: #606266;           /* Gris medio para detalles y separadores */
-
-  /* Efecto Glass */
+  --color-bg: #2C2E33;
+  --color-text: #EDEDED;
+  --color-card-bg: #3A3D45;
+  --hero-condition: #2C2E33;
+  --color-primary: #A29BFE;
+  --color-primary-hover: #8F8EDC;
+  --color-secondary: #41d28c;
+  --color-accent: #fcf7e8;
+  --gray-300: #606266;
   --glass-bg: rgba(0, 0, 0, 0.6);
   --glass-border: rgba(255, 255, 255, 0.2);
   --glass-blur: 10px;
-
-  /* Header */
   --header-bg: rgba(44, 46, 51, 0.85);
   --header-text: #EDEDED;
   --header-box-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
-
-  /* Decoración (onda) */
   --wave-color: #6cfcb6;
-
   --transition-speed: 0.3s;
 }
 
@@ -168,7 +143,6 @@ a:hover {
   transform: translateY(-2px);
 }
 
-/* Estilo para cartas (efecto glass) */
 .card {
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
@@ -180,7 +154,6 @@ a:hover {
   transition: background-color var(--transition-speed), box-shadow var(--transition-speed);
 }
 
-/* Animación de aparición */
 .fade-in {
   animation: fadeIn var(--transition-speed) forwards;
 }
@@ -190,4 +163,9 @@ a:hover {
   100% { opacity: 1; transform: translateY(0); }
 }
 
-
+/* Ajuste de tamaño para pantallas pequeñas */
+@media (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+}

@@ -8,7 +8,7 @@ directories = [
 
 ]
 
-file_extensions = ['tsx','scss','json']
+file_extensions = ['scss',]
 
 output_file = 'plurals.txt'
 

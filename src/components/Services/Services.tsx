@@ -134,15 +134,7 @@ const ParallaxServicesExtended: React.FC = () => {
     <div className="parallax-services-extended mobile">
       {renderSummary()}
       <div className="pse-mobile-services-container">
-        {services.map((service, index) => (
-          <div key={index} className="pse-mobile-service-card">
-            <h2>{service.title}</h2>
-            <p>{service.description}</p>
-            <a href={service.link} className="pse-button">
-              Saber más
-            </a>
-          </div>
-        ))}
+     
       </div>
     </div>
   );

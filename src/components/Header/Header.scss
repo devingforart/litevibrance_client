@@ -11,31 +11,28 @@
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Para que el logo quede a la izquierda y el toggle a la derecha */
+  justify-content: space-between;
   padding: 0 1.5rem;
   height: 70px;
   z-index: 1000;
   box-shadow: var(--header-box-shadow);
   transition: all 0.3s ease;
 
-  /* El logo en el lado izquierdo */
   &__brand {
     .brand__logo {
       position: relative;
       top: 10px;
       font-size: 1.5rem;
       font-weight: bold;
-      color: var(--color-primary); /* Rojo intenso */
+      color: var(--color-primary);
       letter-spacing: 2px;
       text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-      /* Se mantiene sin cambio brusco en hover */
       &:hover {
         opacity: 0.9;
       }
     }
   }
 
-  /* Toggle para móviles */
   &__toggle {
     display: none;
     font-size: 2rem;
@@ -46,16 +43,15 @@
     }
   }
 
-  /* Navegación */
   &__nav {
     position: fixed;
     top: 70px;
-    right: 0; /* Se posiciona a la derecha */
+    right: 0;
     width: 100%;
     height: calc(100vh - 70px);
     background: var(--header-bg);
     backdrop-filter: blur(8px);
-    transform: translateX(100%); /* Se oculta deslizando hacia la derecha */
+    transform: translateX(100%);
     transition: transform 0.3s ease-in-out;
     overflow-y: auto;
 
@@ -70,7 +66,6 @@
       flex-direction: column;
       gap: 1.5rem;
 
-      /* Para dispositivos de escritorio se reorganiza a la derecha */
       @media (min-width: 1024px) {
         flex-direction: row;
         justify-content: flex-end;
@@ -81,7 +76,7 @@
       .nav__item {
         .nav__link {
           top: 5px;
-          font-size: 1.0rem;
+          font-size: 1rem;
           color: var(--color-secondary);
           text-decoration: none;
           transition: color 0.2s ease;
@@ -110,7 +105,6 @@
       backdrop-filter: none;
       height: auto;
       overflow: visible;
-      /* Se coloca a la derecha con margin-left automático */
       margin-left: auto;
     }
   }
@@ -131,5 +125,12 @@
         fill: var(--wave-color);
       }
     }
+  }
+}
+
+/* Ajuste para pantallas pequeñas */
+@media (max-width: 768px) {
+  .header {
+    padding: 0 1rem;
   }
 }

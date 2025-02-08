@@ -19,11 +19,11 @@
       height: auto;
       transform: translate(-50%, -50%);
       object-fit: cover;
-      filter: brightness(0.6); // Atenúa el video para mejorar la legibilidad del contenido
+      filter: brightness(0.6);
       z-index: 1;
     }
 
-    // Overlay con degradado usando las variables institucionales
+    // Overlay con degradado
     &__overlay {
       position: absolute;
       top: 0;
@@ -58,7 +58,6 @@
     }
   }
 
-  // Botón personalizado usando las variables
   .btn {
     padding: 0.75rem 2rem;
     font-size: 1rem;
@@ -78,7 +77,6 @@
   }
 }
 
-// Animación para la entrada suave del contenido
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -87,5 +85,12 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 768px) {
+  .home .hero {
+    height: 70vh;
   }
 }

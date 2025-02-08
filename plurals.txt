@@ -155,144 +155,6 @@ Contenido:
 
 --------------------------------------------------------------------------------
 
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/Checkout/Checkout.tsx
-
-Contenido:
-// src/components/Checkout/Checkout.tsx
-import React, { useState } from 'react';
-import './Checkout.scss';
-import { useCart } from '../../context/CartContext';
-import { useNotification } from '../../context/NotificationContext';
-import { useTranslation } from 'react-i18next';
-
-const Checkout: React.FC = () => {
-  const { cartItems, clear } = useCart();
-  const { addNotification } = useNotification();
-  const { t } = useTranslation();
-
-  // Estados para el formulario
-  const [shippingAddress, setShippingAddress] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('creditCard');
-  const [promoCode, setPromoCode] = useState('');
-
-  const totalPrice = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Aquí podrías validar el formulario, aplicar el código promocional, etc.
-    addNotification(
-      t('checkout_success', { defaultValue: '¡Tu compra ha sido realizada con éxito!' }),
-      'success'
-    );
-    clear();
-  };
-
-  if (cartItems.length === 0) {
-    return (
-      <div className="checkout container">
-        <h2>{t('checkout', { defaultValue: 'Checkout' })}</h2>
-        <p>{t('empty_cart', { defaultValue: 'Tu carrito está vacío.' })}</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="checkout container">
-      <h2>{t('checkout', { defaultValue: 'Checkout' })}</h2>
-      <div className="checkout__content">
-        {/* Resumen de la Orden */}
-        <div className="checkout__summary">
-          <h3>{t('order_summary', { defaultValue: 'Resumen de la Orden' })}</h3>
-          <ul>
-            {cartItems.map((item) => (
-              <li key={item.product_uuid}>
-                <span className="item-name">{item.name}</span>
-                <span className="item-quantity">x{item.quantity}</span>
-                <span className="item-total">${(item.price * item.quantity).toFixed(2)}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="checkout__total">
-            <span>{t('total', { defaultValue: 'Total:' })}</span>
-            <span>${totalPrice.toFixed(2)}</span>
-          </div>
-        </div>
-
-        {/* Formulario de Checkout */}
-        <form className="checkout__form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="shippingAddress">
-              {t('shipping_address', { defaultValue: 'Dirección de Envío' })}
-            </label>
-            <input
-              type="text"
-              id="shippingAddress"
-              value={shippingAddress}
-              onChange={(e) => setShippingAddress(e.target.value)}
-              placeholder={t('enter_shipping_address', { defaultValue: 'Ingresa tu dirección' })}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="phoneNumber">
-              {t('phone_number', { defaultValue: 'Número de Teléfono' })}
-            </label>
-            <input
-              type="tel"
-              id="phoneNumber"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              placeholder={t('enter_phone_number', { defaultValue: 'Ingresa tu teléfono' })}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="paymentMethod">
-              {t('payment_method', { defaultValue: 'Método de Pago' })}
-            </label>
-            <select
-              id="paymentMethod"
-              value={paymentMethod}
-              onChange={(e) => setPaymentMethod(e.target.value)}
-            >
-              <option value="creditCard">
-                {t('credit_card', { defaultValue: 'Tarjeta de Crédito' })}
-              </option>
-              <option value="paypal">
-                {t('paypal', { defaultValue: 'PayPal' })}
-              </option>
-            </select>
-          </div>
-          <div className="form-group">
-            <label htmlFor="promoCode">
-              {t('promo_code', { defaultValue: 'Código Promocional' })}
-            </label>
-            <input
-              type="text"
-              id="promoCode"
-              value={promoCode}
-              onChange={(e) => setPromoCode(e.target.value)}
-              placeholder={t('enter_promo_code', { defaultValue: 'Ingresa tu código' })}
-            />
-          </div>
-          <button type="submit" className="btn-primary">
-            {t('complete_purchase', { defaultValue: 'Completar Compra' })}
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-};
-
-export default Checkout;
-
-
---------------------------------------------------------------------------------
-
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/AdminDashboard/AdminDashboard.scss
 
 Contenido:
@@ -397,45 +259,6 @@ Contenido:
 
 --------------------------------------------------------------------------------
 
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/AdminDashboard/AdminDashboard.tsx
-
-Contenido:
-import React from 'react';
-import './AdminDashboard.scss';
-import { useTranslation } from 'react-i18next';
-
-const AdminDashboard: React.FC = () => {
-  const { t } = useTranslation();
-
-  return (
-    <div className="admin-dashboard container">
-      <h2>{t('admin_panel')}</h2>
-      <div className="admin-dashboard__sections">
-        <div className="admin-dashboard__card">
-          <h3>{t('admin_products')}</h3>
-          <p>{t('manage_products')}</p>
-          <button className="btn-primary">{t('go_to_products')}</button>
-        </div>
-        <div className="admin-dashboard__card">
-          <h3>{t('admin_orders')}</h3>
-          <p>{t('manage_orders')}</p>
-          <button className="btn-primary">{t('go_to_orders')}</button>
-        </div>
-        <div className="admin-dashboard__card">
-          <h3>{t('admin_users')}</h3>
-          <p>{t('manage_users')}</p>
-          <button className="btn-primary">{t('go_to_users')}</button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default AdminDashboard;
-
-
---------------------------------------------------------------------------------
-
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/NotFound/NotFound.scss
 
 Contenido:
@@ -457,150 +280,6 @@ Contenido:
     font-size: 1.1rem;
   }
 }
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/NotFound/NotFound.tsx
-
-Contenido:
-import React from 'react';
-import './NotFound.scss';
-import { useTranslation } from 'react-i18next';
-
-const NotFound: React.FC = () => {
-  const { t } = useTranslation();
-
-  return (
-    <div className="notfound container">
-      <h2>{t('not_found_title')}</h2>
-      <p>{t('not_found_message')}</p>
-    </div>
-  );
-};
-
-export default NotFound;
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/Header/Header.tsx
-
-Contenido:
-// src/components/Header/Header.tsx
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useCart } from '../../context/CartContext';
-import { useAuth } from '../../context/AuthContext';
-import './Header.scss';
-import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
-import { useTranslation } from 'react-i18next';
-
-const navLinks = [
-  { name: 'home', path: '/' },
-  { name: 'vision', path: '/MissionVision' },
-  { name: 'services', path: '/Services' },
-  { name: 'products', path: '/products' },
-  // { name: 'cart', path: '/cart' },
-  { name: 'contact', path: '/contact' },
-
-
-];
-
-const Header: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const { cartItems } = useCart();
-  const { isAuthenticated, login, logout, user } = useAuth();
-  const { t } = useTranslation();
-
-  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-
-  useEffect(() => {
-    // Evitamos que se haga scroll en el body cuando el menú móvil está abierto
-    document.body.classList.toggle('no-scroll', isOpen);
-  }, [isOpen]);
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
-  return (
-    <header className="header">
-      <div className="header__brand">
-        <Link to="/" onClick={() => setIsOpen(false)}>
-          <span className="brand__logo">{t('liteVibrance')}</span>
-        </Link>
-      </div>
-      <div className="header__toggle" onClick={toggleMenu}>
-        {isOpen ? '✕' : '☰'}
-      </div>
-      <nav className={`header__nav ${isOpen ? 'open' : ''}`}>
-        <ul className="nav__list">
-          <li className="nav__item">
-            <LanguageSwitcher />
-          </li>
-          {navLinks.map(link => (
-            <li key={link.name} className="nav__item">
-              <Link
-                to={link.path}
-                className="nav__link"
-                onClick={() => setIsOpen(false)}
-              >
-                {t(link.name)}
-                {link.name === 'cart' && totalItems > 0 && (
-                  <span className="cart-badge">{totalItems}</span>
-                )}
-              </Link>
-            </li>
-          ))}
-          {!isAuthenticated ? (
-            <li className="nav__item">
-              <Link
-                to="#"
-                className="nav__link"
-                onClick={(e) => {
-                  e.preventDefault();
-                  login();
-                  setIsOpen(false);
-                }}
-              >
-                {t('iniciar_sesion')}
-              </Link>
-            </li>
-          ) : (
-            <>
-              <li className="nav__item">
-                <span className="nav__link">
-                  {t('hello')} {user?.name || user?.email}
-                </span>
-              </li>
-              <li className="nav__item">
-                <Link
-                  to="#"
-                  className="nav__link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    logout();
-                    setIsOpen(false);
-                  }}
-                >
-                  {t('logout')}
-                </Link>
-              </li>
-            </>
-          )}
-        </ul>
-      </nav>
-      <div className="header__wave">
-        <svg viewBox="0 0 500 80" preserveAspectRatio="none">
-          <path d="M0,30 C150,90 350,0 500,30 L500,0 L0,0 Z" />
-        </svg>
-      </div>
-    </header>
-  );
-};
-
-export default Header;
 
 
 --------------------------------------------------------------------------------
@@ -633,7 +312,7 @@ Contenido:
     .brand__logo {
       position: relative;
       top: 10px;
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: bold;
       color: var(--color-primary); /* Rojo intenso */
       letter-spacing: 2px;
@@ -690,7 +369,8 @@ Contenido:
 
       .nav__item {
         .nav__link {
-          font-size: 1.2rem;
+          top: 5px;
+          font-size: 1.0rem;
           color: var(--color-secondary);
           text-decoration: none;
           transition: color 0.2s ease;
@@ -781,7 +461,7 @@ Contenido:
 
   &__detailed {
     /* Para pantallas grandes, cada producto ocupa el alto completo de la ventana */
-    height: 100vh;
+    min-height: 100vh;
     scroll-snap-type: y mandatory;
     -webkit-overflow-scrolling: touch;
 
@@ -968,211 +648,6 @@ Contenido:
   .skeleton-price { width: 40%; margin-top: 5px; }
 }
 
-.product-list{
-  background-color: red !important;
-}
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductList/ProductList.tsx
-
-Contenido:
-// src/components/ProductList/ProductList.tsx
-import React, { useState } from 'react';
-import './ProductList.scss';
-import { Link, useSearchParams } from 'react-router-dom';
-import ProductCard from '../ProductCard/ProductCard';
-import ProductListItem from '../ProductListItem/ProductListItem';
-import ViewSwitcher, { ViewMode } from '../ViewSwitcher/ViewSwitcher';
-import { dummyProducts } from '../../data/products';
-import { useTranslation } from 'react-i18next';
-
-const ProductSkeleton = () => (
-  <div className="product-card skeleton">
-    <div className="product-card__image-wrapper skeleton-img"></div>
-    <div className="product-card__info">
-      <div className="skeleton-text skeleton-title"></div>
-      <div className="skeleton-text skeleton-price"></div>
-    </div>
-  </div>
-);
-
-const ProductList: React.FC = () => {
-  const [searchParams] = useSearchParams();
-  const searchQuery = searchParams.get('search') || '';
-  const [viewMode, setViewMode] = useState<ViewMode>('detailed');
-  const { t } = useTranslation();
-
-  const normalizeString = (str: string) =>
-    str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-
-  // Filtramos los productos según la búsqueda usando dummyProducts
-  const filteredProducts = dummyProducts.filter((product) =>
-    normalizeString(product.name).includes(normalizeString(searchQuery))
-  );
-
-  return (
-    <div className="product-list container">
-      <div className="product-list__header">
-        <h2>{t('products_catalog')}</h2>
-        <ViewSwitcher viewMode={viewMode} setViewMode={setViewMode} isDarkMode={false} />
-      </div>
-      {searchQuery && filteredProducts.length === 0 ? (
-        <p>
-          {t('no_products_found')} "{searchQuery}"
-        </p>
-      ) : (
-        <>
-          {/* Si en algún momento necesitas mostrar un skeleton de carga, puedes habilitar la variable loading */}
-          {false ? (
-            <div className="product-list__grid">
-              {Array(8)
-                .fill(0)
-                .map((_, index) => (
-                  <ProductSkeleton key={index} />
-                ))}
-            </div>
-          ) : (
-            <>
-              {viewMode === 'grid' && (
-                <div className="product-list__grid">
-                  {(searchQuery ? filteredProducts : dummyProducts).map((product) => (
-                    <ProductCard key={product.uuid} product={product} />
-                  ))}
-                </div>
-              )}
-              {viewMode === 'list' && (
-                <div className="product-list__list">
-                  {(searchQuery ? filteredProducts : dummyProducts).map((product) => (
-                    <ProductListItem key={product.uuid} product={product} />
-                  ))}
-                </div>
-              )}
-              {viewMode === 'detailed' && (
-                <div className="product-list__detailed">
-                  {(searchQuery ? filteredProducts : dummyProducts).map((product) => (
-                    <div key={product.uuid} className="product-detail">
-                      <div className="image-wrapper">
-                        <img
-                          src={
-                            product.photos && product.photos.length > 0
-                              ? product.photos[0]
-                              : 'https://via.placeholder.com/600x400?text=No+Image'
-                          }
-                          alt={product.name}
-                        />
-                      </div>
-                      <div className="info">
-                        <h3>{product.name}</h3>
-                        <p>{product.description}</p>
-                        <Link
-                          to={`/products/${product.uuid}/${product.slug}`}
-                        >
-                          {t('view_detail')}
-                        </Link>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </>
-          )}
-        </>
-      )}
-    </div>
-  );
-};
-
-export default ProductList;
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductDetail/ProductDetail.tsx
-
-Contenido:
-// src/components/ProductDetail/ProductDetail.tsx
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import './ProductDetail.scss';
-import { useTranslation } from 'react-i18next';
-import { Product, dummyProducts } from '../../data/products';
-
-const ProductDetail: React.FC = () => {
-  const { id } = useParams();
-  const [selectedPhoto, setSelectedPhoto] = useState(0);
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
-  const { t } = useTranslation();
-
-  useEffect(() => {
-    // Buscamos el producto en el array hardcodeado
-    const foundProduct = dummyProducts.find((p) => p.uuid === id);
-    setProduct(foundProduct || null);
-    setLoading(false);
-  }, [id]);
-
-  if (loading) {
-    return <div className="product-detail container">{t('loading')}</div>;
-  }
-
-  if (!product) {
-    return (
-      <div className="product-detail container">
-        <h2>{t('product_not_found')}</h2>
-        <Link to="/products" className="btn-secondary">
-          {t('back_to_catalog')}
-        </Link>
-      </div>
-    );
-  }
-
-  const photoArray =
-    product.photos && product.photos.length > 0 ? product.photos : [];
-  const mainImage =
-    photoArray.length > 0
-      ? photoArray[selectedPhoto]
-      : 'https://via.placeholder.com/600x400?text=No+Image';
-
-  return (
-    <div className="product-detail container">
-      <div className="product-detail__content">
-        <div className="product-detail__image-section">
-          <div className="product-detail__main-image">
-            <img src={mainImage} alt={`${product.name} ${selectedPhoto + 1}`} />
-          </div>
-          {photoArray.length > 1 && (
-            <div className="product-detail__thumbnails">
-              {photoArray.map((photo, index) => (
-                <img
-                  key={index}
-                  src={photo}
-                  alt={`${product.name} ${index + 1}`}
-                  className={selectedPhoto === index ? 'active' : ''}
-                  onClick={() => setSelectedPhoto(index)}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-        <div className="product-detail__info">
-          <h2 className="product-detail__title">{product.name}</h2>
-     {/*      <p className="product-detail__price">
-            ${product.price.toFixed(2)}
-          </p> */}
-          <p className="product-detail__description">{product.description}</p>
-          <div className="product-detail__actions">
-            <Link to="/products" className="btn-secondary">
-              {t('back_to_catalog')}
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default ProductDetail;
 
 
 --------------------------------------------------------------------------------
@@ -1400,129 +875,6 @@ Contenido:
 
 --------------------------------------------------------------------------------
 
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/Register/Register.tsx
-
-Contenido:
-// src/components/Register/Register.tsx
-import React from 'react';
-import { useAuth } from '../../hooks/useAuth'; // Actualizado
-import './Register.scss';
-import { useTranslation } from 'react-i18next';
-
-const Register: React.FC = () => {
-  const { login } = useAuth();
-  const { t } = useTranslation();
-
-  return (
-    <div className="register container">
-      <h2>{t('create_account')}</h2>
-      <button 
-        onClick={() => login({ screen_hint: 'signup' })}
-        className="btn-primary"
-      >
-        {t('signup')}
-      </button>
-    </div>
-  );
-};
-
-export default Register;
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/Cart/Cart.tsx
-
-Contenido:
-// src/components/Cart/Cart.tsx
-import React from 'react';
-import './Cart.scss';
-import { useCart } from '../../context/CartContext';
-import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-
-const Cart: React.FC = () => {
-  const { cartItems, remove, clear } = useCart();
-  const { t } = useTranslation();
-
-  const totalPrice = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
-
-  if (cartItems.length === 0) {
-    return (
-      <div className="cart container">
-        <h2 className="cart__title">{t('cart', { defaultValue: 'Carrito' })}</h2>
-        <div className="cart__empty">
-          <p>{t('guest_cart_empty', { defaultValue: 'Tu carrito está vacío.' })}</p>
-          <Link to="/products" className="btn-primary">
-            {t('go_to_products', { defaultValue: 'Ver Productos' })}
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="cart container">
-      <h2 className="cart__title">{t('cart', { defaultValue: 'Carrito' })}</h2>
-      <div className="cart__content">
-        {/* Lista de productos */}
-        <div className="cart__items">
-          {cartItems.map((item) => (
-            <div key={item.product_uuid} className="cart__item">
-              <div className="cart__item-image">
-                <img src={item.image} alt={item.name} />
-              </div>
-              <div className="cart__item-details">
-                <h3 className="item-name">{item.name}</h3>
-                <div className="item-quantity">
-                  {t('quantity', { defaultValue: 'Cantidad:' })} {item.quantity}
-                </div>
-                <div className="item-price">
-                  {t('subtotal', { defaultValue: 'Subtotal:' })} ${(
-                    item.price * item.quantity
-                  ).toFixed(2)}
-                </div>
-                <button
-                  onClick={() => remove(item.product_uuid)}
-                  className="btn-remove"
-                >
-                  {t('remove', { defaultValue: 'Eliminar' })}
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-        {/* Resumen de la orden */}
-        <div className="cart__summary">
-          <div className="summary-card">
-            <h3>{t('order_summary', { defaultValue: 'Resumen de la Orden' })}</h3>
-            <div className="summary-details">
-              <span>{t('total', { defaultValue: 'Total:' })}</span>
-              <span className="total-price">${totalPrice.toFixed(2)}</span>
-            </div>
-            <div className="summary-actions">
-              <button onClick={clear} className="btn-secondary">
-                {t('empty_cart_button', { defaultValue: 'Vaciar Carrito' })}
-              </button>
-              <Link to="/checkout" className="btn-primary">
-                {t('continue_checkout', { defaultValue: 'Continuar con la Compra' })}
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default Cart;
-
-
---------------------------------------------------------------------------------
-
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Cart/Cart.scss
 
 Contenido:
@@ -1726,33 +1078,6 @@ Contenido:
 
 --------------------------------------------------------------------------------
 
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/Login/Login.tsx
-
-Contenido:
-import React from 'react';
-import { useAuth } from '../../context/AuthContext';
-import './Login.scss';
-import { useTranslation } from 'react-i18next';
-
-const Login: React.FC = () => {
-  const { login } = useAuth();
-  const { t } = useTranslation();
-
-  return (
-    <div className="nav__item">
-      <h2>{t('session_login')}</h2>
-      <button onClick={login} className="nav__link">
-        {t('access')}
-      </button>
-    </div>
-  );
-};
-
-export default Login;
-
-
---------------------------------------------------------------------------------
-
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Login/Login.scss
 
 Contenido:
@@ -1941,123 +1266,6 @@ Contenido:
 
 --------------------------------------------------------------------------------
 
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/ViewSwitcher/ViewSwitcher.tsx
-
-Contenido:
-import React, { useState, useRef, useEffect } from 'react';
-import { FaTh, FaList, FaRegSquare } from 'react-icons/fa';
-import './ViewSwitcher.scss';
-import { useTranslation } from 'react-i18next';
-
-export type ViewMode = 'grid' | 'list' | 'detailed';
-
-interface ViewSwitcherProps {
-  viewMode: ViewMode;
-  setViewMode: (mode: ViewMode) => void;
-  isDarkMode: boolean;
-}
-
-const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ viewMode, setViewMode, isDarkMode }) => {
-  const [open, setOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { t } = useTranslation();
-
-  const toggleMenu = () => setOpen(!open);
-
-  const handleOptionClick = (mode: ViewMode) => {
-    setViewMode(mode);
-    setOpen(false);
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setOpen(false);
-      }
-    };
-
-    if (open) {
-      document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
-    
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [open]);
-
-  const getMainIcon = () => {
-    if (viewMode === 'grid') return <FaTh />;
-    if (viewMode === 'list') return <FaList />;
-    return <FaRegSquare />;
-  };
-
-  return (
-    <div className={`view-switcher ${isDarkMode ? 'dark-mode' : ''}`} ref={containerRef}>
-      <button className="view-switcher__toggle" onClick={toggleMenu}>
-        {getMainIcon()}
-      </button>
-      {open && (
-        <div className="view-switcher__menu">
-          <button onClick={() => handleOptionClick('grid')}>
-            <FaTh /> <span>{t('grid_view')}</span>
-          </button>
-          <button onClick={() => handleOptionClick('list')}>
-            <FaList /> <span>{t('list_view')}</span>
-          </button>
-          <button onClick={() => handleOptionClick('detailed')}>
-            <FaRegSquare /> <span>{t('detailed_view')}</span>
-          </button>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default ViewSwitcher;
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductListItem/ProductListItem.tsx
-
-Contenido:
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Product } from '../../data/products';
-import './ProductListItem.scss';
-import { useTranslation } from 'react-i18next';
-
-interface ProductListItemProps {
-  product: Product;
-}
-
-const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
-  const imageUrl =
-    product.photos && product.photos.length > 0
-      ? product.photos[0]
-      : 'https://via.placeholder.com/100?text=No+Image';
-  const { t } = useTranslation();
-
-  return (
-    <div className="product-list-item">
-      <img src={imageUrl} alt={product.name} />
-      <div className="product-list-item__details">
-        <h3>{product.name}</h3>
-        <Link to={`/products/${product.uuid}/${product.slug}`} className="btn-primary">
-          {t('view_detail')}
-        </Link>
-      </div>
-    </div>
-  );
-};
-
-export default ProductListItem;
-
-
---------------------------------------------------------------------------------
-
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductListItem/ProductListItem.scss
 
 Contenido:
@@ -2113,37 +1321,6 @@ Contenido:
     }
   }
   
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/Notification/Notification.tsx
-
-Contenido:
-// src/components/Notification/Notification.tsx
-import React from 'react';
-import './Notification.scss';
-import { useNotification } from '../../context/NotificationContext';
-
-const Notification: React.FC = () => {
-  const { notifications, removeNotification } = useNotification();
-
-  return (
-    <div className="notification-container">
-      {notifications.map((notification) => (
-        <div
-          key={notification.id}
-          className={`notification notification--${notification.type}`}
-          onClick={() => removeNotification(notification.id)}
-        >
-          {notification.message}
-        </div>
-      ))}
-    </div>
-  );
-};
-
-export default Notification;
-
 
 --------------------------------------------------------------------------------
 
@@ -2267,303 +1444,98 @@ Contenido:
 
 --------------------------------------------------------------------------------
 
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/LanguageSwitcher/LanguageSwitcher.tsx
-
-Contenido:
-// src/components/LanguageSwitcher/LanguageSwitcher.tsx
-import React, { useState, useRef, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { FaChevronDown } from 'react-icons/fa';
-import './LanguageSwitcher.scss';
-
-interface Language {
-  code: string;
-  label: string;
-  flag: string;
-}
-
-const languages: Language[] = [
-  { code: 'en', label: 'English', flag: '🇺🇸' },
-  { code: 'es', label: 'Español', flag: '🇪🇸' }
-];
-
-const LanguageSwitcher: React.FC = () => {
-  const { i18n } = useTranslation();
-  const [open, setOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const currentLanguage =
-    languages.find((lang) => lang.code === i18n.language) || languages[0];
-
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
-    setOpen(false);
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  return (
-    <div className="language-switcher" ref={containerRef}>
-      <button className="language-switcher__toggle" onClick={() => setOpen(!open)}>
-        <span className="language-switcher__flag">{currentLanguage.flag}</span>
-        <span className="language-switcher__label">{currentLanguage.label}</span>
-        <FaChevronDown className="language-switcher__icon" />
-      </button>
-      {open && (
-        <div className="language-switcher__menu">
-          {languages.map((lang) => (
-            <button
-              key={lang.code}
-              className="language-switcher__option"
-              onClick={() => changeLanguage(lang.code)}
-            >
-              <span className="language-switcher__flag">{lang.flag}</span>
-              <span className="language-switcher__label">{lang.label}</span>
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default LanguageSwitcher;
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/Home/Home.tsx
-
-Contenido:
-// src/components/Home/Home.tsx
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import './Home.scss';
-
-const Home: React.FC = () => {
-  const { t } = useTranslation();
-
-  return (
-    <main className="home">
-      <section className="hero">
-        <div className="hero__content container">
-          <h1 className="hero__title animate__animated animate__fadeInDown">
-            {t('welcome')}
-          </h1>
-          <p className="hero__subtitle animate__animated animate__fadeInUp">
-            {t('banner')}
-          </p>
-          <Link
-            to="/Services"
-            className="btn btn-primary animate__animated animate__zoomIn"
-          >
-            {t('explore_services', { defaultValue: 'Explore Services' })}
-          </Link>
-        </div>
-      </section>
-    </main>
-  );
-};
-
-export default Home;
-
-
---------------------------------------------------------------------------------
-
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Home/Home.scss
 
 Contenido:
+// src/components/Home/Home.scss
 .home {
-  margin-top: 100px; // Considera el espacio para el header fijo
-  font-family: 'Roboto', sans-serif;
-  color: var(--color-text);
-
-  .container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
-  }
-
-  /* SECCIÓN HERO */
   .hero {
+    position: relative;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--hero-condition), var(--color-card-bg));
-    color: var(--color-text);
-    text-align: center;
-    position: relative;
     overflow: hidden;
-    padding: 2rem;
 
-    // Efecto animado de fondo (opcional)
-    &::before {
-      content: "";
+    // Video de fondo
+    &__video {
       position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(0, 0, 0, 0.02) 0%, transparent 70%);
-      animation: pulse 6s infinite;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      filter: brightness(0.6); // Atenúa el video para mejorar la legibilidad del contenido
       z-index: 1;
     }
 
-    .hero__content {
-      position: relative;
+    // Overlay con degradado usando las variables institucionales
+    &__overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.7;
       z-index: 2;
     }
 
-    .hero__title {
-      font-size: 3.5rem;
-      margin-bottom: 1rem;
-      font-weight: 700;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    // Contenido centralizado
+    &__content {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      color: var(--color-text);
+      padding: 2rem;
+      animation: fadeInUp 1s ease-out;
     }
 
-    .hero__subtitle {
+    &__title {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    &__subtitle {
       font-size: 1.5rem;
       margin-bottom: 2rem;
-    }
-
-    // Ajustes responsivos para pantallas medianas (máx 768px)
-    @media (max-width: 768px) {
-      flex-direction: column;
-      height: auto;
-      padding: 1.5rem;
-
-      .hero__title {
-        font-size: 2.5rem;
-      }
-      .hero__subtitle {
-        font-size: 1.2rem;
-      }
-    }
-
-    // Ajustes adicionales para pantallas pequeñas (máx 480px)
-    @media (max-width: 480px) {
-      padding: 1rem;
-
-      .hero__title {
-        font-size: 2rem;
-      }
-      .hero__subtitle {
-        font-size: 1rem;
-      }
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
   }
 
-  /* SECCIÓN SOBRE NOSOTROS */
-  .about {
-    background-color: var(--color-card-bg);
-    padding: 4rem 2rem;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    margin-bottom: 4rem;
+  // Botón personalizado usando las variables
+  .btn {
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 50px;
+    background: var(--color-primary);
+    color: #fff;
+    text-decoration: none;
+    transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
 
-    .about__title {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-    .about__description {
-      font-size: 1.2rem;
-      line-height: 1.6;
-      margin-bottom: 2rem;
-      color: var(--color-text);
-    }
-
-    // Ajustes responsivos para pantallas medianas (máx 768px)
-    @media (max-width: 768px) {
-      padding: 3rem 1rem;
-      
-      .about__title {
-        font-size: 2rem;
-      }
-      .about__description {
-        font-size: 1rem;
-      }
-    }
-
-    // Ajustes adicionales para pantallas pequeñas (máx 480px)
-    @media (max-width: 480px) {
-      padding: 2rem 0.5rem;
-      
-      .about__title {
-        font-size: 1.8rem;
-      }
-      .about__description {
-        font-size: 0.9rem;
-      }
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      background: var(--color-primary-hover);
     }
   }
 }
 
-
-/* src/components/Home/Home.scss */
-.home {
-  margin-top: 100px;
-  font-family: 'Roboto', sans-serif;
-  color: var(--color-text);
-
-  .container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
+// Animación para la entrada suave del contenido
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-
-  /* Nueva sección "Misión y Visión" */
-  .about-us {
-    background-color: var(--color-card-bg);
-    padding: 4rem 2rem;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    margin-top: 4rem;
-
-    h2 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .about-us__content {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      justify-content: center;
-
-      .about-us__section {
-        background: var(--glass-bg);
-        backdrop-filter: blur(var(--glass-blur));
-        border: 1px solid var(--glass-border);
-        border-radius: 8px;
-        padding: 2rem;
-        max-width: 400px;
-        text-align: left;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-
-        h3 {
-          font-size: 1.8rem;
-          color: var(--color-primary);
-        }
-
-        p {
-          font-size: 1.1rem;
-          color: var(--color-text);
-        }
-      }
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -2573,381 +1545,516 @@ Contenido:
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Services/Services.scss
 
 Contenido:
-.services {
-  background-color: var(--color-bg);
-  padding: 5rem 2rem;
-  text-align: center;
+/* Estilo para la columna de descripción (lado izquierdo) */
+.pse-service-description {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  overflow: hidden;
+  border-radius: 15px;
+  
+  /* Fondo principal con degradado animado */
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  animation: pulseBackground 10s ease-in-out infinite;
+}
 
-  &__header {
-    margin-bottom: 3rem;
-    h2 {
-      font-size: 3rem;
-      color: var(--color-primary);
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      position: relative;
-      margin-bottom: 2rem;
-    }
+/* Animación para pulsar la luminosidad del fondo */
+@keyframes pulseBackground {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.1); }
+}
 
-    .services__subtitle {
-      font-size: 1.5rem;
-      color: var(--color-text-light);
-    }
-  }
+/* Overlay animado con degradado radial giratorio */
+.pse-service-description::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+  animation: rotateOverlay 20s linear infinite;
+  z-index: 0;
+}
 
-  &__highlighted {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin-bottom: 4rem;
-    flex-wrap: wrap;
-    justify-content: center;
+@keyframes rotateOverlay {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 
-    .service-card {
-      position: relative;
-      width: 300px;
-      padding: 2rem;
-      background-color: var(--color-primary);
-      color: white;
-      border-radius: 10px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-      cursor: pointer;
-      transition: all 0.3s ease-in-out;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      text-align: center;
+/* Contenedor del contenido (efecto glass mejorado) */
+.pse-service-description .pse-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  backdrop-filter: blur(12px);
+  padding: 2.5rem 3rem;
+  border-radius: 15px;
+  text-align: left;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  animation: fadeInUp 1s ease forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
 
-      &:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-      }
-
-      .service-card__icon {
-        font-size: 3rem;
-        position: absolute;
-        top: -20px;
-        right: -20px;
-        color: white;
-      }
-
-      .service-card__title {
-        font-size: 1.8rem;
-        margin-bottom: 1.5rem;
-        text-align: center;
-      }
-
-      .service-card__description {
-        font-size: 1.1rem;
-        color: var(--color-text-light);
-        text-align: center;
-        margin-bottom: 1.5rem;
-      }
-
-      .service-card__cta {
-        align-self: center;
-        margin-top: auto;
-        padding: 1rem 2rem;
-        background-color: var(--color-secondary);
-        color: white;
-        border-radius: 8px;
-        text-transform: uppercase;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-
-        &:hover {
-          background-color: var(--color-secondary-hover);
-        }
-      }
-    }
-  }
-
-  &__cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
-
-    .service-card {
-      background-color: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      padding: 3rem;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-align: center;
-
-      &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      }
-
-      .service-card__icon {
-        font-size: 2rem;
-        color: var(--color-primary);
-        margin-bottom: 1rem;
-        align-self: center;
-      }
-
-      .service-card__title {
-        font-size: 1.6rem;
-        color: var(--color-primary);
-        margin-bottom: 1rem;
-      }
-
-      .service-card__description {
-        font-size: 1.1rem;
-        color: var(--color-text-light);
-        margin-bottom: 1.5rem;
-        flex-grow: 1;
-      }
-
-      .service-card__cta {
-        padding: 1rem 2rem;
-        background-color: var(--color-primary);
-        color: white;
-        border-radius: 8px;
-        text-transform: uppercase;
-        cursor: pointer;
-        align-self: center;
-        transition: background-color 0.3s ease;
-
-        &:hover {
-          background-color: var(--color-primary-hover);
-        }
-      }
-    }
+/* Animación para entrada */
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-/* Ajustes responsivos */
-@media (max-width: 1024px) {
-  .services {
-    padding: 4rem 2rem;
-
-    &__header h2 {
-      font-size: 2.8rem;
-    }
-
-    &__highlighted {
-      .service-card {
-        width: 250px;
-        padding: 1.8rem;
-      }
-    }
-
-    &__cards {
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    }
-  }
+/* Estilos para el título y párrafo dentro del contenido */
+.pse-service-description .pse-content h2 {
+  font-size: 3rem;
+  color: #fff;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+  margin-bottom: 1rem;
 }
 
+.pse-service-description .pse-content p {
+  font-size: 1.2rem;
+  color: #f0f0f0;
+  line-height: 1.5;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  margin-bottom: 2rem;
+}
+
+/* Botón personalizado con efecto hover */
+.pse-service-description .pse-content .pse-button {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  background: transparent;
+  border: 2px solid #fff;
+  border-radius: 50px;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.pse-service-description .pse-content .pse-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+/* Responsivo: en mobile se apilan los elementos */
 @media (max-width: 768px) {
-  .services {
-    padding: 3rem 1rem;
+  .pse-service-detail {
+    flex-direction: column;
+    height: auto;
+  }
+}
 
-    &__header h2 {
-      font-size: 2.2rem;
-    }
 
-    .service-card {
-      width: 100%;
-      padding: 2rem;
-      margin: 0 auto;
+--------------------------------------------------------------------------------
+
+/home/southatoms/Escritorio/lite_vibrance_web/src/components/Services/ServiceDetail.scss
+
+Contenido:
+
+  /* Sección intersticial */
+  .pse-interstitial-section {
+    background: var(--color-bg);
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .pse-interstitial-content {
+      max-width: 700px;
       text-align: center;
+      h3 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: var(--color-primary);
+      }
     }
+  }
+  
+  /* Sección de resumen (grid) */
+  .pse-reward-section {
+    background: var(--color-bg);
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .pse-reward-content {
+      max-width: 1200px;
+      text-align: center;
+      h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: var(--color-primary);
+      }
+      p {
+        font-size: 1.125rem;
+        margin-bottom: 2rem;
+        color: var(--color-text);
+      }
+      .pse-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+      }
+      .pse-grid-item {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(var(--glass-blur));
+        padding: 1.5rem;
+        border-radius: 10px;
+        text-align: left;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        h3 {
+          font-size: 1.5rem;
+          margin-bottom: 0.75rem;
+          color: var(--color-text);
+        }
+        p {
+          font-size: 1rem;
+          margin-bottom: 1rem;
+          color: var(--color-text);
+        }
+        .pse-button {
+          padding: 0.5rem 1rem;
+          font-size: 0.9rem;
+          background: var(--color-primary);
+          color: var(--color-card-bg);
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background var(--transition-speed), transform var(--transition-speed);
+          &:hover {
+            background: var(--color-primary-hover);
+            transform: scale(1.05);
+          }
+        }
+      }
+    }
+  }
+  
+  /* Botón flotante */
+  .floating-summary-button {
+    position: fixed;
+    bottom: 30px;
+    right: 20px;
+    background: var(--color-secondary);
+    color: var(--color-card-bg);
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: background var(--transition-speed), transform var(--transition-speed);
+    z-index: 10;
+    &:hover {
+      background: var(--color-primary-hover);
+      transform: scale(1.05);
+    }
+  }
+  
+  /* Animación */
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* ==============================
+     ESTILOS RESPONSIVOS PARA MOBILE
+     ============================== */
+  @media (max-width: 768px) {
+    /* En mobile usamos altura “auto” para que el contenido defina el alto */
+    .pse-section {
+      height: auto;
+      min-height: auto;
+      padding: 1rem;
+      flex-direction: column;
+    }
+    
+    /* Sección de servicio: se elimina el efecto parallax y se ajusta el contenido */
+    .pse-service-section {
+      .pse-bg {
+        background-attachment: scroll; // Deshabilitamos el efecto fijo
+        height: 100%;
+      }
+      .pse-content {
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      .pse-content h2 {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+      }
+      .pse-content p {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        line-height: 1.4;
+      }
+      .pse-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
+    }
+    
+    /* Sección intersticial: espaciado y tipografía reducidos */
+    .pse-interstitial-section {
+      padding: 1rem;
+      .pse-interstitial-content {
+        max-width: 100%;
+        h3 {
+          font-size: 1.5rem;
+          margin: 0.5rem 0;
+        }
+      }
+    }
+    
+    /* Sección de resumen: la grilla se muestra en una sola columna */
+    .pse-reward-section {
+      padding: 1rem;
+      .pse-reward-content {
+        h2 {
+          font-size: 1.8rem;
+          margin-bottom: 1rem;
+        }
+        p {
+          font-size: 1rem;
+          margin-bottom: 1.5rem;
+        }
+        .pse-grid {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+        .pse-grid-item {
+          padding: 1rem;
+          h3 {
+            font-size: 1.3rem;
+          }
+          p {
+            font-size: 0.9rem;
+          }
+          .pse-button {
+            padding: 0.5rem 0.8rem;
+            font-size: 0.8rem;
+          }
+        }
+      }
+    }
+    
+    /* Botón flotante adaptado */
+    .floating-summary-button {
+      bottom: 20px;
+      right: 10px;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+  }
+  .parallax-services-extended.mobile {
+    background: var(--color-bg);
+    padding: 1rem;
+  }
+  
+  .pse-mobile-services-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .pse-mobile-service-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+  }
+  
+  .pse-mobile-service-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+  }
+  
+  .pse-mobile-service-card p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+    color: var(--color-text);
+  }
+  
+  .pse-mobile-service-card .pse-button {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    background: var(--color-primary);
+    color: var(--color-card-bg);
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    transition: background var(--transition-speed), transform var(--transition-speed);
+  }
+  
+  .pse-mobile-service-card .pse-button:hover {
+    background: var(--color-primary-hover);
+    transform: scale(1.05);
+  }
+  
 
-    .service-card__title {
-      font-size: 1.6rem;
-    }
+  /* Estilo para agrupar la descripción y el micromensaje */
+/* ServiceDetail.scss */
 
-    .service-card__description {
-      font-size: 1rem;
-    }
+/* Contenedor general del detalle, en desktop se muestran dos columnas */
+.pse-service-detail {
+  display: flex;
+  width: 100%;
+  height: 100vh; // Para desktop ocupa la pantalla completa
+}
 
-    .service-card__cta {
-      padding: 0.8rem 1.8rem;
-      font-size: 1rem;
-    }
+/* Columna izquierda: descripción con fondo animado y glass effect */
+.pse-service-description {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  overflow: hidden;
+  border-radius: 15px;
+}
+
+/* Fondo (ejemplo de degradado con desenfoque) */
+.pse-service-description .pse-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  filter: blur(6px);
+  z-index: 1;
+}
+
+/* Contenedor del contenido (efecto glass mejorado) */
+.pse-service-description .pse-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(12px);
+  padding: 2.5rem 3rem;
+  border-radius: 15px;
+  text-align: left;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  animation: fadeInUp 1s ease forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* Animación para la entrada del contenido */
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media (max-width: 480px) {
-  .services {
-    padding: 2.5rem 1rem;
+/* Estilos para el título y párrafo */
+.pse-service-description .pse-content h2 {
+  font-size: 3rem;
+  color: #fff;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+  margin-bottom: 1rem;
+}
 
-    &__header h2 {
-      font-size: 1.8rem;
-    }
+.pse-service-description .pse-content p {
+  font-size: 1.2rem;
+  color: #f0f0f0;
+  line-height: 1.5;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  margin-bottom: 2rem;
+}
 
-    .service-card {
-      padding: 1.5rem;
-      width: 90%;
-    }
+/* Botón con estilo personalizado */
+.pse-service-description .pse-content .pse-button {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  background: transparent;
+  border: 2px solid #fff;
+  border-radius: 50px;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
 
-    .service-card__title {
-      font-size: 1.4rem;
-    }
+.pse-service-description .pse-content .pse-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
 
-    .service-card__description {
-      font-size: 0.9rem;
-    }
+/* Columna derecha: micromensaje */
+.pse-micro-message {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  padding: 2rem;
+  text-align: center;
+}
 
-    .service-card__cta {
-      font-size: 0.9rem;
-      padding: 0.6rem 1.5rem;
-    }
+.pse-micro-message h3 {
+  font-size: 2rem;
+  color: var(--color-primary);
+}
+
+/* ==============================
+   ESTILOS RESPONSIVOS PARA MOBILE
+   ============================== */
+@media (max-width: 768px) {
+  .pse-service-detail {
+    flex-direction: column;
+    height: auto;
+    padding: 1rem;
+  }
+
+  /* Se ajustan los paddings para que no se solapen los elementos */
+  .pse-service-description,
+  .pse-micro-message {
+    padding: 1rem;
+    width: 100%;
+  }
+
+  .pse-service-description .pse-content {
+    padding: 1.5rem 2rem;
+    max-width: 100%;
+  }
+
+  .pse-service-description .pse-content h2 {
+    font-size: 2.2rem;
+  }
+
+  .pse-service-description .pse-content p {
+    font-size: 1rem;
+  }
+
+  .pse-micro-message h3 {
+    font-size: 1.5rem;
   }
 }
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/Services/Services.tsx
-
-Contenido:
-import { useTranslation } from 'react-i18next';
-import './Services.scss';
-
-const Services: React.FC = () => {
-  const { t } = useTranslation();
-
-
-  const servicesData = [
-    {
-      title: t('fonoaudiologia', { defaultValue: 'Fonoaudiología a Distancia' }),
-      description: t('fonoaudiologia_a_distancia_description', { defaultValue: 'Servicios de adaptación en el hogar para personas mayores y discapacitadas.' }),
-    },
-    {
-      title: t('domicilio_adecuacion', { defaultValue: 'Adecuación de Domicilio' }),
-      description: t('adecuacion_domicilio_description', { defaultValue: 'Servicios para mejorar la accesibilidad del hogar, facilitando la movilidad y seguridad.' }),
-    },
-    {
-      title: t('emotional_support', {
-        defaultValue: 'Soporte Emocional y Psicológico',
-      }),
-      description: t('emotional_support_description', {
-        defaultValue:
-          'Ofrecemos soporte emocional y psicológico tanto a pacientes como a sus familias para enfrentar los desafíos de la hospitalización domiciliaria. Terapias individuales y grupales en el hogar.',
-      }),
-    },
-    {
-      title: t('physical_rehabilitation', {
-        defaultValue: 'Rehabilitación Física y Ocupacional',
-      }),
-      description: t('physical_rehabilitation_description', {
-        defaultValue:
-          'Programas personalizados de rehabilitación física y ocupacional para personas que se recuperan de cirugías o accidentes. Sesiones a domicilio.',
-      }),
-    },
-    {
-      title: t('nursing_services', {
-        defaultValue: 'Servicios de Enfermería Especializada',
-      }),
-      description: t('nursing_services_description', {
-        defaultValue:
-          'Servicios de enfermería especializada que incluyen administración de medicamentos, cuidados de heridas y seguimiento postoperatorio. Atención sin necesidad de desplazamiento.',
-      }),
-    },
-    {
-      title: t('caregiver_support', {
-        defaultValue: 'Soporte a Cuidadores',
-      }),
-      description: t('caregiver_support_description', {
-        defaultValue:
-          'Cuidadores entrenados brindan soporte físico y emocional a personas mayores, asegurando su bienestar. Asistencia en movilidad, higiene personal y compañía.',
-      }),
-    },
-    {
-      title: t('personalized_medical_care', {
-        defaultValue: 'Atención Médica Personalizada',
-      }),
-      description: t('personalized_medical_care_description', {
-        defaultValue:
-          'Médicos especializados ofrecen atención médica integral a domicilio, incluyendo monitoreo de signos vitales, prescripción de medicamentos y seguimiento de tratamientos.',
-      }),
-    },
-  ];
-
-  return (
-    <section className="services">
-      <div className="services__header">
-        <h2>{t('our_services', { defaultValue: 'Nuestros Servicios' })}</h2>
-        <h3 className="services__subtitle">
-          {t('services_description', { defaultValue: 'Explora nuestros servicios personalizados para cuidar de vos y tus seres queridos.' })}
-        </h3>
-      </div>
-
-      {/* Servicios destacados */}
-{/*       <div className="services__highlighted">
-        {servicesData.slice(0, 2).map((service, index) => (
-          <div className="service-card" key={index}>
-            <div className="service-card__icon">{service.icon}</div>
-            <h3 className="service-card__title">{service.title}</h3>
-            <p className="service-card__description">{service.description}</p>
-            <button className="service-card__cta">{t('learn_more', { defaultValue: 'Saber más' })}</button>
-          </div>
-        ))}
-      </div> */}
-
-      {/* Todos los servicios */}
-      <div className="services__cards">
-        {servicesData.map((service, index) => (
-          <div className="service-card" key={index}>
-            <h3 className="service-card__title">{service.title}</h3>
-            <p className="service-card__description">{service.description}</p>
-            <button className="service-card__cta">{t('learn_more', { defaultValue: 'Saber más' })}</button>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-};
-
-export default Services;
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductModal/ProductModal.tsx
-
-Contenido:
-// src/components/ProductModal/ProductModal.tsx
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Product } from '../../data/products';
-import './ProductModal.scss';
-import { useTranslation } from 'react-i18next';
-
-interface ProductModalProps {
-  product: Product;
-}
-
-const ProductModal: React.FC<ProductModalProps> = ({ product }) => {
-  const { t } = useTranslation();
-  const imageUrl =
-    product.photos && product.photos.length > 0
-      ? product.photos[0]
-      : 'https://via.placeholder.com/100?text=No+Image';
-
-  return (
-    <div className="product-modal">
-      <img src={imageUrl} alt={product.name} />
-      <div className="product-modal__details">
-        <h3>{product.name}</h3>
-        <Link to={`/products/${product.uuid}/${product.slug}`} className="btn-primary">
-          {t('view_detail', { defaultValue: 'Ver detalle' })}
-        </Link>
-      </div>
-    </div>
-  );
-};
-
-export default ProductModal;
 
 
 --------------------------------------------------------------------------------
@@ -3043,16 +2150,15 @@ Contenido:
   flex-direction: column;
   height: auto;
 
-  min-height: calc(100vh - 170px);
+  min-height: 100vh;
 }
 
 .App-content {
-  flex: 1;
+  flex:1;
 }
 main {
-  margin-top: 100px;
-  flex: 1;
-}
+    flex: 1;
+  }
 
 html, body {
   height: 100%;
@@ -3075,7 +2181,7 @@ body {
   --color-bg: #FFFAF2;           /* Un off-white cálido para un ambiente luminoso y acogedor */
   --color-text: #333333;         /* Gris oscuro para una excelente legibilidad */
   --color-card-bg: #FFFFFF;      /* Blanco puro para resaltar el contenido */
-  --hero-condition: #FFFAF2;      /* Mismo tono que el fondo para una integración sutil */
+  --hero-condition: #fffdfb;      /* Mismo tono que el fondo para una integración sutil */
 
   /* Colores Institucionales */
   --color-primary: #6C5CE7;      /* Púrpura vibrante, moderno y sofisticado */
@@ -3307,53 +2413,6 @@ Contenido:
 
 --------------------------------------------------------------------------------
 
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/ProductCard/ProductCard.tsx
-
-Contenido:
-import React from 'react';
-import { Link } from 'react-router-dom';
-import './ProductCard.scss';
-import { Product } from '../../data/products';
-import { useTranslation } from 'react-i18next';
-
-interface ProductCardProps {
-  product: Product;
-}
-
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const imageUrl = product.photos && product.photos.length > 0
-    ? product.photos[0]
-    : 'https://via.placeholder.com/600x400?text=No+Image';
-  const { t } = useTranslation();
-
-  return (
-    <div className="product-card">
-      <div className="product-card__image-wrapper">
-        <img
-          src={imageUrl}
-          alt={product.name}
-          className="product-card__img"
-          loading="lazy"
-        />
-      </div>
-      <div className="product-card__info">
-        <h3 className="product-card__title">{product.name}</h3>
-        <Link
-          to={`/products/${product.uuid}/${product.slug}`}
-          className="btn-primary product-card__button"
-        >
-          {t('view_detail')}
-        </Link>
-      </div>
-    </div>
-  );
-};
-
-export default ProductCard;
-
-
---------------------------------------------------------------------------------
-
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/Footer/Footer.scss
 
 Contenido:
@@ -3410,327 +2469,92 @@ Contenido:
 
 --------------------------------------------------------------------------------
 
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/Footer/Footer.tsx
-
-Contenido:
-// src/components/Footer/Footer.tsx
-import React from 'react';
-import './Footer.scss';
-import { useTranslation } from 'react-i18next';
-import { 
-  FaMapMarkerAlt, 
-  FaFacebookF, 
-  FaTwitter, 
-  FaInstagram, 
-  FaWhatsapp 
-} from 'react-icons/fa';
-
-const Footer: React.FC = () => {
-  const { t } = useTranslation();
-
-  return (
-    <footer className="footer">
-      <div className="footer__info">
-        {/* Ubicación */}
-        <div className="footer__location">
-          <FaMapMarkerAlt className="footer__icon" />
-          <p>
-            {t('dummy_address', { defaultValue: 'Av. Principal 123, Ciudad, País' })}
-          </p>
-        </div>
-        {/* Redes Sociales */}
-        <div className="footer__social">
-          <a
-            href="https://facebook.com/tuempresa"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaFacebookF className="footer__icon" />
-          </a>
-          <a
-            href="https://twitter.com/tuempresa"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaTwitter className="footer__icon" />
-          </a>
-          <a
-            href="https://instagram.com/tuempresa"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaInstagram className="footer__icon" />
-          </a>
-          <a
-            href="https://wa.me/1234567890"  // Reemplaza con tu número en formato internacional sin espacios ni símbolos.
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaWhatsapp className="footer__icon" />
-            <span></span>
-          </a>
-        </div>
-        {/* WhatsApp */}
-  
-      </div>
-      <p className="footer__copy">
-        &copy; {new Date().getFullYear()} Calm. {t('footer_rights', { defaultValue: 'Todos los derechos reservados.' })}
-      </p>
-    </footer>
-  );
-};
-
-export default Footer;
-
-
---------------------------------------------------------------------------------
-
 /home/southatoms/Escritorio/lite_vibrance_web/src/components/MissionVision/MissionVision.scss
 
 Contenido:
-/* src/components/MissionVision/MissionVision.scss */
-.mission-vision {
-  padding: 4rem 2rem;
-  background-color: var(--color-card-bg);
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  margin: 4rem auto;
+// Variables y mixins para lograr un diseño elegante y refinado
+$background-color: #f5f5f7; // Fondo sutil, casi blanco
+$card-bg: #ffffff;          // Tarjeta limpia en blanco
+$text-color: #1d1d1f;       // Negro muy oscuro (ideal para tipografía Apple)
+$accent-color: #0071e3;     // Azul característico y sofisticado
+$transition-speed: 0.3s;
+$font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
-  &__header {
-    margin-bottom: 3rem;
-
-    h2 {
-      font-size: 2.8rem;
-      color: var(--color-primary);
-      margin-bottom: 0.5rem;
-    }
-
-    p {
-      font-size: 1.2rem;
-      color: var(--color-text);
-    }
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-  &__cards {
+.apple-principles {
+  background: $background-color;
+  padding: 4rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+
+  &__container {
     display: flex;
+    gap: 2rem;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 2rem;
-
-    & > .mission-vision__card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(var(--glass-blur));
-      border: 1px solid var(--glass-border);
-      border-radius: 8px;
-      padding: 2rem;
-      flex: 1;
-      max-width: 320px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      text-align: left;
-
-      h3 {
-        font-size: 1.8rem;
-        color: var(--color-primary);
-        margin-bottom: 1rem;
-      }
-
-      p {
-        font-size: 1rem;
-        color: var(--color-text);
-        line-height: 1.6;
-      }
-
-      &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      }
-    }
+    max-width: 1200px;
   }
 }
 
-/* Ajustes para pantallas medianas y pequeñas */
-@media (max-width: 768px) {
-  .mission-vision {
-    padding: 3rem 1rem;
+.apple-card {
+  background: $card-bg;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 320px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform $transition-speed, box-shadow $transition-speed;
+  cursor: pointer;
+  font-family: $font-stack;
+  animation: fadeInUp 0.8s ease forwards;
+  
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
 
-    &__header {
-      h2 {
-        font-size: 2.2rem;
-      }
-      p {
-        font-size: 1rem;
-      }
-    }
+  &__title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: $text-color;
+    position: relative;
+    padding-bottom: 0.5rem;
 
-    &__cards {
-      flex-direction: column;
-      align-items: center;
+    // Detalle sutil en forma de línea degradada (al estilo Apple)
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, $accent-color, darken($accent-color, 10%));
+      border-radius: 2px;
     }
   }
+
+  &__description {
+    font-size: 1rem;
+    color: #606060;
+    line-height: 1.5;
+    margin: 0;
+    opacity: 0.85;
+  }
 }
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/MissionVision/MissionVision.tsx
-
-Contenido:
-import React from 'react';
-import './MissionVision.scss';
-import { useTranslation } from 'react-i18next';
-
-const MissionVision: React.FC = () => {
-  const { t } = useTranslation();
-
-  return (
-    <div className="mission-vision container">
-      <header className="mission-vision__header">
-        <h2>{t('our_mission_vision', { defaultValue: 'Our Mission, Vision & Values' })}</h2>
-        <p>{t('mission_vision_intro', {
-          defaultValue: 'We are committed to delivering exceptional care through our core principles.',
-        })}</p>
-      </header>
-      <div className="mission-vision__cards">
-        <div className="mission-vision__card">
-          <h3>{t('mission', { defaultValue: 'Mission' })}</h3>
-          <p>{t('mission_val', { defaultValue: 'To provide personalized, continuous, and efficient care, focusing on the individual with mutual respect and collaboration. We are passionate about what we do.' })}</p>
-        </div>
-        <div className="mission-vision__card">
-          <h3>{t('vision', { defaultValue: 'Vision' })}</h3>
-          <p>{t('vision_val', { defaultValue: 'To be the team of professionals you choose for yourself or your family, delivering high-quality care with continuous improvement.' })}</p>
-        </div>
-        <div className="mission-vision__card">
-          <h3>{t('values', { defaultValue: 'Values' })}</h3>
-          <p>{t('values_val', { defaultValue: 'We value the commitment to care as a lifestyle, emphasizing continuous training and excellence in service.' })}</p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default MissionVision;
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/Contact/Contact.tsx
-
-Contenido:
-// src/components/Contact/Contact.tsx
-import React, { useState } from 'react';
-import { useNotification } from '../../context/NotificationContext';
-import './Contact.scss';
-import { useTranslation } from 'react-i18next';
-
-const Contact: React.FC = () => {
-  const { addNotification } = useNotification();
-  const { t } = useTranslation();
-
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [subject, setSubject] = useState('');
-  const [message, setMessage] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    addNotification(t('purchase_success'), 'success');
-    setName('');
-    setEmail('');
-    setSubject('');
-    setMessage('');
-  };
-
-  return (
-    <div className="contact container">
-      <h2>{t('contact_us')}</h2>
-      <p>{t('contact_us_message')}</p>
-
-      {/* Contenedor para agrupar formulario y mapa */}
-      <div className="contact__form-map">
-        <form className="contact__form" onSubmit={handleSubmit}>
-          <div className="contact__form-group">
-            <label htmlFor="name">{t('name')}</label>
-            <input
-              type="text"
-              id="name"
-              placeholder={t('your_name')}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </div>
-          <div className="contact__form-group">
-            <label htmlFor="email">{t('email')}</label>
-            <input
-              type="email"
-              id="email"
-              placeholder={t('your_email')}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="contact__form-group">
-            <label htmlFor="subject">{t('subject')}</label>
-            <input
-              type="text"
-              id="subject"
-              placeholder={t('message_subject')}
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              required
-            />
-          </div>
-          <div className="contact__form-group">
-            <label htmlFor="message">{t('message')}</label>
-            <textarea
-              id="message"
-              placeholder={t('your_message')}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              required
-            />
-          </div>
-          <button type="submit" className="btn-primary">
-            {t('send_message')}
-          </button>
-        </form>
-
-        {/* Bloque del mapa */}
-        <div className="contact__map">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.092911429665!2d-122.40641738468165!3d37.78583497975714!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085808c0a3d1a7b%3A0x2dd33f8d0b0e1f9f!2sYour%20Office%20Address!5e0!3m2!1sen!2s!4v1610000000000!5m2!1sen!2s"
-            width="600"
-            height="450"
-            style={{ border: 0 }}
-            allowFullScreen={true}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title="Ubicación de la Oficina"
-          ></iframe>
-        </div>
-      </div>
-
-  {/*     <div className="contact__info">
-        <div className="contact__info-item">
-          <h3>{t('address')}</h3>
-          <p>{t('dummy_address')}</p>
-        </div>
-        <div className="contact__info-item">
-          <h3>{t('phone')}</h3>
-          <p>{t('dummy_phone')}</p>
-        </div>
-        <div className="contact__info-item">
-          <h3>{t('email')}</h3>
-          <p>{t('contact_email')}</p>
-        </div>
-      </div> */}
-    </div>
-  );
-};
-
-export default Contact;
 
 
 --------------------------------------------------------------------------------
@@ -3968,32 +2792,6 @@ Contenido:
     transform: translateY(0);
   }
 }
-
-
---------------------------------------------------------------------------------
-
-/home/southatoms/Escritorio/lite_vibrance_web/src/components/ThemeSwitch/FloatingThemeSwitch.tsx
-
-Contenido:
-import React from 'react';
-import { useTheme } from '../../context/ThemeContext';
-import './FloatingThemeSwitch.scss';
-import { FaSun, FaMoon } from 'react-icons/fa';
-
-const FloatingThemeSwitch: React.FC = () => {
-  const { theme, toggleTheme } = useTheme();
-
-  const isDark = theme === 'dark';
-  const icon = isDark ? <FaSun /> : <FaMoon />;
-
-  return (
-    <button className="floating-theme-switch" onClick={toggleTheme}>
-      {icon}
-    </button>
-  );
-};
-
-export default FloatingThemeSwitch;
 
 
 --------------------------------------------------------------------------------
