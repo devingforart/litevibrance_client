@@ -1,99 +1,160 @@
-import { useTranslation } from 'react-i18next';
-import './Services.scss';
+import React, { useState, useEffect } from 'react';
+import './Services.scss'; // Importa este archivo con los estilos para mobile
 
-const Services: React.FC = () => {
-  const { t } = useTranslation();
+interface Service {
+  title: string;
+  description: string;
+  link: string;
+}
 
+const services: Service[] = [
+  {
+    title: "Fonoaudiología a Distancia",
+    description:
+      "Brindamos servicios de fonoaudiología a distancia para mejorar la comunicación y habilidades del paciente, facilitando el acceso a evaluaciones y tratamientos profesionales desde la comodidad del hogar.",
+    link: "#fonoaudiologia",
+  },
+  {
+    title: "Adecuación de Domicilio",
+    description:
+      "CALM ofrece asesoramiento médico especializado para adaptar los hogares a las necesidades de personas mayores y con movilidad reducida, mediante evaluaciones personalizadas y reformas orientadas a mejorar la seguridad y confort.",
+    link: "#adecuacion",
+  },
+  {
+    title: "Apoyo Emocional y Psicológico",
+    description:
+      "Proveemos apoyo emocional y psicológico tanto a pacientes como a sus familias para enfrentar los desafíos inherentes a la hospitalización domiciliaria, con terapias individuales y grupales fundamentadas en criterios clínicos.",
+    link: "#apoyo",
+  },
+  {
+    title: "Rehabilitación Física y Ocupacional",
+    description:
+      "Nuestros programas de rehabilitación física y ocupacional están diseñados para facilitar la recuperación tras cirugías o accidentes, ofreciendo sesiones personalizadas en el entorno del hogar con un enfoque médico riguroso.",
+    link: "#rehabilitacion",
+  },
+  {
+    title: "Enfermería Especializada",
+    description:
+      "Brindamos servicios de enfermería especializada, que incluyen administración de medicamentos, cuidado de heridas y seguimiento postoperatorio, garantizando una atención de calidad sin necesidad de desplazamiento.",
+    link: "#enfermeria",
+  },
+  {
+    title: "Cuidadores a Domicilio",
+    description:
+      "Nuestros cuidadores capacitados ofrecen apoyo físico y emocional a personas mayores, asegurando asistencia en movilidad, higiene personal y compañía, con un compromiso de cuidado integral y respetuoso.",
+    link: "#cuidadores",
+  },
+  {
+    title: "Atención Médica",
+    description:
+      "Nuestros médicos especializados proporcionan atención médica integral en el hogar, incluyendo el monitoreo de signos vitales, prescripción de medicamentos y seguimiento personalizado de tratamientos, garantizando un control clínico riguroso.",
+    link: "#atencion",
+  },
+];
 
-  const servicesData = [
-    {
-      title: t('fonoaudiologia', { defaultValue: 'Fonoaudiología a Distancia' }),
-      description: t('fonoaudiologia_a_distancia_description', { defaultValue: 'Servicios de adaptación en el hogar para personas mayores y discapacitadas.' }),
-    },
-    {
-      title: t('domicilio_adecuacion', { defaultValue: 'Adecuación de Domicilio' }),
-      description: t('adecuacion_domicilio_description', { defaultValue: 'Servicios para mejorar la accesibilidad del hogar, facilitando la movilidad y seguridad.' }),
-    },
-    {
-      title: t('emotional_support', {
-        defaultValue: 'Soporte Emocional y Psicológico',
-      }),
-      description: t('emotional_support_description', {
-        defaultValue:
-          'Ofrecemos soporte emocional y psicológico tanto a pacientes como a sus familias para enfrentar los desafíos de la hospitalización domiciliaria. Terapias individuales y grupales en el hogar.',
-      }),
-    },
-    {
-      title: t('physical_rehabilitation', {
-        defaultValue: 'Rehabilitación Física y Ocupacional',
-      }),
-      description: t('physical_rehabilitation_description', {
-        defaultValue:
-          'Programas personalizados de rehabilitación física y ocupacional para personas que se recuperan de cirugías o accidentes. Sesiones a domicilio.',
-      }),
-    },
-    {
-      title: t('nursing_services', {
-        defaultValue: 'Servicios de Enfermería Especializada',
-      }),
-      description: t('nursing_services_description', {
-        defaultValue:
-          'Servicios de enfermería especializada que incluyen administración de medicamentos, cuidados de heridas y seguimiento postoperatorio. Atención sin necesidad de desplazamiento.',
-      }),
-    },
-    {
-      title: t('caregiver_support', {
-        defaultValue: 'Soporte a Cuidadores',
-      }),
-      description: t('caregiver_support_description', {
-        defaultValue:
-          'Cuidadores entrenados brindan soporte físico y emocional a personas mayores, asegurando su bienestar. Asistencia en movilidad, higiene personal y compañía.',
-      }),
-    },
-    {
-      title: t('personalized_medical_care', {
-        defaultValue: 'Atención Médica Personalizada',
-      }),
-      description: t('personalized_medical_care_description', {
-        defaultValue:
-          'Médicos especializados ofrecen atención médica integral a domicilio, incluyendo monitoreo de signos vitales, prescripción de medicamentos y seguimiento de tratamientos.',
-      }),
-    },
-  ];
+// Micromensajes para la versión desktop (no se usarán en mobile)
+const microMessages: string[] = [
+  "Una comunicación efectiva es la base del bienestar integral; confíe en nuestras evaluaciones a distancia para mantener su calidad de vida.",
+  "Un entorno seguro y adaptado es esencial en el cuidado; nuestros especialistas aseguran que su hogar cumpla con los más altos estándares clínicos.",
+  "El equilibrio emocional es vital en el proceso de atención; nuestro apoyo psicológico se fundamenta en metodologías clínicas y humanizadas.",
+  "La rehabilitación personalizada es clave para recuperar la autonomía; nuestros programas son diseñados bajo rigurosos criterios médicos.",
+  "La atención especializada de enfermería garantiza un seguimiento meticuloso; nuestro equipo actúa con profesionalismo y empatía.",
+  "El acompañamiento continuo en el cuidado domiciliario refuerza la calidad de vida; nuestros cuidadores trabajan con compromiso y respeto."
+];
 
-  return (
-    <section className="services">
-      <div className="services__header">
-        <h2>{t('our_services', { defaultValue: 'Nuestros Servicios' })}</h2>
-        <h3 className="services__subtitle">
-          {t('services_description', { defaultValue: 'Explora nuestros servicios personalizados para cuidar de vos y tus seres queridos.' })}
-        </h3>
-      </div>
+const ParallaxServicesExtended: React.FC = () => {
+  // Detecta si estamos en mobile (<768px)
+  const [isMobile, setIsMobile] = useState<boolean>(false);
 
-      {/* Servicios destacados */}
-{/*       <div className="services__highlighted">
-        {servicesData.slice(0, 2).map((service, index) => (
-          <div className="service-card" key={index}>
-            <div className="service-card__icon">{service.icon}</div>
-            <h3 className="service-card__title">{service.title}</h3>
-            <p className="service-card__description">{service.description}</p>
-            <button className="service-card__cta">{t('learn_more', { defaultValue: 'Saber más' })}</button>
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    // Ejecuta en el montaje y cuando cambia el tamaño de la ventana
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Versión desktop: incluye secciones con parallax, micromensajes y resumen de servicios
+  const renderDesktop = () => (
+    <div className="parallax-services-extended">
+      {services.map((service, index) => (
+        <React.Fragment key={index}>
+          {/* Sección de servicio con parallax */}
+          <section className="pse-section pse-service-section">
+            <div className="pse-bg" />
+            <div className="pse-content">
+              <h2>{service.title}</h2>
+              <p>{service.description}</p>
+              <a href={service.link} className="pse-button">
+                Saber más
+              </a>
+            </div>
+          </section>
+          {/* Sección intersticial con micromensaje (solo entre servicios) */}
+          {index < services.length - 1 && (
+            <section className="pse-section pse-interstitial-section">
+              <div className="pse-interstitial-content">
+                <h3>{microMessages[index]}</h3>
+              </div>
+            </section>
+          )}
+        </React.Fragment>
+      ))}
+      {/* Sección de resumen */}
+      <section id="pse-summary" className="pse-section pse-reward-section">
+        <div className="pse-reward-content">
+          <h2>Resumen de Servicios</h2>
+          <p>
+            Acompáñenos en este recorrido clínico y conozca en detalle cada uno de nuestros servicios, diseñados para ofrecer la mejor atención domiciliaria.
+          </p>
+          <div className="pse-grid">
+            {services.map((service, idx) => (
+              <div key={idx} className="pse-grid-item">
+                <h3>{service.title}</h3>
+                <p>{service.description}</p>
+                <a href={service.link} className="pse-button">
+                  Saber más
+                </a>
+              </div>
+            ))}
           </div>
-        ))}
-      </div> */}
-
-      {/* Todos los servicios */}
-      <div className="services__cards">
-        {servicesData.map((service, index) => (
-          <div className="service-card" key={index}>
-            <h3 className="service-card__title">{service.title}</h3>
-            <p className="service-card__description">{service.description}</p>
-            <button className="service-card__cta">{t('learn_more', { defaultValue: 'Saber más' })}</button>
-          </div>
-        ))}
-      </div>
-    </section>
+        </div>
+      </section>
+      {/* Botón flotante para ver el resumen */}
+      <button
+        className="floating-summary-button"
+        onClick={() => {
+          const summarySection = document.getElementById("pse-summary");
+          if (summarySection) {
+            summarySection.scrollIntoView({ behavior: "smooth" });
+          }
+        }}
+      >
+        Ver Resumen
+      </button>
+    </div>
   );
+
+  // Versión mobile: se muestra una lista simple de tarjetas con los servicios (sin micromensajes)
+  const renderMobile = () => (
+    <div className="parallax-services-extended mobile">
+      <div className="pse-mobile-services-container">
+        {services.map((service, index) => (
+          <div key={index} className="pse-mobile-service-card">
+            <h2>{service.title}</h2>
+            <p>{service.description}</p>
+            <a href={service.link} className="pse-button">
+              Saber más
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  return isMobile ? renderMobile() : renderDesktop();
 };
 
-export default Services;
+export default ParallaxServicesExtended;
