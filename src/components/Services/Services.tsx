@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Services.scss'; // Importa este archivo con los estilos para mobile
-
+import ServiceDetail from './ServiceDetail'; // Asegúrate de importar el componente
 interface Service {
   title: string;
   description: string;
@@ -89,8 +89,6 @@ const ParallaxServicesExtended: React.FC = () => {
             <div key={idx} className="pse-grid-item">
               <h3>{service.title}</h3>
               <p>{service.description}</p>
-              {/* El href usa el link definido (ej. "#atencion"). 
-                  Aseguramos que la sección de detalle tenga el id "atencion" */}
               <a href={service.link} className="pse-button">
                 Saber más
               </a>
@@ -101,36 +99,19 @@ const ParallaxServicesExtended: React.FC = () => {
     </section>
   );
 
-  // Secciones de detalle de cada servicio (con micro-mensajes)
+  // Renderizamos cada servicio con su micromensaje
   const renderDetailedServices = () => (
     <>
       {services.map((service, index) => (
-        <React.Fragment key={index}>
-          {/* Agregamos el id a la sección (quitando el '#' del link) */}
-          <section id={service.link.substring(1)} className="pse-section pse-service-section">
-            <div className="pse-bg" />
-            <div className="pse-content">
-              <h2>{service.title}</h2>
-              <p>{service.description}</p>
-              <a href={service.link} className="pse-button">
-                Saber más
-              </a>
-            </div>
-          </section>
-          {/* Si existe un micromensaje para este servicio, se renderiza */}
-          {microMessages[index] && (
-            <section className="pse-section pse-interstitial-section">
-              <div className="pse-interstitial-content">
-                <h3>{microMessages[index]}</h3>
-              </div>
-            </section>
-          )}
-        </React.Fragment>
+        <ServiceDetail
+          key={index}
+          service={service}
+          microMessage={microMessages[index]}
+        />
       ))}
     </>
   );
 
-  // Versión desktop: resumen primero, luego detalles y un botón flotante para volver al resumen
   const renderDesktop = () => (
     <div className="parallax-services-extended">
       {renderSummary()}
@@ -149,7 +130,6 @@ const ParallaxServicesExtended: React.FC = () => {
     </div>
   );
 
-  // Versión mobile: se muestra el resumen al inicio y luego se listan las tarjetas de servicios
   const renderMobile = () => (
     <div className="parallax-services-extended mobile">
       {renderSummary()}
