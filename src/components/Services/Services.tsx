@@ -20,7 +20,6 @@ const services: Service[] = [
       "Nuestros cuidadores capacitados ofrecen apoyo físico y emocional a personas mayores, asegurando asistencia en movilidad, higiene personal y compañía, con un compromiso de cuidado integral y respetuoso.",
     link: "#cuidadores",
   },
-
   {
     title: "Adecuación de Domicilio",
     description:
@@ -51,11 +50,8 @@ const services: Service[] = [
       "Brindamos servicios de fonoaudiología a distancia para mejorar la comunicación y habilidades del paciente, facilitando el acceso a evaluaciones y tratamientos profesionales desde la comodidad del hogar.",
     link: "#fonoaudiologia",
   },
-
-
 ];
 
-// Micromensajes para la versión desktop (no se usarán en mobile)
 const microMessages: string[] = [
   "La atención médica en el hogar es sinónimo de seguridad y confianza; nuestros especialistas monitorean sus signos vitales y adaptan tratamientos personalizados para garantizar un control clínico riguroso.",
   "El acompañamiento continuo en el cuidado domiciliario refuerza la calidad de vida; nuestros cuidadores trabajan con compromiso y respeto.",
@@ -64,7 +60,6 @@ const microMessages: string[] = [
   "El equilibrio emocional es vital en el proceso de atención; nuestro apoyo psicológico se fundamenta en metodologías clínicas y humanizadas.",
   "La rehabilitación personalizada es clave para recuperar la autonomía; nuestros programas son diseñados bajo rigurosos criterios médicos.",
   "Una comunicación efectiva es la base del bienestar integral; confíe en nuestras evaluaciones a distancia para mantener su calidad de vida.",
-
 ];
 
 const ParallaxServicesExtended: React.FC = () => {
@@ -81,52 +76,65 @@ const ParallaxServicesExtended: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Versión desktop: incluye secciones con parallax, micromensajes y resumen de servicios
-  const renderDesktop = () => (
-    <div className="parallax-services-extended">
-{services.map((service, index) => (
-  <React.Fragment key={index}>
-    {/* Sección de servicio */}
-    <section className="pse-section pse-service-section">
-      <div className="pse-bg" />
-      <div className="pse-content">
-        <h2>{service.title}</h2>
-        <p>{service.description}</p>
-        <a href={service.link} className="pse-button">
-          Saber más
-        </a>
+  // Sección resumen, que se mostrará al inicio
+  const renderSummary = () => (
+    <section id="pse-summary" className="pse-section pse-reward-section">
+      <div className="pse-reward-content">
+        <h2>Resumen de Servicios</h2>
+        <p>
+          Acompáñenos en este recorrido clínico y conozca en detalle cada uno de nuestros servicios, diseñados para ofrecer la mejor atención domiciliaria.
+        </p>
+        <div className="pse-grid">
+          {services.map((service, idx) => (
+            <div key={idx} className="pse-grid-item">
+              <h3>{service.title}</h3>
+              <p>{service.description}</p>
+              {/* El href usa el link definido (ej. "#atencion"). 
+                  Aseguramos que la sección de detalle tenga el id "atencion" */}
+              <a href={service.link} className="pse-button">
+                Saber más
+              </a>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
-    {/* Renderiza el micromensaje si existe */}
-    {microMessages[index] && (
-      <section className="pse-section pse-interstitial-section">
-        <div className="pse-interstitial-content">
-          <h3>{microMessages[index]}</h3>
-        </div>
-      </section>
-    )}
-  </React.Fragment>      ))}
-      {/* Sección de resumen */}
-      <section id="pse-summary" className="pse-section pse-reward-section">
-        <div className="pse-reward-content">
-          <h2>Resumen de Servicios</h2>
-          <p>
-            Acompáñenos en este recorrido clínico y conozca en detalle cada uno de nuestros servicios, diseñados para ofrecer la mejor atención domiciliaria.
-          </p>
-          <div className="pse-grid">
-            {services.map((service, idx) => (
-              <div key={idx} className="pse-grid-item">
-                <h3>{service.title}</h3>
-                <p>{service.description}</p>
-                <a href={service.link} className="pse-button">
-                  Saber más
-                </a>
+  );
+
+  // Secciones de detalle de cada servicio (con micro-mensajes)
+  const renderDetailedServices = () => (
+    <>
+      {services.map((service, index) => (
+        <React.Fragment key={index}>
+          {/* Agregamos el id a la sección (quitando el '#' del link) */}
+          <section id={service.link.substring(1)} className="pse-section pse-service-section">
+            <div className="pse-bg" />
+            <div className="pse-content">
+              <h2>{service.title}</h2>
+              <p>{service.description}</p>
+              <a href={service.link} className="pse-button">
+                Saber más
+              </a>
+            </div>
+          </section>
+          {/* Si existe un micromensaje para este servicio, se renderiza */}
+          {microMessages[index] && (
+            <section className="pse-section pse-interstitial-section">
+              <div className="pse-interstitial-content">
+                <h3>{microMessages[index]}</h3>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-      {/* Botón flotante para ver el resumen */}
+            </section>
+          )}
+        </React.Fragment>
+      ))}
+    </>
+  );
+
+  // Versión desktop: resumen primero, luego detalles y un botón flotante para volver al resumen
+  const renderDesktop = () => (
+    <div className="parallax-services-extended">
+      {renderSummary()}
+      {renderDetailedServices()}
       <button
         className="floating-summary-button"
         onClick={() => {
@@ -141,9 +149,10 @@ const ParallaxServicesExtended: React.FC = () => {
     </div>
   );
 
-  // Versión mobile: se muestra una lista simple de tarjetas con los servicios (sin micromensajes)
+  // Versión mobile: se muestra el resumen al inicio y luego se listan las tarjetas de servicios
   const renderMobile = () => (
     <div className="parallax-services-extended mobile">
+      {renderSummary()}
       <div className="pse-mobile-services-container">
         {services.map((service, index) => (
           <div key={index} className="pse-mobile-service-card">
