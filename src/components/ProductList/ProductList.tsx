@@ -1,10 +1,6 @@
 // src/components/ProductList/ProductList.tsx
-import React, { useState } from 'react';
 import './ProductList.scss';
 import { Link, useSearchParams } from 'react-router-dom';
-import ProductCard from '../ProductCard/ProductCard';
-import ProductListItem from '../ProductListItem/ProductListItem';
-import ViewSwitcher, { ViewMode } from '../ViewSwitcher/ViewSwitcher';
 import { dummyProducts } from '../../data/products';
 import { useTranslation } from 'react-i18next';
 
@@ -18,12 +14,10 @@ const ProductSkeleton = () => (
   </div>
 );
 
-console.log('view', ViewSwitcher);
 
 const ProductList: React.FC = () => {
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('search') || '';
-  const [viewMode, setViewMode] = useState<ViewMode>('detailed');
   const { t } = useTranslation();
 
   const normalizeString = (str: string) =>
@@ -33,7 +27,6 @@ const ProductList: React.FC = () => {
   const filteredProducts = dummyProducts.filter((product) =>
     normalizeString(product.name).includes(normalizeString(searchQuery))
   );
-  setViewMode('detailed')
 
   return (
     <div className="product-list container">
@@ -58,21 +51,7 @@ const ProductList: React.FC = () => {
             </div>
           ) : (
             <>
-              {viewMode === 'grid' && (
-                <div className="product-list__grid">
-                  {(searchQuery ? filteredProducts : dummyProducts).map((product) => (
-                    <ProductCard key={product.uuid} product={product} />
-                  ))}
-                </div>
-              )}
-              {viewMode === 'list' && (
-                <div className="product-list__list">
-                  {(searchQuery ? filteredProducts : dummyProducts).map((product) => (
-                    <ProductListItem key={product.uuid} product={product} />
-                  ))}
-                </div>
-              )}
-              {viewMode === 'detailed' && (
+           
                 <div className="product-list__detailed">
                   {(searchQuery ? filteredProducts : dummyProducts).map((product) => (
                     <div key={product.uuid} className="product-detail">
@@ -98,7 +77,7 @@ const ProductList: React.FC = () => {
                     </div>
                   ))}
                 </div>
-              )}
+              
             </>
           )}
         </>
