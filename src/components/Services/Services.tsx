@@ -9,16 +9,29 @@ interface Service {
 
 const services: Service[] = [
   {
-    title: "Fonoaudiología a Distancia",
+    title: "Atención Médica",
     description:
-      "Brindamos servicios de fonoaudiología a distancia para mejorar la comunicación y habilidades del paciente, facilitando el acceso a evaluaciones y tratamientos profesionales desde la comodidad del hogar.",
-    link: "#fonoaudiologia",
+      "Nuestros médicos especializados proporcionan atención médica integral en el hogar, incluyendo el monitoreo de signos vitales, prescripción de medicamentos y seguimiento personalizado de tratamientos, garantizando un control clínico riguroso.",
+    link: "#atencion",
   },
+  {
+    title: "Cuidadores a Domicilio",
+    description:
+      "Nuestros cuidadores capacitados ofrecen apoyo físico y emocional a personas mayores, asegurando asistencia en movilidad, higiene personal y compañía, con un compromiso de cuidado integral y respetuoso.",
+    link: "#cuidadores",
+  },
+
   {
     title: "Adecuación de Domicilio",
     description:
       "CALM ofrece asesoramiento médico especializado para adaptar los hogares a las necesidades de personas mayores y con movilidad reducida, mediante evaluaciones personalizadas y reformas orientadas a mejorar la seguridad y confort.",
     link: "#adecuacion",
+  },
+  {
+    title: "Enfermería Especializada",
+    description:
+      "Brindamos servicios de enfermería especializada, que incluyen administración de medicamentos, cuidado de heridas y seguimiento postoperatorio, garantizando una atención de calidad sin necesidad de desplazamiento.",
+    link: "#enfermeria",
   },
   {
     title: "Apoyo Emocional y Psicológico",
@@ -33,33 +46,25 @@ const services: Service[] = [
     link: "#rehabilitacion",
   },
   {
-    title: "Enfermería Especializada",
+    title: "Fonoaudiología a Distancia",
     description:
-      "Brindamos servicios de enfermería especializada, que incluyen administración de medicamentos, cuidado de heridas y seguimiento postoperatorio, garantizando una atención de calidad sin necesidad de desplazamiento.",
-    link: "#enfermeria",
+      "Brindamos servicios de fonoaudiología a distancia para mejorar la comunicación y habilidades del paciente, facilitando el acceso a evaluaciones y tratamientos profesionales desde la comodidad del hogar.",
+    link: "#fonoaudiologia",
   },
-  {
-    title: "Cuidadores a Domicilio",
-    description:
-      "Nuestros cuidadores capacitados ofrecen apoyo físico y emocional a personas mayores, asegurando asistencia en movilidad, higiene personal y compañía, con un compromiso de cuidado integral y respetuoso.",
-    link: "#cuidadores",
-  },
-  {
-    title: "Atención Médica",
-    description:
-      "Nuestros médicos especializados proporcionan atención médica integral en el hogar, incluyendo el monitoreo de signos vitales, prescripción de medicamentos y seguimiento personalizado de tratamientos, garantizando un control clínico riguroso.",
-    link: "#atencion",
-  },
+
+
 ];
 
 // Micromensajes para la versión desktop (no se usarán en mobile)
 const microMessages: string[] = [
-  "Una comunicación efectiva es la base del bienestar integral; confíe en nuestras evaluaciones a distancia para mantener su calidad de vida.",
+  "La atención médica en el hogar es sinónimo de seguridad y confianza; nuestros especialistas monitorean sus signos vitales y adaptan tratamientos personalizados para garantizar un control clínico riguroso.",
+  "El acompañamiento continuo en el cuidado domiciliario refuerza la calidad de vida; nuestros cuidadores trabajan con compromiso y respeto.",
   "Un entorno seguro y adaptado es esencial en el cuidado; nuestros especialistas aseguran que su hogar cumpla con los más altos estándares clínicos.",
+  "La atención especializada de enfermería garantiza un seguimiento meticuloso; nuestro equipo actúa con profesionalismo y empatía.",
   "El equilibrio emocional es vital en el proceso de atención; nuestro apoyo psicológico se fundamenta en metodologías clínicas y humanizadas.",
   "La rehabilitación personalizada es clave para recuperar la autonomía; nuestros programas son diseñados bajo rigurosos criterios médicos.",
-  "La atención especializada de enfermería garantiza un seguimiento meticuloso; nuestro equipo actúa con profesionalismo y empatía.",
-  "El acompañamiento continuo en el cuidado domiciliario refuerza la calidad de vida; nuestros cuidadores trabajan con compromiso y respeto."
+  "Una comunicación efectiva es la base del bienestar integral; confíe en nuestras evaluaciones a distancia para mantener su calidad de vida.",
+
 ];
 
 const ParallaxServicesExtended: React.FC = () => {
@@ -79,29 +84,28 @@ const ParallaxServicesExtended: React.FC = () => {
   // Versión desktop: incluye secciones con parallax, micromensajes y resumen de servicios
   const renderDesktop = () => (
     <div className="parallax-services-extended">
-      {services.map((service, index) => (
-        <React.Fragment key={index}>
-          {/* Sección de servicio con parallax */}
-          <section className="pse-section pse-service-section">
-            <div className="pse-bg" />
-            <div className="pse-content">
-              <h2>{service.title}</h2>
-              <p>{service.description}</p>
-              <a href={service.link} className="pse-button">
-                Saber más
-              </a>
-            </div>
-          </section>
-          {/* Sección intersticial con micromensaje (solo entre servicios) */}
-          {index < services.length - 1 && (
-            <section className="pse-section pse-interstitial-section">
-              <div className="pse-interstitial-content">
-                <h3>{microMessages[index]}</h3>
-              </div>
-            </section>
-          )}
-        </React.Fragment>
-      ))}
+{services.map((service, index) => (
+  <React.Fragment key={index}>
+    {/* Sección de servicio */}
+    <section className="pse-section pse-service-section">
+      <div className="pse-bg" />
+      <div className="pse-content">
+        <h2>{service.title}</h2>
+        <p>{service.description}</p>
+        <a href={service.link} className="pse-button">
+          Saber más
+        </a>
+      </div>
+    </section>
+    {/* Renderiza el micromensaje si existe */}
+    {microMessages[index] && (
+      <section className="pse-section pse-interstitial-section">
+        <div className="pse-interstitial-content">
+          <h3>{microMessages[index]}</h3>
+        </div>
+      </section>
+    )}
+  </React.Fragment>      ))}
       {/* Sección de resumen */}
       <section id="pse-summary" className="pse-section pse-reward-section">
         <div className="pse-reward-content">
