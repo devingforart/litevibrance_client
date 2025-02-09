@@ -1,12 +1,8 @@
 import './ServiceDetail.scss'
 // ServiceDetail.tsx
 import React from 'react';
+import { Service } from '../../data/services'; // Ajusta la ruta según tu estructura
 
-interface Service {
-  title: string;
-  description: string;
-  link: string;
-}
 
 interface ServiceDetailProps {
   service: Service;
@@ -21,10 +17,10 @@ const ServiceDetail: React.FC<ServiceDetailProps> = ({ service, microMessage }) 
         <div className="pse-bg" />
         <div className="pse-content">
           <h2>{service.title}</h2>
-          <p>{service.description}</p>
-          <a href={service.link} className="pse-button">
+          <p>{service.detail}</p>
+{/*           <a href={service.link} className="pse-button">
             Saber más
-          </a>
+          </a> */}
         </div>
       </div>
       {/* Columna del micromensaje */}

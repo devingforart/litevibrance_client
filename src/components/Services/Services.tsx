@@ -1,56 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Services.scss'; // Importa este archivo con los estilos para mobile
 import ServiceDetail from './ServiceDetail'; // Asegúrate de importar el componente
-interface Service {
-  title: string;
-  description: string;
-  link: string;
-}
-
-const services: Service[] = [
-  {
-    title: "Atención Médica",
-    description:
-      "Nuestros médicos especializados proporcionan atención médica integral en el hogar, incluyendo el monitoreo de signos vitales, prescripción de medicamentos y seguimiento personalizado de tratamientos, garantizando un control clínico riguroso.",
-    link: "#atencion",
-  },
-  {
-    title: "Cuidadores a Domicilio",
-    description:
-      "Nuestros cuidadores capacitados ofrecen apoyo físico y emocional a personas mayores, asegurando asistencia en movilidad, higiene personal y compañía, con un compromiso de cuidado integral y respetuoso.",
-    link: "#cuidadores",
-  },
-  {
-    title: "Adecuación de Domicilio",
-    description:
-      "CALM ofrece asesoramiento médico especializado para adaptar los hogares a las necesidades de personas mayores y con movilidad reducida, mediante evaluaciones personalizadas y reformas orientadas a mejorar la seguridad y confort.",
-    link: "#adecuacion",
-  },
-  {
-    title: "Enfermería Especializada",
-    description:
-      "Brindamos servicios de enfermería especializada, que incluyen administración de medicamentos, cuidado de heridas y seguimiento postoperatorio, garantizando una atención de calidad sin necesidad de desplazamiento.",
-    link: "#enfermeria",
-  },
-  {
-    title: "Apoyo Emocional y Psicológico",
-    description:
-      "Proveemos apoyo emocional y psicológico tanto a pacientes como a sus familias para enfrentar los desafíos inherentes a la hospitalización domiciliaria, con terapias individuales y grupales fundamentadas en criterios clínicos.",
-    link: "#apoyo",
-  },
-  {
-    title: "Rehabilitación Física y Ocupacional",
-    description:
-      "Nuestros programas de rehabilitación física y ocupacional están diseñados para facilitar la recuperación tras cirugías o accidentes, ofreciendo sesiones personalizadas en el entorno del hogar con un enfoque médico riguroso.",
-    link: "#rehabilitacion",
-  },
-  {
-    title: "Fonoaudiología a Distancia",
-    description:
-      "Brindamos servicios de fonoaudiología a distancia para mejorar la comunicación y habilidades del paciente, facilitando el acceso a evaluaciones y tratamientos profesionales desde la comodidad del hogar.",
-    link: "#fonoaudiologia",
-  },
-];
+import {services} from '../../data/services'
 
 const microMessages: string[] = [
   "La atención médica en el hogar es sinónimo de seguridad y confianza; nuestros especialistas monitorean sus signos vitales y adaptan tratamientos personalizados para garantizar un control clínico riguroso.",
