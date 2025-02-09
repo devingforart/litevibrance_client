@@ -379,3 +379,15 @@
 .pse-reward-section{
 min-height: 100vh;
 }
+
+.pse-button {
+  display: inline-flex;           // Utilizamos flexbox para centrar el contenido
+  // Aseguramos que el ícono no tenga márgenes inesperados
+  svg {
+    display: block;
+  }
+
+  &:hover {
+    background-color: #0056b3;    // Color de fondo al pasar el cursor
+  }
+}

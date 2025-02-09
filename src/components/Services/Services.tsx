@@ -67,7 +67,7 @@ const ParallaxServicesExtended: React.FC = () => {
     <div className="parallax-services-extended">
       {renderSummary()}
       {renderDetailedServices()}
-      <button
+   {/*    <button
         className="floating-summary-button"
         onClick={() => {
           const summarySection = document.getElementById("pse-summary");
@@ -77,7 +77,7 @@ const ParallaxServicesExtended: React.FC = () => {
         }}
       >
         Ver Resumen
-      </button>
+      </button> */}
     </div>
   );
 
