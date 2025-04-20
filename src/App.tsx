@@ -13,7 +13,6 @@ import Header from './components/Header/Header';
 import NotFound from './components/NotFound/NotFound';
 import FloatingThemeSwitch from './components/ThemeSwitch/FloatingThemeSwitch';
 import Notification from './components/Notification/Notification'; // Importamos el componente de notificaciones
-import './components/sass/global.scss';
 import Contact from './components/Contact/Contact';
 import Services from './components/Services/Services';
 import MissionVision from './components/MissionVision/MissionVision';

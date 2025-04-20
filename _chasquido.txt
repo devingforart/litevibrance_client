@@ -1,0 +1,2498 @@
+/home/southtoms/Escritorio/develop/personal/calmhc/src/main.tsx
+
+Contenido:
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
+import './components/sass/global.scss';
+import './components/i18n'; 
+import { CartProvider } from './context/CartContext';
+import { ThemeProvider } from './context/ThemeContext';
+import { AuthProvider } from './context/AuthContext'; 
+import { NotificationProvider } from './context/NotificationContext';
+
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <ThemeProvider>
+        <AuthProvider>
+          <CartProvider>
+            <NotificationProvider>
+              <App />
+            </NotificationProvider>
+          </CartProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </BrowserRouter>
+  </React.StrictMode>
+);
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/App.tsx
+
+Contenido:
+// src/App.tsx
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Home from './components/Home/Home';
+import ProductList from './components/ProductList/ProductList';
+import ProductDetail from './components/ProductDetail/ProductDetail';
+import Cart from './components/Cart/Cart';
+import Checkout from './components/Checkout/Checkout';
+import AdminDashboard from './components/AdminDashboard/AdminDashboard';
+import Login from './components/Login/Login';
+import Register from './components/Register/Register';
+import Header from './components/Header/Header';
+import NotFound from './components/NotFound/NotFound';
+import FloatingThemeSwitch from './components/ThemeSwitch/FloatingThemeSwitch';
+import Notification from './components/Notification/Notification'; // Importamos el componente de notificaciones
+import './components/sass/global.scss';
+import Contact from './components/Contact/Contact';
+import Services from './components/Services/Services';
+import MissionVision from './components/MissionVision/MissionVision';
+import Footer from './components/Footer/Footer';
+
+const App: React.FC = () => {
+  return (
+    <div className="app-container">
+      <Header />
+      <FloatingThemeSwitch />
+      <div className="App">
+      <main className="App-content">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<ProductList />} />
+          {/* Cambiamos la ruta del producto para incluir el slug */}
+          <Route path="/products/:id/:slug" element={<ProductDetail />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/contact" element={<Contact />} /> 
+          <Route path="/services" element={<Services />} /> 
+          <Route path="/MissionVision" element={<MissionVision />} /> 
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+
+      </main>
+      </div>
+       <Footer />
+    <Notification /> {/* Aquí se renderizan las notificaciones */}
+    </div>
+  );
+};
+
+export default App;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/vite-env.d.ts
+
+Contenido:
+/// <reference types="vite/client" />
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/services/api.ts
+
+Contenido:
+// src/services/api.ts
+//const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const API_URL = import.meta.env.VITE_API_URL || 'https://api.litevibrance.com';
+
+
+// ↑ Podrías usar process.env en vez de import.meta.env, según tu bundler.
+
+interface RequestOptions {
+  method?: string;
+  token?: string;
+  body?: unknown;        // si deseas enviar JSON
+  [key: string]: any;    // para opciones adicionales
+}
+
+/**
+ * request: helper para llamadas fetch a nuestra API.
+ * @param endpoint: ruta (ej. "/api/login")
+ * @param options: { method, body, token, ... }
+ */
+export async function request(endpoint: string, options: RequestOptions = {}) {
+  const { method = 'GET', token, body, ...rest } = options;
+
+  // Preparar cabeceras
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  // Hacer fetch
+  const response = await fetch(`${API_URL}${endpoint}`, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+    ...rest,
+  });
+
+  // Manejo de errores (básico). Podrías mejorarlo
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(
+      `Error ${response.status}: ${errorText || 'Error en la petición'}`
+    );
+  }
+
+  // Intentar parsear JSON (o devolver vacío si no hay contenido)
+  try {
+    return await response.json();
+  } catch {
+    return null;
+  }
+}
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/services/auth.ts
+
+Contenido:
+// src/services/auth.ts
+
+export async function loginAPI(email: string, password: string): Promise<{ token: string }> {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email, password })
+  });
+  if (!response.ok) {
+    throw new Error('Error al iniciar sesión');
+  }
+  return response.json();
+}
+
+export async function registerAPI(name: string, email: string, password: string): Promise<{ token: string }> {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/register`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ name, email, password })
+  });
+  if (!response.ok) {
+    throw new Error('Error al registrarse');
+  }
+  return response.json();
+}
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/services/cart.ts
+
+Contenido:
+// src/services/cart.ts
+
+export interface CartItem {
+  product_uuid: string;
+  name: string;
+  image: string;
+  price: number;
+  quantity: number;
+}
+
+export async function getCart(token: string): Promise<CartItem[]> {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/cart`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+  if (!response.ok) {
+    throw new Error('Error al obtener el carrito');
+  }
+  return response.json();
+}
+
+export async function addToCart(token: string, productUuid: string, quantity: number): Promise<string> {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/cart`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ product_uuid: productUuid, quantity })
+  });
+  if (!response.ok) {
+    throw new Error('Error al agregar el producto al carrito');
+  }
+  return response.text();
+}
+
+export async function removeFromCart(token: string, productUuid: string): Promise<string> {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/cart/${productUuid}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+  if (!response.ok) {
+    throw new Error('Error al eliminar el producto del carrito');
+  }
+  return response.text();
+}
+
+export async function checkout(token: string): Promise<string> {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/api/checkout`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+  if (!response.ok) {
+    throw new Error('Error al finalizar la compra');
+  }
+  return response.text();
+}
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/locales/en/translation.json
+
+Contenido:
+{
+  "checkout_success": "Your purchase has been successfully completed!",
+  "checkout": "Checkout",
+  "empty_cart": "Your cart is empty.",
+  "order_summary": "Order Summary",
+  "total": "Total:",
+  "shipping_address": "Shipping Address",
+  "enter_shipping_address": "Enter your address",
+  "phone_number": "Phone Number",
+  "enter_phone_number": "Enter your phone number",
+  "payment_method": "Payment Method",
+  "credit_card": "Credit Card",
+  "paypal": "PayPal",
+  "promo_code": "Promo Code",
+  "enter_promo_code": "Enter your code",
+  "complete_purchase": "Complete Purchase",
+  
+  "admin_panel": "Admin Panel",
+  "admin_products": "Products",
+  "manage_products": "Manage products",
+  "go_to_products": "Go to Products",
+  "admin_orders": "Orders",
+  "manage_orders": "Manage orders",
+  "go_to_orders": "Go to Orders",
+  "admin_users": "Users",
+  "manage_users": "Manage users",
+  "go_to_users": "Go to Users",
+  "services": "Services",
+
+  "not_found_title": "Page Not Found",
+  "not_found_message": "The page you're looking for does not exist.",
+  
+  "liteVibrance": "Calm",
+  "home": "Home",
+  "products": "Our Team",
+  "contact": "Contact",
+  "iniciar_sesion": "Login",
+  "hello": "Hello",
+  "logout": "Logout",
+  
+  "products_catalog": "Our Work Team",
+  "no_products_found": "No products found for",
+  "view_detail": "View details",
+  "loading": "Loading...",
+  "product_not_found": "Product not found",
+  "back_to_catalog": "Back",
+  
+  "create_account": "Create Account",
+  "signup": "Sign Up",
+  
+  "cart": "Cart",
+  "guest_cart_empty": "Your cart is empty.",
+  "quantity": "Quantity:",
+  "subtotal": "Subtotal:",
+  "remove": "Remove",
+  "empty_cart_button": "Empty Cart",
+  "continue_checkout": "Continue Checkout",
+  
+  "session_login": "Login",
+  "access": "Access",
+  
+  "grid_view": "Grid View",
+  "list_view": "List View",
+  "detailed_view": "Detailed View",
+  
+  "welcome": "Welcome to Calm",
+  "banner": "We care for your loved ones with warmth and professionalism, strengthening the unique bond between caregiver and patient. We offer personalized home care to improve quality of life and ensure well-being. Trust in our commitment to love and dedication in every care.",
+  
+  "premium_home_care_services": "Our Premium Home Care Services",
+  "hide_services": "Hide Services",
+  "explore_services": "Explore Services",
+  "emotional_support": "Emotional and Psychological Support",
+  "emotional_support_description": "We provide emotional and psychological support to patients and their families to face the challenges of home hospitalization. Individual and group therapies are offered at home.",
+  "physical_rehabilitation": "Physical and Occupational Rehabilitation",
+  "physical_rehabilitation_description": "We offer physical and occupational rehabilitation programs for people recovering from surgeries or accidents. Our therapists provide personalized sessions at home.",
+  "nursing_services": "Specialized Nursing",
+  "nursing_services_description": "Our specialized nursing services include medication administration, wound care, and postoperative follow-up, ensuring quality care without the need to travel.",
+  "caregiver_support": "Home Caregivers",
+  "caregiver_support_description": "Our trained caregivers provide physical and emotional support to seniors, ensuring their well-being. This includes assistance with mobility, personal hygiene, and companionship.",
+  "personalized_medical_care": "Medical Care",
+  "personalized_medical_care_description": "Our specialized doctors offer comprehensive medical care at home. This includes monitoring vital signs, prescribing medications, and following up on treatments.",
+  "services_description":"Services description",
+  "footer_rights": "All rights reserved.",
+  
+  "contact_us": "Contact Us",
+  "contact_us_message": "Feel free to contact us with any questions or comments.",
+  "name": "Name",
+  "your_name": "Your name",
+  "email": "Email",
+  "your_email": "Your email",
+  "subject": "Subject",
+  "message_subject": "Message Subject",
+  "message": "Message",
+  "your_message": "Your message",
+  "send_message": "Send Message",
+  "address": "Address",
+  "dummy_address": "Blanco Encalada 197.  San Isidro, Provincia de Buenos Aires",
+  "phone": "Phone",
+  "dummy_phone": "+54 11-3095-0404",
+  "dummy_email": "info@calmhc.com",
+  "our_services": "Our Services",
+  
+  "vision": "Vision",
+  "mission": "Mission",
+  "values": "Values",
+  "mission_val": "To provide personalized, continuous, and efficient care, focusing on the person, creating a space of mutual respect and collaboration. We want to accompany you through different stages of life, as we are passionate about what we do.",
+  "values_val": "We value the willingness to provide care as a lifestyle. Even simple problems are incorporated to be solved, which is why ongoing training for professionals and family members (integrated into the care team) is considered essential for excellent service.",
+  "vision_val": "To be the human team of professionals you choose for yourself or your family and provide high-quality service through continuous improvement of techniques and knowledge in healthcare. To be a boutique company where only the quality of services and care matter.",
+  "our_mission_vision": "Our Mission, Vision, and Values",
+  "mission_vision_intro": "We are committed to providing exceptional care through our core principles.",
+  
+  "fonoaudiologia_a_distancia": "Teletherapy",
+  "fonoaudiologia_a_distancia_description": "We provide teletherapy services to improve communication and skills of the patient, facilitating access to professional treatments from the comfort of their home.",
+  "adecuacion_domicilio": "Home Adaptation",
+  "adecuacion_domicilio_description": "CALM provides a full-service, specialized medical consultancy designed to modify homes according to the unique needs of elderly and disabled individuals. This service includes tailored assessments and targeted renovations to enhance both the safety and comfort of the home.",
+  "contact_email": "info@calmhc.com"
+}
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/locales/es/translation.json
+
+Contenido:
+{
+  "checkout_success": "¡Tu compra ha sido realizada con éxito!",
+  "checkout": "Checkout",
+  "empty_cart": "Tu carrito está vacío.",
+  "order_summary": "Resumen de la Orden",
+  "total": "Total:",
+  "shipping_address": "Dirección de Envío",
+  "enter_shipping_address": "Ingresa tu dirección",
+  "phone_number": "Número de Teléfono",
+  "enter_phone_number": "Ingresa tu teléfono",
+  "payment_method": "Método de Pago",
+  "credit_card": "Tarjeta de Crédito",
+  "paypal": "PayPal",
+  "promo_code": "Código Promocional",
+  "enter_promo_code": "Ingresa tu código",
+  "complete_purchase": "Completar Compra",
+  
+  "admin_panel": "Panel de Administración",
+  "admin_products": "Productos",
+  "manage_products": "Gestiona los productos",
+  "go_to_products": "Ir a Productos",
+  "admin_orders": "Órdenes",
+  "manage_orders": "Gestiona las órdenes",
+  "go_to_orders": "Ir a Órdenes",
+  "admin_users": "Usuarios",
+  "manage_users": "Gestiona los usuarios",
+  "go_to_users": "Ir a Usuarios",
+  "services": "Servicios",
+
+  "not_found_title": "Página No Encontrada",
+  "not_found_message": "La página que buscas no existe.",
+  
+  "liteVibrance": "Calm",
+  "home": "Inicio",
+  "products": "Nuestro Equipo",
+  "contact": "Contacto",
+  "iniciar_sesion": "Iniciar Sesión",
+  "hello": "Hola",
+  "logout": "Cerrar Sesión",
+  
+  "products_catalog": "Nuestro equipo de trabajo",
+  "no_products_found": "No se encontraron productos para",
+  "view_detail": "Ver detalle",
+  "loading": "Cargando...",
+  "product_not_found": "Producto no encontrado",
+  "back_to_catalog": "Volver",
+  
+  "create_account": "Crear Cuenta",
+  "signup": "Registrarse",
+  
+  "cart": "Carrito",
+  "guest_cart_empty": "Tu carrito está vacío.",
+  "quantity": "Cantidad:",
+  "subtotal": "Subtotal:",
+  "remove": "Eliminar",
+  "empty_cart_button": "Vaciar Carrito",
+  "continue_checkout": "Continuar con la Compra",
+  
+  "session_login": "Inicio de Sesión",
+  "access": "Acceder",
+  
+  "grid_view": "Vista de Cuadrícula",
+  "list_view": "Vista de Lista",
+  "detailed_view": "Vista Detallada",
+  
+  "welcome": "Bienvenido a Calm",
+  "banner": "Cuidamos a tus seres queridos con calidez y profesionalismo, fortaleciendo el vínculo único entre cuidador y paciente. Ofrecemos atención domiciliaria personalizada para mejorar la calidad de vida y garantizar bienestar.Confía en nuestro compromiso de amor y dedicación en cada cuidado.",
+  
+  "premium_home_care_services": "Nuestros Servicios de Cuidado a Domicilio Premium",
+  "hide_services": "Ocultar Servicios",
+  "explore_services": "Explorar Servicios",
+  "emotional_support": "Apoyo Emocional y Psicológico",
+  "emotional_support_description": "Ofrecemos apoyo emocional y psicológico a pacientes y sus familias para enfrentar los desafíos de la hospitalización a domicilio. Se ofrecen terapias individuales y grupales en el hogar.",
+  "physical_rehabilitation": "Rehabilitación Física y Ocupacional",
+  "physical_rehabilitation_description": "Ofrecemos programas de rehabilitación física y ocupacional para personas que se recuperan de cirugías o accidentes. Nuestros terapeutas brindan sesiones personalizadas en el hogar.",
+  "nursing_services": "Enfermería Especializada",
+  "nursing_services_description": "Nuestros servicios de enfermería especializada incluyen administración de medicamentos, cuidado de heridas y seguimiento postoperatorio, asegurando una atención de calidad sin necesidad de desplazarse.",
+  "caregiver_support": "Cuidadores a domicilio",
+  "caregiver_support_description": "Nuestros cuidadores capacitados brindan apoyo físico y emocional a personas mayores, garantizando su bienestar. Esto incluye asistencia con la movilidad, higiene personal y compañía.",
+  "personalized_medical_care": "Atención Médica",
+  "personalized_medical_care_description": "Nuestros médicos especializados ofrecen atención médica integral en el hogar. Esto incluye el monitoreo de signos vitales, prescripción de medicamentos y seguimiento de tratamientos.",
+  
+  "footer_rights": "Todos los derechos reservados.",
+  
+  "contact_us": "Contáctanos",
+  "contact_us_message": "No dudes en contactarnos con cualquier pregunta o comentario.",
+  "name": "Nombre",
+  "your_name": "Tu nombre",
+  "email": "Correo Electrónico",
+  "your_email": "Tu correo electrónico",
+  "subject": "Asunto",
+  "message_subject": "Asunto del mensaje",
+  "message": "Mensaje",
+  "your_message": "Tu mensaje",
+  "send_message": "Enviar Mensaje",
+  "address": "Dirección",
+  "dummy_address": "Blanco Encalada 197.  San Isidro, Provincia de Buenos Aires",
+  "phone": "Teléfono",
+  "dummy_phone": "+54 11-3095-0404",
+  "dummy_email": "info@calmhc.com",
+  "our_services": "Nuestros servicios",
+
+
+  "vision" : "Visión",
+  "mission" : "Misión",
+  "values": "Valores",
+  "mission_val": "Brindar atención personalizada, continua y eficiente, haciendo foco en la persona, proponiendo un espacio de mutuo respeto y colaboración. Queremos acompañarlo a transitar diferentes etapas de la vida, porque sentimos pasión por lo que hacemos.",
+  "values_val": "Valoramos la predisposición a brindar un servicio de cuidado como estilo de vida. Aún los problemas sencillos los incorporamos para ser resueltos, por eso la capacitación continua de los profesionales y del familiar (incorporado al equipo de atención) lo consideramos imprescindibles para un servicio de excelencia.",
+  "vision_val":"Ser el grupo humano de profesionales que elija para usted o su familia y brindar un servicio de alta calidad mediante mejora continua de técnicas y conocimientos en en el área de salud. Ser una empresa boutique, donde solo importe la calidad de servicios y cuidados aportados.",
+  "our_mission_vision": "Nuestra Misión, Visión y Valores",
+  "mission_vision_intro": "Estamos comprometidos a brindar atención excepcional a través de nuestros principios fundamentales.",
+  "services_description":"Descripción de nuestros servicios",
+
+
+  "fonoaudiologia_a_distancia": "Fonoaudiología a Distancia",
+  "fonoaudiologia_a_distancia_description": "Brindamos servicios de fonoaudiología a distancia para mejorar la comunicación y habilidades del paciente, facilitando el acceso a tratamientos profesionales desde la comodidad de su hogar.",
+  "adecuacion_domicilio": "Adecuación del hogar para garantizar seguridad y accesibilidad a personas mayores y con discapacidad, mediante la implementación de adaptaciones como rampas, pasamanos y modificaciones en baños y entradas, promoviendo la independencia y el bienestar.",
+  "adecuacion_domicilio_description": "CALM ofrece un servicio integral de asesoramiento médico especializado para adaptar los hogares a las necesidades de personas mayores y discapacitadas. Esto incluye evaluaciones personalizadas y reformas para mejorar la seguridad y comodidad del hogar.",
+  "contact_email": "info@calmhc.com"
+
+}
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/hooks/useAuth.ts
+
+Contenido:
+// src/hooks/useAuth.ts
+import { useAuth0, GetTokenSilentlyOptions } from '@auth0/auth0-react';
+
+export const useAuth = () => {
+  const { isAuthenticated, loginWithRedirect, logout, user, getAccessTokenSilently } = useAuth0();
+  return {
+    isAuthenticated,
+    // Función login que permite pasar opciones adicionales
+    login: (options?: any) =>
+      loginWithRedirect({
+        authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE },
+        ...options,
+      }),
+    // Función logout utilizando logoutParams
+    logout: () => logout({ logoutParams: { returnTo: window.location.origin } }),
+    user,
+    // Convertir a unknown y luego a Promise<string> para asegurar que se retorne solo el token
+    getAccessTokenSilently: (options?: GetTokenSilentlyOptions) =>
+      getAccessTokenSilently({
+        detailedResponse: false,
+        authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE },
+        ...options,
+      }) as unknown as Promise<string>,
+  };
+};
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/i18n.ts
+
+Contenido:
+// src/components/i18n.ts
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+
+// Importa los archivos JSON con las traducciones
+import translationEN from '../locales/en/translation.json';
+import translationES from '../locales/es/translation.json';
+
+const resources = {
+  en: {
+    translation: translationEN,
+  },
+  es: {
+    translation: translationES,
+  },
+};
+
+i18n
+  .use(initReactI18next)
+  .init({
+    resources,
+    lng: 'es', // Idioma por defecto
+    fallbackLng: 'en',
+    interpolation: {
+      escapeValue: false, // React ya se encarga de escapar
+    },
+  });
+
+export default i18n;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/MissionVision/MissionVision.tsx
+
+Contenido:
+import "./MissionVision.scss";
+
+const principles = [
+  {
+    title: "Misión",
+    description:
+      "Brindar atención personalizada, continua y eficiente, haciendo foco en la persona y proponiendo un espacio de mutuo respeto y colaboración. Nuestro compromiso es acompañarlo en cada etapa de la vida, demostrando pasión y profesionalismo en lo que hacemos.",
+  },
+  {
+    title: "Visión",
+    description:
+      "Ser el grupo humano de profesionales de referencia para usted y su familia, brindando servicios de alta calidad mediante la mejora continua de técnicas y conocimientos en el área de salud. Aspiramos a ser una empresa boutique donde la calidad y el cuidado integral sean la prioridad.",
+  },
+  {
+    title: "Valores",
+    description:
+      "Adoptamos el cuidado como estilo de vida. Valoramos la capacitación continua y la colaboración con el familiar, parte del equipo de atención, para garantizar la excelencia en el servicio. Creemos que cada detalle, por pequeño que sea, contribuye a un servicio de calidad.",
+  },
+];
+
+const ApplePrinciples = () => {
+  return (
+    <section className="apple-principles">
+      <div className="apple-principles__container">
+        {principles.map((principle, index) => (
+          <div className="apple-card" key={index}>
+            <h2 className="apple-card__title">{principle.title}</h2>
+            <p className="apple-card__description">{principle.description}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+export default ApplePrinciples;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/LanguageSwitcher/LanguageSwitcher.tsx
+
+Contenido:
+// src/components/LanguageSwitcher/LanguageSwitcher.tsx
+import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { FaChevronDown } from 'react-icons/fa';
+import './LanguageSwitcher.scss';
+
+interface Language {
+  code: string;
+  label: string;
+  flag: string;
+}
+
+const languages: Language[] = [
+  { code: 'en', label: 'English', flag: '🇺🇸' },
+  { code: 'es', label: 'Español', flag: '🇪🇸' }
+];
+
+const LanguageSwitcher: React.FC = () => {
+  const { i18n } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const currentLanguage =
+    languages.find((lang) => lang.code === i18n.language) || languages[0];
+
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+    setOpen(false);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <div className="language-switcher" ref={containerRef}>
+      <button className="language-switcher__toggle" onClick={() => setOpen(!open)}>
+        <span className="language-switcher__flag">{currentLanguage.flag}</span>
+        <span className="language-switcher__label">{currentLanguage.label}</span>
+        <FaChevronDown className="language-switcher__icon" />
+      </button>
+      {open && (
+        <div className="language-switcher__menu">
+          {languages.map((lang) => (
+            <button
+              key={lang.code}
+              className="language-switcher__option"
+              onClick={() => changeLanguage(lang.code)}
+            >
+              <span className="language-switcher__flag">{lang.flag}</span>
+              <span className="language-switcher__label">{lang.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default LanguageSwitcher;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/Register/Register.tsx
+
+Contenido:
+// src/components/Register/Register.tsx
+import React from 'react';
+import { useAuth } from '../../hooks/useAuth'; // Actualizado
+import './Register.scss';
+import { useTranslation } from 'react-i18next';
+
+const Register: React.FC = () => {
+  const { login } = useAuth();
+  const { t } = useTranslation();
+
+  return (
+    <div className="register container">
+      <h2>{t('create_account')}</h2>
+      <button 
+        onClick={() => login({ screen_hint: 'signup' })}
+        className="btn-primary"
+      >
+        {t('signup')}
+      </button>
+    </div>
+  );
+};
+
+export default Register;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/ProductListItem/ProductListItem.tsx
+
+Contenido:
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Product } from '../../data/products';
+import './ProductListItem.scss';
+import { useTranslation } from 'react-i18next';
+
+interface ProductListItemProps {
+  product: Product;
+}
+
+const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
+  const imageUrl =
+    product.photos && product.photos.length > 0
+      ? product.photos[0]
+      : 'https://via.placeholder.com/100?text=No+Image';
+  const { t } = useTranslation();
+
+  return (
+    <div className="product-list-item">
+      <img src={imageUrl} alt={product.name} />
+      <div className="product-list-item__details">
+        <h3>{product.name}</h3>
+        <Link to={`/products/${product.uuid}/${product.slug}`} className="btn-primary">
+          {t('view_detail')}
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+export default ProductListItem;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/Checkout/Checkout.tsx
+
+Contenido:
+// src/components/Checkout/Checkout.tsx
+import React, { useState } from 'react';
+import './Checkout.scss';
+import { useCart } from '../../context/CartContext';
+import { useNotification } from '../../context/NotificationContext';
+import { useTranslation } from 'react-i18next';
+
+const Checkout: React.FC = () => {
+  const { cartItems, clear } = useCart();
+  const { addNotification } = useNotification();
+  const { t } = useTranslation();
+
+  // Estados para el formulario
+  const [shippingAddress, setShippingAddress] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('creditCard');
+  const [promoCode, setPromoCode] = useState('');
+
+  const totalPrice = cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Aquí podrías validar el formulario, aplicar el código promocional, etc.
+    addNotification(
+      t('checkout_success', { defaultValue: '¡Tu compra ha sido realizada con éxito!' }),
+      'success'
+    );
+    clear();
+  };
+
+  if (cartItems.length === 0) {
+    return (
+      <div className="checkout container">
+        <h2>{t('checkout', { defaultValue: 'Checkout' })}</h2>
+        <p>{t('empty_cart', { defaultValue: 'Tu carrito está vacío.' })}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="checkout container">
+      <h2>{t('checkout', { defaultValue: 'Checkout' })}</h2>
+      <div className="checkout__content">
+        {/* Resumen de la Orden */}
+        <div className="checkout__summary">
+          <h3>{t('order_summary', { defaultValue: 'Resumen de la Orden' })}</h3>
+          <ul>
+            {cartItems.map((item) => (
+              <li key={item.product_uuid}>
+                <span className="item-name">{item.name}</span>
+                <span className="item-quantity">x{item.quantity}</span>
+                <span className="item-total">${(item.price * item.quantity).toFixed(2)}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="checkout__total">
+            <span>{t('total', { defaultValue: 'Total:' })}</span>
+            <span>${totalPrice.toFixed(2)}</span>
+          </div>
+        </div>
+
+        {/* Formulario de Checkout */}
+        <form className="checkout__form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="shippingAddress">
+              {t('shipping_address', { defaultValue: 'Dirección de Envío' })}
+            </label>
+            <input
+              type="text"
+              id="shippingAddress"
+              value={shippingAddress}
+              onChange={(e) => setShippingAddress(e.target.value)}
+              placeholder={t('enter_shipping_address', { defaultValue: 'Ingresa tu dirección' })}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="phoneNumber">
+              {t('phone_number', { defaultValue: 'Número de Teléfono' })}
+            </label>
+            <input
+              type="tel"
+              id="phoneNumber"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              placeholder={t('enter_phone_number', { defaultValue: 'Ingresa tu teléfono' })}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="paymentMethod">
+              {t('payment_method', { defaultValue: 'Método de Pago' })}
+            </label>
+            <select
+              id="paymentMethod"
+              value={paymentMethod}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            >
+              <option value="creditCard">
+                {t('credit_card', { defaultValue: 'Tarjeta de Crédito' })}
+              </option>
+              <option value="paypal">
+                {t('paypal', { defaultValue: 'PayPal' })}
+              </option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label htmlFor="promoCode">
+              {t('promo_code', { defaultValue: 'Código Promocional' })}
+            </label>
+            <input
+              type="text"
+              id="promoCode"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value)}
+              placeholder={t('enter_promo_code', { defaultValue: 'Ingresa tu código' })}
+            />
+          </div>
+          <button type="submit" className="btn-primary">
+            {t('complete_purchase', { defaultValue: 'Completar Compra' })}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Checkout;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/ViewSwitcher/ViewSwitcher.tsx
+
+Contenido:
+import React, { useState, useRef, useEffect } from 'react';
+import { FaTh, FaList, FaRegSquare } from 'react-icons/fa';
+import './ViewSwitcher.scss';
+import { useTranslation } from 'react-i18next';
+
+export type ViewMode = 'grid' | 'list' | 'detailed';
+
+interface ViewSwitcherProps {
+  viewMode: ViewMode;
+  setViewMode: (mode: ViewMode) => void;
+  isDarkMode: boolean;
+}
+
+const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ viewMode, setViewMode, isDarkMode }) => {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
+
+  const toggleMenu = () => setOpen(!open);
+
+  const handleOptionClick = (mode: ViewMode) => {
+    setViewMode(mode);
+    setOpen(false);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    if (open) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [open]);
+
+  const getMainIcon = () => {
+    if (viewMode === 'grid') return <FaTh />;
+    if (viewMode === 'list') return <FaList />;
+    return <FaRegSquare />;
+  };
+
+  return (
+    <div className={`view-switcher ${isDarkMode ? 'dark-mode' : ''}`} ref={containerRef}>
+      <button className="view-switcher__toggle" onClick={toggleMenu}>
+        {getMainIcon()}
+      </button>
+      {open && (
+        <div className="view-switcher__menu">
+          <button onClick={() => handleOptionClick('grid')}>
+            <FaTh /> <span>{t('grid_view')}</span>
+          </button>
+          <button onClick={() => handleOptionClick('list')}>
+            <FaList /> <span>{t('list_view')}</span>
+          </button>
+          <button onClick={() => handleOptionClick('detailed')}>
+            <FaRegSquare /> <span>{t('detailed_view')}</span>
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ViewSwitcher;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/Contact/Contact.tsx
+
+Contenido:
+// src/components/Contact/Contact.tsx
+import React, { useState } from 'react';
+import { useNotification } from '../../context/NotificationContext';
+import './Contact.scss';
+import { useTranslation } from 'react-i18next';
+
+const Contact: React.FC = () => {
+  const { addNotification } = useNotification();
+  const { t } = useTranslation();
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    addNotification(t('purchase_success'), 'success');
+    setName('');
+    setEmail('');
+    setSubject('');
+    setMessage('');
+  };
+
+  return (
+    <div className="contact container">
+      <h2>{t('contact_us')}</h2>
+      <p>{t('contact_us_message')}</p>
+
+      {/* Contenedor para agrupar formulario y mapa */}
+      <div className="contact__form-map">
+        <form className="contact__form" onSubmit={handleSubmit}>
+          <div className="contact__form-group">
+            <label htmlFor="name">{t('name')}</label>
+            <input
+              type="text"
+              id="name"
+              placeholder={t('your_name')}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="contact__form-group">
+            <label htmlFor="email">{t('email')}</label>
+            <input
+              type="email"
+              id="email"
+              placeholder={t('your_email')}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="contact__form-group">
+            <label htmlFor="subject">{t('subject')}</label>
+            <input
+              type="text"
+              id="subject"
+              placeholder={t('message_subject')}
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              required
+            />
+          </div>
+          <div className="contact__form-group">
+            <label htmlFor="message">{t('message')}</label>
+            <textarea
+              id="message"
+              placeholder={t('your_message')}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" className="btn-primary">
+            {t('send_message')}
+          </button>
+        </form>
+
+        {/* Bloque del mapa */}
+        <div className="contact__map">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3288.401752031533!2d-58.5531061!3d-34.4926978!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb07612f13e43%3A0x8229b915a44d67b0!2sABB%2C%20Blanco%20Encalada%20197%2C%20B1642%20San%20Isidro%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1sen!2sar!4v1738956843811!5m2!1sen!2sar"
+            width="600"
+            height="450"
+            style={{ border: 0 }}
+            allowFullScreen={true}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title="Ubicación de la Oficina"
+          ></iframe>
+        </div>
+      </div>
+
+  {/*     <div className="contact__info">
+        <div className="contact__info-item">
+          <h3>{t('address')}</h3>
+          <p>{t('dummy_address')}</p>
+        </div>
+        <div className="contact__info-item">
+          <h3>{t('phone')}</h3>
+          <p>{t('dummy_phone')}</p>
+        </div>
+        <div className="contact__info-item">
+          <h3>{t('email')}</h3>
+          <p>{t('contact_email')}</p>
+        </div>
+      </div> */}
+    </div>
+  );
+};
+
+export default Contact;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/Cart/Cart.tsx
+
+Contenido:
+// src/components/Cart/Cart.tsx
+import React from 'react';
+import './Cart.scss';
+import { useCart } from '../../context/CartContext';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
+const Cart: React.FC = () => {
+  const { cartItems, remove, clear } = useCart();
+  const { t } = useTranslation();
+
+  const totalPrice = cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+
+  if (cartItems.length === 0) {
+    return (
+      <div className="cart container">
+        <h2 className="cart__title">{t('cart', { defaultValue: 'Carrito' })}</h2>
+        <div className="cart__empty">
+          <p>{t('guest_cart_empty', { defaultValue: 'Tu carrito está vacío.' })}</p>
+          <Link to="/products" className="btn-primary">
+            {t('go_to_products', { defaultValue: 'Ver Productos' })}
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="cart container">
+      <h2 className="cart__title">{t('cart', { defaultValue: 'Carrito' })}</h2>
+      <div className="cart__content">
+        {/* Lista de productos */}
+        <div className="cart__items">
+          {cartItems.map((item) => (
+            <div key={item.product_uuid} className="cart__item">
+              <div className="cart__item-image">
+                <img src={item.image} alt={item.name} />
+              </div>
+              <div className="cart__item-details">
+                <h3 className="item-name">{item.name}</h3>
+                <div className="item-quantity">
+                  {t('quantity', { defaultValue: 'Cantidad:' })} {item.quantity}
+                </div>
+                <div className="item-price">
+                  {t('subtotal', { defaultValue: 'Subtotal:' })} ${(
+                    item.price * item.quantity
+                  ).toFixed(2)}
+                </div>
+                <button
+                  onClick={() => remove(item.product_uuid)}
+                  className="btn-remove"
+                >
+                  {t('remove', { defaultValue: 'Eliminar' })}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+        {/* Resumen de la orden */}
+        <div className="cart__summary">
+          <div className="summary-card">
+            <h3>{t('order_summary', { defaultValue: 'Resumen de la Orden' })}</h3>
+            <div className="summary-details">
+              <span>{t('total', { defaultValue: 'Total:' })}</span>
+              <span className="total-price">${totalPrice.toFixed(2)}</span>
+            </div>
+            <div className="summary-actions">
+              <button onClick={clear} className="btn-secondary">
+                {t('empty_cart_button', { defaultValue: 'Vaciar Carrito' })}
+              </button>
+              <Link to="/checkout" className="btn-primary">
+                {t('continue_checkout', { defaultValue: 'Continuar con la Compra' })}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Cart;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/Services/Services.tsx
+
+Contenido:
+import React, { useState, useEffect } from 'react';
+import './Services.scss'; // Importa este archivo con los estilos para mobile
+import ServiceDetail from './ServiceDetail'; // Asegúrate de importar el componente
+import {services} from '../../data/services'
+
+const microMessages: string[] = [
+  "La atención médica en el hogar es sinónimo de seguridad y confianza; nuestros especialistas monitorean sus signos vitales y adaptan tratamientos personalizados para garantizar un control clínico riguroso.",
+  "El acompañamiento continuo en el cuidado domiciliario refuerza la calidad de vida; nuestros cuidadores trabajan con compromiso y respeto.",
+  "Un entorno seguro y adaptado es esencial en el cuidado; nuestros especialistas aseguran que su hogar cumpla con los más altos estándares clínicos.",
+  "La atención especializada de enfermería garantiza un seguimiento meticuloso; nuestro equipo actúa con profesionalismo y empatía.",
+  "El equilibrio emocional es vital en el proceso de atención; nuestro apoyo psicológico se fundamenta en metodologías clínicas y humanizadas.",
+  "La rehabilitación personalizada es clave para recuperar la autonomía; nuestros programas son diseñados bajo rigurosos criterios médicos.",
+  "Una comunicación efectiva es la base del bienestar integral; confíe en nuestras evaluaciones a distancia para mantener su calidad de vida.",
+];
+
+const ParallaxServicesExtended: React.FC = () => {
+  // Detecta si estamos en mobile (<768px)
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    // Ejecuta en el montaje y cuando cambia el tamaño de la ventana
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Sección resumen, que se mostrará al inicio
+  const renderSummary = () => (
+    <section id="pse-summary" className="pse-section pse-reward-section">
+      <div className="pse-reward-content">
+        <h2>Resumen de Servicios</h2>
+        <p>
+          Acompáñenos en este recorrido clínico y conozca en detalle cada uno de nuestros servicios, diseñados para ofrecer la mejor atención domiciliaria.
+        </p>
+        <div className="pse-grid">
+          {services.map((service, idx) => (
+            <div key={idx} className="pse-grid-item">
+              <h3>{service.title}</h3>
+              <p>{service.description}</p>
+              <a href={service.link} className="pse-button">
+                Saber más
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
+  // Renderizamos cada servicio con su micromensaje
+  const renderDetailedServices = () => (
+    <>
+      {services.map((service, index) => (
+        <ServiceDetail
+          key={index}
+          service={service}
+          microMessage={microMessages[index]}
+        />
+      ))}
+    </>
+  );
+
+  const renderDesktop = () => (
+    <div className="parallax-services-extended">
+      {renderSummary()}
+      {renderDetailedServices()}
+   {/*    <button
+        className="floating-summary-button"
+        onClick={() => {
+          const summarySection = document.getElementById("pse-summary");
+          if (summarySection) {
+            summarySection.scrollIntoView({ behavior: "smooth" });
+          }
+        }}
+      >
+        Ver Resumen
+      </button> */}
+    </div>
+  );
+
+  const renderMobile = () => (
+    <div className="parallax-services-extended mobile">
+      {renderSummary()}
+      <div className="pse-mobile-services-container">
+     
+      </div>
+    </div>
+  );
+
+  return isMobile ? renderMobile() : renderDesktop();
+};
+
+export default ParallaxServicesExtended;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/Services/ServiceDetail.tsx
+
+Contenido:
+import './ServiceDetail.scss'
+import React from 'react';
+import { Service } from '../../data/services'; // Ajusta la ruta según tu estructura
+import { FaArrowUp } from 'react-icons/fa'; // Importamos el ícono de flecha de FontAwesome
+
+interface ServiceDetailProps {
+  service: Service;
+  microMessage: string;
+}
+
+const ServiceDetail: React.FC<ServiceDetailProps> = ({ service, microMessage }) => {
+  const scrollToTop = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    event.preventDefault(); // Evita el comportamiento por defecto del enlace
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Desplaza suavemente hasta la parte superior
+  };
+
+  return (
+    <section id={service.link.substring(1)} className="pse-service-detail">
+      {/* Columna de la descripción */}
+      <div className="pse-service-description">
+        <div className="pse-bg" />
+        <div className="pse-content">
+          <h2>{service.title}</h2>
+          <p>{service.detail}</p>
+          <a href="#" onClick={scrollToTop} className="pse-button">
+            <FaArrowUp size={24} color="#fff" />
+          </a>
+        </div>
+      </div>
+      {/* Columna del micromensaje */}
+      <div className="pse-micro-message">
+        <h3>{microMessage}</h3>
+      </div>
+    </section>
+  );
+};
+
+export default ServiceDetail;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/Home/Home.tsx
+
+Contenido:
+// src/components/Home/Home.tsx
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import './Home.scss';
+
+const Home: React.FC = () => {
+  const { t } = useTranslation();
+
+  return (
+    <main className="home">
+      <section className="hero">
+        {/* Video de fondo */}
+        <video className="hero__video" autoPlay muted loop>
+          <source src="/videos/hero-background.mp4" type="video/mp4" />
+          {t('video_not_supported', 'Tu navegador no soporta videos HTML5.')}
+        </video>
+        {/* Overlay para oscurecer el video y mejorar la legibilidad */}
+        <div className="hero__overlay"></div>
+        <div className="hero__content container">
+          <h1 className="hero__title">
+            {t('welcome', 'Bienvenido a Nuestra Página')}
+          </h1>
+          <p className="hero__subtitle">
+            {t('banner', 'Descubre nuestros servicios innovadores')}
+          </p>
+          <Link to="/services" className="btn btn-primary">
+            {t('explore_services', 'Explorar Servicios')}
+          </Link>
+        </div>
+      </section>
+    </main>
+  );
+};
+
+export default Home;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/ThemeSwitch/FloatingThemeSwitch.tsx
+
+Contenido:
+import React from 'react';
+import { useTheme } from '../../context/ThemeContext';
+import './FloatingThemeSwitch.scss';
+import { FaSun, FaMoon } from 'react-icons/fa';
+
+const FloatingThemeSwitch: React.FC = () => {
+  const { theme, toggleTheme } = useTheme();
+
+  const isDark = theme === 'dark';
+  const icon = isDark ? <FaSun /> : <FaMoon />;
+
+  return (
+    <button className="floating-theme-switch" onClick={toggleTheme}>
+      {icon}
+    </button>
+  );
+};
+
+export default FloatingThemeSwitch;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/NotFound/NotFound.tsx
+
+Contenido:
+import React from 'react';
+import './NotFound.scss';
+import { useTranslation } from 'react-i18next';
+
+const NotFound: React.FC = () => {
+  const { t } = useTranslation();
+
+  return (
+    <div className="notfound container">
+      <h2>{t('not_found_title')}</h2>
+      <p>{t('not_found_message')}</p>
+    </div>
+  );
+};
+
+export default NotFound;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/Notification/Notification.tsx
+
+Contenido:
+// src/components/Notification/Notification.tsx
+import React from 'react';
+import './Notification.scss';
+import { useNotification } from '../../context/NotificationContext';
+
+const Notification: React.FC = () => {
+  const { notifications, removeNotification } = useNotification();
+
+  return (
+    <div className="notification-container">
+      {notifications.map((notification) => (
+        <div
+          key={notification.id}
+          className={`notification notification--${notification.type}`}
+          onClick={() => removeNotification(notification.id)}
+        >
+          {notification.message}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default Notification;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/ProductDetail/ProductDetail.tsx
+
+Contenido:
+// src/components/ProductDetail/ProductDetail.tsx
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import './ProductDetail.scss';
+import { useTranslation } from 'react-i18next';
+import { Product, dummyProducts } from '../../data/products';
+
+const ProductDetail: React.FC = () => {
+  const { id } = useParams();
+  const [selectedPhoto, setSelectedPhoto] = useState(0);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    // Buscamos el producto en el array hardcodeado
+    const foundProduct = dummyProducts.find((p) => p.uuid === id);
+    setProduct(foundProduct || null);
+    setLoading(false);
+  }, [id]);
+
+  if (loading) {
+    return <div className="product-detail container">{t('loading')}</div>;
+  }
+
+  if (!product) {
+    return (
+      <div className="product-detail container">
+        <h2>{t('product_not_found')}</h2>
+        <Link to="/products" className="btn-secondary">
+          {t('back_to_catalog')}
+        </Link>
+      </div>
+    );
+  }
+
+  const photoArray =
+    product.photos && product.photos.length > 0 ? product.photos : [];
+  const mainImage =
+    photoArray.length > 0
+      ? photoArray[selectedPhoto]
+      : 'https://via.placeholder.com/600x400?text=No+Image';
+
+  return (
+    <div className="product-detail container">
+      <div className="product-detail__content">
+        <div className="product-detail__image-section">
+          <div className="product-detail__main-image">
+            <img src={mainImage} alt={`${product.name} ${selectedPhoto + 1}`} />
+          </div>
+          {photoArray.length > 1 && (
+            <div className="product-detail__thumbnails">
+              {photoArray.map((photo, index) => (
+                <img
+                  key={index}
+                  src={photo}
+                  alt={`${product.name} ${index + 1}`}
+                  className={selectedPhoto === index ? 'active' : ''}
+                  onClick={() => setSelectedPhoto(index)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="product-detail__info">
+          <h2 className="product-detail__title">{product.name}</h2>
+     {/*      <p className="product-detail__price">
+            ${product.price.toFixed(2)}
+          </p> */}
+          <p className="product-detail__description">{product.description}</p>
+          <div className="product-detail__actions">
+            <Link to="/products" className="btn-secondary">
+              {t('back_to_catalog')}
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductDetail;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/Header/Header.tsx
+
+Contenido:
+// src/components/Header/Header.tsx
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
+import './Header.scss';
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
+
+const navLinks = [
+  { name: 'home', path: '/' },
+  { name: 'vision', path: '/MissionVision' },
+  { name: 'services', path: '/Services' },
+  { name: 'products', path: '/products' },
+  // { name: 'cart', path: '/cart' },
+  { name: 'contact', path: '/contact' },
+
+
+];
+
+const Header: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const { cartItems } = useCart();
+  const { isAuthenticated, login, logout, user } = useAuth();
+  const { t } = useTranslation();
+
+  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+  useEffect(() => {
+    // Evitamos que se haga scroll en el body cuando el menú móvil está abierto
+    document.body.classList.toggle('no-scroll', isOpen);
+  }, [isOpen]);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
+  return (
+    <header className="header">
+      <div className="header__brand">
+        <Link to="/" onClick={() => setIsOpen(false)}>
+          <span className="brand__logo">{t('liteVibrance')}</span>
+        </Link>
+      </div>
+      <div className="header__toggle" onClick={toggleMenu}>
+        {isOpen ? '✕' : '☰'}
+      </div>
+      <nav className={`header__nav ${isOpen ? 'open' : ''}`}>
+        <ul className="nav__list">
+          <li className="nav__item">
+            <LanguageSwitcher />
+          </li>
+          {navLinks.map(link => (
+            <li key={link.name} className="nav__item">
+              <Link
+                to={link.path}
+                className="nav__link"
+                onClick={() => setIsOpen(false)}
+              >
+                {t(link.name)}
+                {link.name === 'cart' && totalItems > 0 && (
+                  <span className="cart-badge">{totalItems}</span>
+                )}
+              </Link>
+            </li>
+          ))}
+          {!isAuthenticated ? (
+            <li className="nav__item">
+              <Link
+                to="#"
+                className="nav__link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  login();
+                  setIsOpen(false);
+                }}
+              >
+                {t('iniciar_sesion')}
+              </Link>
+            </li>
+          ) : (
+            <>
+              <li className="nav__item">
+                <span className="nav__link">
+                  {t('hello')} {user?.name || user?.email}
+                </span>
+              </li>
+              <li className="nav__item">
+                <Link
+                  to="#"
+                  className="nav__link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    logout();
+                    setIsOpen(false);
+                  }}
+                >
+                  {t('logout')}
+                </Link>
+              </li>
+            </>
+          )}
+        </ul>
+      </nav>
+      <div className="header__wave">
+        <svg viewBox="0 0 500 80" preserveAspectRatio="none">
+          <path d="M0,30 C150,90 350,0 500,30 L500,0 L0,0 Z" />
+        </svg>
+      </div>
+    </header>
+  );
+};
+
+export default Header;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/AdminDashboard/AdminDashboard.tsx
+
+Contenido:
+import React from 'react';
+import './AdminDashboard.scss';
+import { useTranslation } from 'react-i18next';
+
+const AdminDashboard: React.FC = () => {
+  const { t } = useTranslation();
+
+  return (
+    <div className="admin-dashboard container">
+      <h2>{t('admin_panel')}</h2>
+      <div className="admin-dashboard__sections">
+        <div className="admin-dashboard__card">
+          <h3>{t('admin_products')}</h3>
+          <p>{t('manage_products')}</p>
+          <button className="btn-primary">{t('go_to_products')}</button>
+        </div>
+        <div className="admin-dashboard__card">
+          <h3>{t('admin_orders')}</h3>
+          <p>{t('manage_orders')}</p>
+          <button className="btn-primary">{t('go_to_orders')}</button>
+        </div>
+        <div className="admin-dashboard__card">
+          <h3>{t('admin_users')}</h3>
+          <p>{t('manage_users')}</p>
+          <button className="btn-primary">{t('go_to_users')}</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AdminDashboard;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/ProductModal/ProductModal.tsx
+
+Contenido:
+// src/components/ProductModal/ProductModal.tsx
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Product } from '../../data/products';
+import './ProductModal.scss';
+import { useTranslation } from 'react-i18next';
+
+interface ProductModalProps {
+  product: Product;
+}
+
+const ProductModal: React.FC<ProductModalProps> = ({ product }) => {
+  const { t } = useTranslation();
+  const imageUrl =
+    product.photos && product.photos.length > 0
+      ? product.photos[0]
+      : 'https://via.placeholder.com/100?text=No+Image';
+
+  return (
+    <div className="product-modal">
+      <img src={imageUrl} alt={product.name} />
+      <div className="product-modal__details">
+        <h3>{product.name}</h3>
+        <Link to={`/products/${product.uuid}/${product.slug}`} className="btn-primary">
+          {t('view_detail', { defaultValue: 'Ver detalle' })}
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+export default ProductModal;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/Footer/Footer.tsx
+
+Contenido:
+// src/components/Footer/Footer.tsx
+import React from 'react';
+import './Footer.scss';
+import { useTranslation } from 'react-i18next';
+import { 
+  FaMapMarkerAlt, 
+  FaFacebookF, 
+  FaTwitter, 
+  FaInstagram, 
+  FaWhatsapp 
+} from 'react-icons/fa';
+
+const Footer: React.FC = () => {
+  const { t } = useTranslation();
+
+  return (
+    <footer className="footer">
+      <div className="footer__info">
+        {/* Ubicación */}
+        <div className="footer__location">
+          <FaMapMarkerAlt className="footer__icon" />
+          <p>
+            {t('dummy_address', { defaultValue: 'Av. Principal 123, Ciudad, País' })}
+          </p>
+        </div>
+        {/* Redes Sociales */}
+        <div className="footer__social">
+          <a
+            href="https://facebook.com/CalmInternacionDomiciliaria"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaFacebookF className="footer__icon" />
+          </a>
+          <a
+            href="https://twitter.com/tuempresa"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaTwitter className="footer__icon" />
+          </a>
+          <a
+            href="https://instagram.com/tuempresa"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaInstagram className="footer__icon" />
+          </a>
+          <a
+            href="https://wa.me/541130950404"  // Reemplaza con tu número en formato internacional sin espacios ni símbolos.
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaWhatsapp className="footer__icon" />
+            <span></span>
+          </a>
+        </div>
+        {/* WhatsApp */}
+  
+      </div>
+      <p className="footer__copy">
+        &copy; {new Date().getFullYear()} Calm. {t('footer_rights', { defaultValue: 'Todos los derechos reservados.' })}
+      </p>
+    </footer>
+  );
+};
+
+export default Footer;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/ProductCard/ProductCard.tsx
+
+Contenido:
+import React from 'react';
+import { Link } from 'react-router-dom';
+import './ProductCard.scss';
+import { Product } from '../../data/products';
+import { useTranslation } from 'react-i18next';
+
+interface ProductCardProps {
+  product: Product;
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const imageUrl = product.photos && product.photos.length > 0
+    ? product.photos[0]
+    : 'https://via.placeholder.com/600x400?text=No+Image';
+  const { t } = useTranslation();
+
+  return (
+    <div className="product-card">
+      <div className="product-card__image-wrapper">
+        <img
+          src={imageUrl}
+          alt={product.name}
+          className="product-card__img"
+          loading="lazy"
+        />
+      </div>
+      <div className="product-card__info">
+        <h3 className="product-card__title">{product.name}</h3>
+        <Link
+          to={`/products/${product.uuid}/${product.slug}`}
+          className="btn-primary product-card__button"
+        >
+          {t('view_detail')}
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+export default ProductCard;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/Login/Login.tsx
+
+Contenido:
+import React from 'react';
+import { useAuth } from '../../context/AuthContext';
+import './Login.scss';
+import { useTranslation } from 'react-i18next';
+
+const Login: React.FC = () => {
+  const { login } = useAuth();
+  const { t } = useTranslation();
+
+  return (
+    <div className="nav__item">
+      <h2>{t('session_login')}</h2>
+      <button onClick={login} className="nav__link">
+        {t('access')}
+      </button>
+    </div>
+  );
+};
+
+export default Login;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/components/ProductList/ProductList.tsx
+
+Contenido:
+// src/components/ProductList/ProductList.tsx
+import './ProductList.scss';
+import { Link, useSearchParams } from 'react-router-dom';
+import { dummyProducts } from '../../data/products';
+import { useTranslation } from 'react-i18next';
+
+const ProductSkeleton = () => (
+  <div className="product-card skeleton">
+    <div className="product-card__image-wrapper skeleton-img"></div>
+    <div className="product-card__info">
+      <div className="skeleton-text skeleton-title"></div>
+      <div className="skeleton-text skeleton-price"></div>
+    </div>
+  </div>
+);
+
+
+const ProductList: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get('search') || '';
+  const { t } = useTranslation();
+
+  const normalizeString = (str: string) =>
+    str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+  // Filtramos los productos según la búsqueda usando dummyProducts
+  const filteredProducts = dummyProducts.filter((product) =>
+    normalizeString(product.name).includes(normalizeString(searchQuery))
+  );
+
+  return (
+    <div className="product-list container">
+  {/*     <div className="product-list__header">
+        <h2>{t('products_catalog')}</h2>
+        <ViewSwitcher viewMode={viewMode} setViewMode={setViewMode} isDarkMode={false} />
+      </div> */}
+      {searchQuery && filteredProducts.length === 0 ? (
+        <p>
+          {t('no_products_found')} "{searchQuery}"
+        </p>
+      ) : (
+        <>
+          {/* Si en algún momento necesitas mostrar un skeleton de carga, puedes habilitar la variable loading */}
+          {false ? (
+            <div className="product-list__grid">
+              {Array(8)
+                .fill(0)
+                .map((_, index) => (
+                  <ProductSkeleton key={index} />
+                ))}
+            </div>
+          ) : (
+            <>
+           
+                <div className="product-list__detailed">
+                  {(searchQuery ? filteredProducts : dummyProducts).map((product) => (
+                    <div key={product.uuid} className="product-detail">
+                      <div className="image-wrapper">
+                        <img
+                          src={
+                            product.photos && product.photos.length > 0
+                              ? product.photos[0]
+                              : 'https://via.placeholder.com/600x400?text=No+Image'
+                          }
+                          alt={product.name}
+                        />
+                      </div>
+                      <div className="info">
+                        <h3>{product.name}</h3>
+                        <p>{product.description}</p>
+                        <Link
+                          to={`/products/${product.uuid}/${product.slug}`}
+                        >
+                          {t('view_detail')}
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              
+            </>
+          )}
+        </>
+      )}
+    </div>
+  );
+};
+
+export default ProductList;
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/data/products.ts
+
+Contenido:
+// src/data/products.ts
+export interface Product {
+  uuid: string;
+  name: string;
+  description: string;
+  price: number;
+  photos: string[];
+  slug: string;
+}
+
+export const dummyProducts: Product[] = [
+  {
+    uuid: '1',
+    name: 'Médicos',
+    description:
+      'Especialistas de todas las áreas lo atenderán en forma presencial o por telemedicina; es el ofrecimiento de servicios médicos a distancia, utilizando para ello tecnologías de información y telecomunicación.',
+    price: 19.99,
+    photos: [
+      'https://img.freepik.com/free-photo/female-doctor-working-medicine-specialist_144627-30293.jpg?t=st=1738897564~exp=1738901164~hmac=bf1025a1f282175b1e65c10851f51fc85eab5df813b664dcabc175d3e5379cb5&w=740'
+    ],
+    slug: 'producto-1'
+  },
+  {
+    uuid: '2',
+    name: 'Enfermeros',
+    description: 'Respondiendo a la complejidad de las prestaciones se asignará personal profesional o auxiliares según sea el caso, siempre previa visita de la Coordinadora quien chequeará que el domicilio o la institución donde esté alojado cuente con los medios adecuados para su atención segura.',
+    price: 29.99,
+    photos: [
+      'https://img.freepik.com/free-photo/closeup-support-hands_53876-14963.jpg?t=st=1738897599~exp=1738901199~hmac=ae37f13243ea70f82f6e13d9f2d67b50924249ba8cb220bbce183ae3ded315e6&w=1380'
+    ],
+    slug: 'producto-2'
+  },
+  {
+    uuid: '3',
+    name: 'Kinesiólogos',
+    description: 'Además de dedicarse a rehabilitar pacientes con problemas motrices o de movimiento corporal, la necesidad de tratamientos por problemas respiratorios que estamos transitando colocan en un rol de relevancia a estos profesionales. La concertación de acciones en conjunto con otras del equipo es llevada a cabo por la Coordinadora, haciendo que la asistencia sea recibida en forma correcta y en el tiempo que requiera cada persona en particular.',
+    price: 39.99,
+    photos: [
+      'https://img.freepik.com/free-photo/female-physiotherapist-applying-elastic-medical-bandage-male-patient_23-2149143837.jpg?t=st=1738897692~exp=1738901292~hmac=fd7c011197817ed79117c1570121f6fb866e6fead906f6af060008c5d1885dfd&w=1380'
+    ],
+    slug: 'producto-3'
+  },
+  {
+    uuid: '4',
+    name: 'Otros Profesionales',
+    description: 'Ver catálogo de profesionales',
+    price: 49.99,
+    photos: [
+      'https://img.freepik.com/free-vector/doctors-concept-illustration_114360-1515.jpg?t=st=1738897768~exp=1738901368~hmac=7c8cdfe1cc701033b4f7d562bdad6c119735cadf5e2b21075720407b370aa0df&w=1380'
+    ],
+    slug: 'producto-4'
+  }
+];
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/data/services.ts
+
+Contenido:
+export interface Service {
+  title: string;
+  description: string;
+  link: string;
+  detail: string;
+}
+
+export const services: Service[] = [
+  {
+    title: "Atención Médica",
+    description:
+      "Nuestros médicos especializados proporcionan atención médica integral en el hogar, incluyendo el monitoreo de signos vitales, prescripción de medicamentos y seguimiento personalizado de tratamientos, garantizando un control clínico riguroso.",
+    link: "#atencion",
+    detail: `CALM Atención Domiciliaria: Atención Médica.
+Nuestros médicos se encargan de brindar atención clínica directamente en el domicilio, garantizando un seguimiento riguroso y personalizado. Con tecnología avanzada y un enfoque humanizado, ofrecemos:
+- Monitoreo constante mediante el seguimiento de los signos vitales para detectar cualquier variación en tiempo real.
+- Prescripción y administración de medicamentos ajustados a las necesidades individuales.
+- Control y seguimiento continuo a través de evaluaciones periódicas y asesoramiento integral.
+Confíe en nosotros para recibir atención médica de alta calidad sin necesidad de desplazarse.`
+  },
+  {
+    title: "Cuidadores a Domicilio",
+    description:
+      "Nuestros cuidadores capacitados ofrecen apoyo físico y emocional a personas mayores, asegurando asistencia en movilidad, higiene personal y compañía, con un compromiso de cuidado integral y respetuoso.",
+    link: "#cuidadores",
+    detail: `CALM Atención Domiciliaria: Cuidadores a Domicilio.
+En un entorno donde el bienestar y la seguridad de sus seres queridos son prioritarios, nuestro servicio se dedica a ofrecer atención personalizada y profesional. Contamos con un equipo altamente capacitado que garantiza:
+- Cuidado personalizado y humano, a través de planes de atención adaptados a las necesidades y costumbres de cada individuo.
+- Apoyo integral en movilidad, higiene personal y compañía para mejorar la calidad de vida.
+- Comunicación constante mediante el uso de tecnología para mantener informados a familiares y pacientes.
+Confíe en CALM para asegurar la atención respetuosa y dedicada que sus seres queridos merecen.`
+  },
+  {
+    title: "Adecuación de Domicilio",
+    description:
+      "CALM ofrece asesoramiento médico especializado para adaptar los hogares a las necesidades de personas mayores y con movilidad reducida, mediante evaluaciones personalizadas y reformas orientadas a mejorar la seguridad y confort.",
+    link: "#adecuacion",
+    detail: `CALM Atención Domiciliaria: Adecuación de Domicilio.
+Transforme su hogar en un entorno seguro y accesible con nuestro servicio especializado. Ofrecemos:
+- Evaluación personalizada mediante un análisis detallado del entorno para identificar áreas de mejora.
+- Asesoramiento médico especializado con recomendaciones para adaptar el hogar a necesidades específicas.
+- Reformas y adaptaciones orientadas a optimizar la movilidad y prevenir accidentes.
+Convierta su hogar en un espacio seguro y confortable con el respaldo de nuestros expertos.`
+  },
+  {
+    title: "Enfermería Especializada",
+    description:
+      "Brindamos servicios de enfermería especializada, que incluyen administración de medicamentos, cuidado de heridas y seguimiento postoperatorio, garantizando una atención de calidad sin necesidad de desplazamiento.",
+    link: "#enfermeria",
+    detail: `CALM Atención Domiciliaria: Enfermería Especializada.
+Nuestro equipo de enfermería ofrece atención profesional y personalizada en el hogar, asegurando:
+- Administración segura de medicamentos mediante un control y seguimiento riguroso de los tratamientos.
+- Cuidado especializado de heridas para prevenir complicaciones y acelerar el proceso de recuperación.
+- Seguimiento postoperatorio a través de un monitoreo continuo que garantiza condiciones óptimas para la recuperación.
+Opte por la seguridad y el confort de recibir enfermería especializada en su propio hogar.`
+  },
+  {
+    title: "Apoyo Emocional y Psicológico",
+    description:
+      "Proveemos apoyo emocional y psicológico tanto a pacientes como a sus familias para enfrentar los desafíos inherentes a la hospitalización domiciliaria, con terapias individuales y grupales fundamentadas en criterios clínicos.",
+    link: "#apoyo",
+    detail: `CALM Atención Domiciliaria: Apoyo Emocional y Psicológico.
+Conscientes de que la salud emocional es esencial para el bienestar integral, nuestro servicio incluye:
+- Terapias individuales y grupales diseñadas para fortalecer la salud mental y emocional.
+- Apoyo integral a pacientes y familias, ofreciendo acompañamiento en momentos difíciles con un enfoque clínico y humanizado.
+- Estrategias de afrontamiento mediante herramientas y técnicas para gestionar el estrés y la ansiedad durante la hospitalización domiciliaria.
+Reciba el apoyo que usted y sus seres queridos necesitan para enfrentar los desafíos con fortaleza.`
+  },
+  {
+    title: "Rehabilitación Física y Ocupacional",
+    description:
+      "Nuestros programas de rehabilitación física y ocupacional están diseñados para facilitar la recuperación tras cirugías o accidentes, ofreciendo sesiones personalizadas en el entorno del hogar con un enfoque médico riguroso.",
+    link: "#rehabilitacion",
+    detail: `CALM Atención Domiciliaria: Rehabilitación Física y Ocupacional.
+Facilitamos la recuperación integral mediante programas de rehabilitación personalizados, que comprenden:
+- Sesiones adaptadas a las necesidades individuales mediante ejercicios y terapias específicas.
+- Atención en el hogar, permitiendo tratamientos efectivos sin necesidad de desplazarse.
+- Supervisión médica con evaluaciones continuas y ajustes en el plan de rehabilitación para garantizar la máxima eficacia.
+Recupérese con confianza y mejore su calidad de vida gracias a nuestros programas especializados.`
+  },
+  {
+    title: "Fonoaudiología a Distancia",
+    description:
+      "Brindamos servicios de fonoaudiología a distancia para mejorar la comunicación y habilidades del paciente, facilitando el acceso a evaluaciones y tratamientos profesionales desde la comodidad del hogar.",
+    link: "#fonoaudiologia",
+    detail: `CALM Atención Domiciliaria: Fonoaudiología a Distancia.
+Mejore la comunicación y fortalezca las habilidades del habla con nuestro servicio de fonoaudiología a distancia. Ofrecemos:
+- Evaluaciones remotas que permiten diagnósticos precisos mediante tecnología de vanguardia.
+- Terapias personalizadas con planes de tratamiento adaptados a las necesidades específicas del paciente.
+- Comodidad y accesibilidad al contar con profesionales especializados sin necesidad de desplazarse.
+Optimice su comunicación y disfrute de un tratamiento profesional y cercano desde cualquier ubicación.`
+  }
+];
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/utils/slugify.ts
+
+Contenido:
+// src/utils/slugify.ts
+export const slugify = (text: string) => {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, '-')           // Reemplaza los espacios por guiones
+    .replace(/[^\w\-]+/g, '')       // Elimina caracteres no alfanuméricos
+    .replace(/\-\-+/g, '-')         // Reemplaza múltiples guiones por uno solo
+    .replace(/^-+/, '')             // Elimina guiones al inicio
+    .replace(/-+$/, '');            // Elimina guiones al final
+};
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/utils/utils.ts
+
+Contenido:
+export const normalizeString = (str: string) =>
+    str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/context/CartContext.tsx
+
+Contenido:
+// src/context/CartContext.tsx
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
+import { getCart, addToCart, removeFromCart, checkout, CartItem } from '../services/cart';
+
+interface CartContextProps {
+  cartItems: CartItem[];
+  loadCart: () => void;
+  add: (
+    productUuid: string,
+    productDetails: { name: string; image: string; price: number },
+    quantity: number
+  ) => void;
+  remove: (productUuid: string) => void;
+  clear: () => void;
+}
+
+const CartContext = createContext<CartContextProps>({
+  cartItems: [],
+  loadCart: () => {},
+  add: () => {},
+  remove: () => {},
+  clear: () => {},
+});
+
+export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const { user, getAccessTokenSilently } = useAuth();
+
+  // Cargar el carrito dependiendo del estado de autenticación
+  const loadCart = async () => {
+    if (user) {
+      try {
+        const token = await getAccessTokenSilently();
+        const items = await getCart(token);
+        setCartItems(items);
+      } catch (error) {
+        console.error('Error al cargar el carrito:', error);
+      }
+    } else {
+      // Cargar carrito del localStorage para usuario invitado
+      const storedCart = localStorage.getItem('guestCart');
+      setCartItems(storedCart ? JSON.parse(storedCart) : []);
+    }
+  };
+
+  // Función para agregar producto al carrito
+  const add = async (
+    productUuid: string,
+    productDetails: { name: string; image: string; price: number },
+    quantity: number
+  ) => {
+    if (user) {
+      try {
+        const token = await getAccessTokenSilently();
+        await addToCart(token, productUuid, quantity);
+        await loadCart();
+      } catch (error) {
+        console.error('Error al agregar al carrito:', error);
+      }
+    } else {
+      setCartItems(prev => {
+        const existing = prev.find(item => item.product_uuid === productUuid);
+        if (existing) {
+          return prev.map(item =>
+            item.product_uuid === productUuid
+              ? { ...item, quantity: item.quantity + quantity }
+              : item
+          );
+        } else {
+          const newItem: CartItem = {
+            product_uuid: productUuid,
+            name: productDetails.name,
+            image: productDetails.image,
+            price: productDetails.price,
+            quantity,
+          };
+          return [...prev, newItem];
+        }
+      });
+    }
+  };
+
+  // Función para eliminar un producto del carrito
+  const remove = async (productUuid: string) => {
+    if (user) {
+      try {
+        const token = await getAccessTokenSilently();
+        await removeFromCart(token, productUuid);
+        await loadCart();
+      } catch (error) {
+        console.error('Error al eliminar del carrito:', error);
+      }
+    } else {
+      setCartItems(prev => prev.filter(item => item.product_uuid !== productUuid));
+    }
+  };
+
+  // Función para vaciar el carrito (ej. al hacer checkout)
+  const clear = async () => {
+    if (user) {
+      try {
+        const token = await getAccessTokenSilently();
+        await checkout(token);
+        await loadCart();
+      } catch (error) {
+        console.error('Error en checkout:', error);
+      }
+    } else {
+      setCartItems([]);
+      localStorage.removeItem('guestCart');
+    }
+  };
+
+  useEffect(() => {
+    loadCart();
+  }, [user]);
+
+  return (
+    <CartContext.Provider value={{ cartItems, loadCart, add, remove, clear }}>
+      {children}
+    </CartContext.Provider>
+  );
+};
+
+export const useCart = () => useContext(CartContext);
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/context/ThemeContext.tsx
+
+Contenido:
+// src/context/ThemeContext.tsx
+import React, { createContext, useState, useContext, useEffect } from 'react';
+
+interface ThemeContextProps {
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
+}
+
+const ThemeContext = createContext<ThemeContextProps>({
+  theme: 'light',
+  toggleTheme: () => {},
+});
+
+export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Lee del localStorage si existe el tema guardado, o por defecto 'light'
+  const [theme, setTheme] = useState<'light' | 'dark'>(
+    () => (localStorage.getItem('theme') as 'light' | 'dark') || 'light'
+  );
+
+  useEffect(() => {
+    // Aplica la clase del tema al <body> y guarda en localStorage
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+
+// Hook de conveniencia
+export const useTheme = () => useContext(ThemeContext);
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/context/NotificationContext.tsx
+
+Contenido:
+// src/context/NotificationContext.tsx
+import React, { createContext, useContext, useState } from 'react';
+
+export type NotificationType = 'success' | 'error' | 'info';
+
+export interface Notification {
+  id: number;
+  message: string;
+  type: NotificationType;
+}
+
+interface NotificationContextProps {
+  notifications: Notification[];
+  addNotification: (message: string, type?: NotificationType) => void;
+  removeNotification: (id: number) => void;
+}
+
+const NotificationContext = createContext<NotificationContextProps>({
+  notifications: [],
+  addNotification: () => {},
+  removeNotification: () => {},
+});
+
+export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  const addNotification = (message: string, type: NotificationType = 'info') => {
+    const id = Date.now();
+    setNotifications(prev => [...prev, { id, message, type }]);
+    // Remover la notificación automáticamente después de 3 segundos
+    setTimeout(() => {
+      setNotifications(prev => prev.filter(n => n.id !== id));
+    }, 3000);
+  };
+
+  const removeNotification = (id: number) => {
+    setNotifications(prev => prev.filter(n => n.id !== id));
+  };
+
+  return (
+    <NotificationContext.Provider value={{ notifications, addNotification, removeNotification }}>
+      {children}
+    </NotificationContext.Provider>
+  );
+};
+
+export const useNotification = () => useContext(NotificationContext);
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/context/AuthContext.tsx
+
+Contenido:
+// src/context/AuthContext.tsx
+/* eslint-disable react-refresh/only-export-components */
+import React from 'react';
+import { Auth0Provider, useAuth0, GetTokenSilentlyOptions } from '@auth0/auth0-react';
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  return (
+    <Auth0Provider
+      domain={import.meta.env.VITE_AUTH0_DOMAIN!}
+      clientId={import.meta.env.VITE_AUTH0_CLIENT_ID!}
+      authorizationParams={{
+        redirect_uri: window.location.origin,
+        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
+      }}
+    >
+      {children}
+    </Auth0Provider>
+  );
+};
+
+export const useAuth = () => {
+  const { isAuthenticated, loginWithRedirect, logout, user, getAccessTokenSilently } = useAuth0();
+  return {
+    isAuthenticated,
+    login: (options?: any) =>
+      loginWithRedirect({
+        authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE },
+        ...options,
+      }),
+    logout: () => logout({ logoutParams: { returnTo: window.location.origin } }),
+    user,
+    getAccessTokenSilently: (options?: GetTokenSilentlyOptions) =>
+      getAccessTokenSilently({
+        detailedResponse: false,
+        authorizationParams: { audience: import.meta.env.VITE_AUTH0_AUDIENCE },
+        ...options,
+      }) as unknown as Promise<string>,
+  };
+};
+
+
+--------------------------------------------------------------------------------
+
+/home/southtoms/Escritorio/develop/personal/calmhc/src/context/AuthProvider.tsx
+
+Contenido:
+// src/context/AuthProvider.tsx
+import React from 'react';
+import { Auth0Provider } from '@auth0/auth0-react';
+
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  return (
+    <Auth0Provider
+      domain={import.meta.env.VITE_AUTH0_DOMAIN!}
+      clientId={import.meta.env.VITE_AUTH0_CLIENT_ID!}
+      authorizationParams={{
+        redirect_uri: window.location.origin,
+        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
+      }}
+    >
+      {children}
+    </Auth0Provider>
+  );
+};
+
+
+--------------------------------------------------------------------------------
+

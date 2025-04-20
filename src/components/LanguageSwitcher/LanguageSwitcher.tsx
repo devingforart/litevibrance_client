@@ -2,7 +2,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaChevronDown } from 'react-icons/fa';
-import './LanguageSwitcher.scss';
 
 interface Language {
   code: string;
@@ -12,11 +11,11 @@ interface Language {
 
 const languages: Language[] = [
   { code: 'en', label: 'English', flag: '🇺🇸' },
-  { code: 'es', label: 'Español', flag: '🇪🇸' }
+  { code: 'es', label: 'Español', flag: '🇪🇸' },
 ];
 
 const LanguageSwitcher: React.FC = () => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation(); // Asegúrate de definir `t` aquí
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -40,22 +39,29 @@ const LanguageSwitcher: React.FC = () => {
   }, []);
 
   return (
-    <div className="language-switcher" ref={containerRef}>
-      <button className="language-switcher__toggle" onClick={() => setOpen(!open)}>
-        <span className="language-switcher__flag">{currentLanguage.flag}</span>
-        <span className="language-switcher__label">{currentLanguage.label}</span>
-        <FaChevronDown className="language-switcher__icon" />
+    <div className="relative inline-block text-left" ref={containerRef}>
+      <button
+        className="flex items-center space-x-2 bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2 text-gray-900 font-semibold hover:bg-blue-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-label={t('select_language', 'Seleccionar idioma')}
+      >
+        <span className="text-lg">{currentLanguage.flag}</span>
+        <span className="text-sm">{currentLanguage.label}</span>
+        <FaChevronDown
+          className={`text-gray-600 transform transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
+        />
       </button>
       {open && (
-        <div className="language-switcher__menu">
+        <div className="absolute z-50 mt-2 w-40 bg-white/90 backdrop-blur-sm rounded-lg shadow-xl animate-slide-down">
           {languages.map((lang) => (
             <button
               key={lang.code}
-              className="language-switcher__option"
+              className="flex items-center space-x-2 w-full px-4 py-2 text-gray-900 hover:bg-blue-100 focus:bg-blue-100 focus:outline-none transition-colors"
               onClick={() => changeLanguage(lang.code)}
             >
-              <span className="language-switcher__flag">{lang.flag}</span>
-              <span className="language-switcher__label">{lang.label}</span>
+              <span className="text-lg">{lang.flag}</span>
+              <span className="text-sm">{lang.label}</span>
             </button>
           ))}
         </div>
